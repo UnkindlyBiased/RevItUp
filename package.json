@@ -1,0 +1,15 @@
+{
+  "name": "revitup",
+  "version": "1.0.0",
+  "description": "A simple autosport news site using React, Node.JS, PostgreSQL and TypeScript",
+  "main": "script.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server" : "nodemon script.ts"
+  },
+  "author": "UnkindlyBiased",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
