@@ -11,6 +11,7 @@ app.use('/users', PostRouter)
 async function startApp() {
     try {
         await PgDataSource.initialize()
+        await PgDataSource.synchronize()
     } catch(e) {
         console.log(e)
     }

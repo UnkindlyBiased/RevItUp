@@ -5,9 +5,9 @@ export class PostEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    Title: string
+    @Column({unique: true})
+    title: string
 
     @Column()
-    PostText: string
+    postText: string
 }

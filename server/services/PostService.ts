@@ -9,9 +9,19 @@ class PostService {
         this.postRepository = PgDataSource.getRepository(PostEntity)
     }
 
-    async getUsers() {
-        const users = await this.postRepository.find()
-        return users
+    async getPosts() {
+        const posts = await this.postRepository.find()
+        return posts
+    }
+    async getPostById(id: number) {
+        const post = await this.postRepository.findOneBy({
+            id: id
+        })
+        return post
+    }
+    async addPost(post: PostEntity) {
+        await this.postRepository.save(post)
+        return post
     }
 }
 
