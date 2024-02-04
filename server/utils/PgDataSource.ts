@@ -3,11 +3,11 @@ import 'reflect-metadata'
 
 const PgDataSource = new DataSource({
     type: 'postgres',
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PW,
-    port: Number(process.env.POSTGRES_PORT),
-    database: process.env.POSTGRES_DB_NAME,
-    synchronize: true
+    host: 'localhost',
+    username: 'postgres',
+    password: 'postgres',
+    database: 'RevItUpDatabase',
+    entities: [__dirname + '/..' + '/models/*Entity.{js,ts}']
 })
 
 export default PgDataSource

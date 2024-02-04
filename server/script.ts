@@ -1,15 +1,19 @@
 import express from 'express'
 import 'reflect-metadata'
-import UserRouter from './routes/UserRoutes.ts'
+import PgDataSource from './utils/PgDataSource.ts'
+import PostRouter from './routes/PostRouter.ts'
 
 const app = express()
 
 app.use(express.json())
-app.use('/users', UserRouter)
-
-
+app.use('/users', PostRouter)
 
 async function startApp() {
+    try {
+        await PgDataSource.initialize()
+    } catch(e) {
+        console.log(e)
+    }
     app.listen(Number(process.env.APP_PORT), () => {
         console.log('Server is started')
     })
