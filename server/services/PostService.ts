@@ -1,6 +1,8 @@
 import { Repository } from "typeorm";
 import { PostEntity } from "../models/PostEntity.ts";
 import PgDataSource from "../utils/PgDataSource.ts";
+import UserController from "../controllers/UserController.ts";
+import UserService from "./UserService.ts";
 
 class PostService {
     private postRepository: Repository<PostEntity>

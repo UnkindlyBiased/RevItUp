@@ -10,12 +10,18 @@ export class PostEntity {
     title: string
 
     @Column()
+    previewText: string
+
+    @Column({default: "To be continued..."})
     postText: string
+
+    @Column({default: null})
+    imageLink?: string
 
     @ManyToOne(() => UserEntity, user => user.posts)
     @JoinColumn({name: 'authorId'})
     author: UserEntity
 
-    @Column()
+    @Column({default: 1})
     authorId: number
 }

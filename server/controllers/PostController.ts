@@ -1,15 +1,17 @@
 import PostService from "../services/PostService.ts"
 import { Request, Response } from 'express'
+import { mapPostToFullDto, mapPostToPreviewDto } from "../models/dto/PostDto.ts"
 
 class PostController {
     async getPosts(req: Request, res: Response) {
-        const users = await PostService.getPosts()
-        res.json(users)
+        let posts = (await PostService.getPosts()).map(post => mapPostToPreviewDto(post))
+        res.send(posts)
     }
     async getPostById(req: Request, res: Response) {
         const {id} = req.params
         const post = await PostService.getPostById(Number(id))
-        res.json(post)
+        const dto = await mapPostToFullDto(post!)
+        res.json(dto)
     }
     async addPost(req: Request, res: Response) {
         let newPost = null 
