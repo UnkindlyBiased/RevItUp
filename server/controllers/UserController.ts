@@ -4,7 +4,7 @@ import { mapUserToFullDto, mapUserToPreviewDto } from '../models/dto/UserDto'
 
 class UserController {
     async getUsers(req: Request, res: Response) {
-        const users = await (await UserService.getUsers()).map(user => mapUserToPreviewDto)
+        const users = await (await UserService.getUsers()).map(user => mapUserToPreviewDto(user))
         res.json(users)
     }
     async getUserById(req: Request, res: Response) {

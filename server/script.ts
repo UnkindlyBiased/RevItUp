@@ -2,7 +2,7 @@ import express from 'express'
 import 'reflect-metadata'
 import PgDataSource from './utils/PgDataSource.ts'
 import PostRouter from './routes/PostRouter.ts'
-import { UserRouter } from './routes/UserRouter.ts'
+import UserRouter from './routes/UserRouter.ts'
 
 const app = express()
 
