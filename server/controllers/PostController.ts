@@ -1,5 +1,3 @@
-import { it } from "node:test"
-import { PostEntity } from "../models/PostEntity.ts"
 import PostService from "../services/PostService.ts"
 import { Request, Response } from 'express'
 

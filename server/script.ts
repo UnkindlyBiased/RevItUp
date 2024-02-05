@@ -2,11 +2,13 @@ import express from 'express'
 import 'reflect-metadata'
 import PgDataSource from './utils/PgDataSource.ts'
 import PostRouter from './routes/PostRouter.ts'
+import { UserRouter } from './routes/UserRouter.ts'
 
 const app = express()
 
 app.use(express.json())
-app.use('/users', PostRouter)
+app.use('/posts', PostRouter)
+app.use('/users', UserRouter)
 
 async function startApp() {
     try {
