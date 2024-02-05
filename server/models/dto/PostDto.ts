@@ -2,22 +2,19 @@ import { UserEntity } from "../UserEntity"
 import { PostEntity } from "../PostEntity"
 import UserService from "../../services/UserService"
 
-export class PreviewPostDto {
+export class PostPreviewDto {
     title: string
     previewText: string
     imageLink: string
 }
 
-export class FullPostDto {
-    title: string
-    previewText: string
+export class FullPostDto extends PostPreviewDto {
     postText: string
-    imageLink: string
     authorInfo: UserEntity
 }
 
 export function mapPostToPreviewDto(post: PostEntity) {
-    const postInfo: PreviewPostDto = {
+    const postInfo: PostPreviewDto = {
         title: post.title,
         previewText: post.previewText,
         imageLink: post.imageLink!

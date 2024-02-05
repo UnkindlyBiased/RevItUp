@@ -1,8 +1,6 @@
 import { Repository } from "typeorm";
 import { PostEntity } from "../models/PostEntity.ts";
 import PgDataSource from "../utils/PgDataSource.ts";
-import UserController from "../controllers/UserController.ts";
-import UserService from "./UserService.ts";
 
 class PostService {
     private postRepository: Repository<PostEntity>
@@ -19,7 +17,13 @@ class PostService {
         const post = await this.postRepository.findOneBy({
             id: id
         })
-        return post
+        return post!
+    }
+    async getPostsByAuthor(id: number) {
+        const posts = await this.postRepository.findBy({
+            authorId: id
+        })
+        return posts
     }
     async addPost(post: PostEntity) {
         await this.postRepository.save(post)
