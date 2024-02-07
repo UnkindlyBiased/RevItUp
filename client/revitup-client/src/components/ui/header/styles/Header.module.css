@@ -1,12 +1,11 @@
 header {
   display: flex;
   align-items: center;
-  height: 7.5vh;
   background-color: red;
-  color: white;
-  padding: 1vh 2vw;
-  box-sizing: content-box;
+  height: 7.5vh;
+  padding: 1vh 1.5vw;
+  margin-bottom: 2vh;
 }
 header img {
-  height: 50%;
+  width: 16.5%;
 }/*# sourceMappingURL=Header.module.css.map */

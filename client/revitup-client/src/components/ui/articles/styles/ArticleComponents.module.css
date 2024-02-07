@@ -1,0 +1,15 @@
+.bigRowItem {
+  background-color: gray;
+  display: flex;
+  padding: 0.5vw;
+  margin: 1vh 2vw;
+}
+.bigRowItem img {
+  width: 20%;
+}
+.bigRowItem .postPreview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 1vw;
+}/*# sourceMappingURL=ArticleComponents.module.css.map */
