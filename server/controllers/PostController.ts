@@ -13,6 +13,10 @@ class PostController {
         const dto = await mapPostToFullDto(post!)
         res.json(dto)
     }
+    async getAnyPost(req: Request, res: Response) {
+        const post = await PostService.getAnyPost()
+        res.json(post)
+    }
     async addPost(req: Request, res: Response) {
         let newPost = null 
         try {

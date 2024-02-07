@@ -1,0 +1,12 @@
+header {
+  display: flex;
+  align-items: center;
+  height: 7.5vh;
+  background-color: red;
+  color: white;
+  padding: 1vh 2vw;
+  box-sizing: content-box;
+}
+header img {
+  height: 50%;
+}/*# sourceMappingURL=Header.module.css.map */

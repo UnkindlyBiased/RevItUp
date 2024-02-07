@@ -3,12 +3,15 @@ import 'reflect-metadata'
 import PgDataSource from './utils/PgDataSource.ts'
 import PostRouter from './routes/PostRouter.ts'
 import UserRouter from './routes/UserRouter.ts'
+import cors from 'cors'
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use('/posts', PostRouter)
 app.use('/users', UserRouter)
+
 
 async function startApp() {
     try {

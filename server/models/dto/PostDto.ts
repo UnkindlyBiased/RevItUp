@@ -1,8 +1,10 @@
 import { UserEntity } from "../UserEntity"
 import { PostEntity } from "../PostEntity"
 import UserService from "../../services/UserService"
+import { UserPreviewDto, mapUserToPreviewDto } from "./UserDto"
 
 export class PostPreviewDto {
+    id: number
     title: string
     previewText: string
     imageLink: string
@@ -10,11 +12,12 @@ export class PostPreviewDto {
 
 export class FullPostDto extends PostPreviewDto {
     postText: string
-    authorInfo: UserEntity
+    authorInfo: UserPreviewDto
 }
 
 export function mapPostToPreviewDto(post: PostEntity) {
     const postInfo: PostPreviewDto = {
+        id: post.id,
         title: post.title,
         previewText: post.previewText,
         imageLink: post.imageLink!
@@ -25,11 +28,12 @@ export function mapPostToPreviewDto(post: PostEntity) {
 export async function mapPostToFullDto(post: PostEntity) {
     const info = await UserService.getUserById(post.id)
     const postDto: FullPostDto = {
+        id: post.id,
         title: post.title,
         previewText: post.previewText,
         postText: post.postText,
         imageLink: post.imageLink!,
-        authorInfo: info!
+        authorInfo: mapUserToPreviewDto(info!)
     }
     return postDto
 }

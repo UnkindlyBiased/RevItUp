@@ -25,6 +25,11 @@ class PostService {
         })
         return posts
     }
+    async getAnyPost() {
+        const posts = await this.postRepository.find()
+        const randomPost = posts[Math.floor(Math.random() * posts.length)]
+        return randomPost
+    }
     async addPost(post: PostEntity) {
         await this.postRepository.save(post)
         return post

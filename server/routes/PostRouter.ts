@@ -3,6 +3,7 @@ import PostController from '../controllers/PostController.ts'
 
 const PostRouter = Router()
 
+
 PostRouter.get('/', PostController.getPosts)
 PostRouter.get('/:id', PostController.getPostById)
 
