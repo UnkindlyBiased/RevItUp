@@ -1,5 +1,5 @@
 import { api } from "../http/api"
-import { IPostPreviewDto } from "../types/ProductsTypes"
+import { IPostPreviewDto } from "../types/PostsTypes"
 
 class PostsService {
     private PREFIX = '/posts'

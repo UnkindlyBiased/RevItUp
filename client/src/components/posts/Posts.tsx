@@ -1,4 +1,4 @@
-import { IPostPreviewDto } from "../../types/ProductsTypes"
+import { IPostPreviewDto } from "../../types/PostsTypes"
 
 interface PropsType {
     props: IPostPreviewDto

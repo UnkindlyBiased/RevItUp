@@ -1,28 +1,14 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import PostsService from './services/PostsService'
-import { IPostPreviewDto } from './types/ProductsTypes'
-import { WidePost } from './components/posts/Posts'
+import { RouterProvider, createBrowserRouter } from "react-router-dom"
+import { MainPostsPage } from "./pages/posts/MainPostsPage"
 
 function App() {
-  const [posts, setPosts] = useState<IPostPreviewDto[]>([])
-  useEffect(() => {
-    async function getPosts() {
-      try {
-        setPosts(await PostsService.getPosts())
-      } catch (e) {
-        console.log(e)
-      }
-    }
-    getPosts()
-  }, [])
+  const router = createBrowserRouter([{
+    path: '/',
+    element: <MainPostsPage />
+  }])
   return (
-    <>
-      {posts.map(post => (
-        <WidePost key={post.id} props={post} />
-      ))}
-    </>
-  )
+    <RouterProvider router={router} />
+  )  
 }
 
 export default App
