@@ -9,8 +9,8 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use('/posts', PostRouter)
-app.use('/users', UserRouter)
+app.use('/api/posts', PostRouter)
+app.use('/api/users', UserRouter)
 
 
 async function startApp() {
