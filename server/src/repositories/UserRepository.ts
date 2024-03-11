@@ -1,6 +1,7 @@
 import { Repository } from "typeorm"
 import { UserEntity } from "../models/UserEntity"
 import PgDataSource from "../../utils/AppDataSource"
+import UserCreateDto from "../models/dto/UserCreateDto"
 
 class UserRepository {
     private readonly userRep: Repository<UserEntity>
@@ -9,9 +10,15 @@ class UserRepository {
         this.userRep = PgDataSource.getRepository(UserEntity)
     }
 
-    async getUsers(): Promise<UserEntity[]> {
-        const users = await this.userRep.find()
+    async getUsers() {
+        const users: UserCreateDto[] = await this.userRep.find() as UserCreateDto[]
         return users
+    }
+    async getUserById(id: number) {
+        const candidate = await this.userRep.findOneBy({ id })
+        if (!candidate) {
+
+        }
     }
 }
 

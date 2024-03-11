@@ -1,4 +1,5 @@
 import { ApiError } from "../../utils/ApiError"
+import UserCreateDto from "../models/dto/UserCreateDto"
 import UserRepository from "../repositories/UserRepository"
 
 class UserService {
