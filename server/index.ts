@@ -2,16 +2,14 @@ import express from 'express'
 import 'reflect-metadata'
 import { config } from 'dotenv'
 import PgDataSource from './utils/AppDataSource'
-import { TestEntity } from './src/models/TestEntity'
-import PostRouter from './src/routers/PostRouter'
-
+import UserRouter from './src/routers/UserRouter'
 config()
 
 const app = express()
 
 app.use(express.json())
 
-app.use('/posts', PostRouter)
+app.use('/users', UserRouter)
 
 async function startApp() {
     const port = Number(process.env.APP_PORT)

@@ -8,6 +8,10 @@ export class ApiError extends Error {
         this.errors = errors
     }
 
+    static NotFound(message: string, errors: string[] = []) {
+        return new ApiError(404, message, errors)
+    }
+
     static Conflict(message: string, errors: string[] = []) {
         return new ApiError(409, message, errors)
     }
