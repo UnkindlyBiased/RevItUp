@@ -5,11 +5,14 @@ export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ unique: true })
     username: string
 
     @Column()
     password: string
+
+    @Column({ nullable: true })
+    biography: string
 
     @Column({ unique: true })
     emailAddress: string

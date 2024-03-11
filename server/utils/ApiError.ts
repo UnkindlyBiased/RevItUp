@@ -6,6 +6,7 @@ export class ApiError extends Error {
         super(message)
         this.status = status
         this.errors = errors
+        this.message = message
     }
 
     static NotFound(message: string, errors: string[] = []) {
