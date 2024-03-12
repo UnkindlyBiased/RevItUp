@@ -16,4 +16,12 @@ export class ApiError extends Error {
     static Conflict(message: string, errors: string[] = []) {
         return new ApiError(409, message, errors)
     }
+
+    showErrorData() {
+        return {
+            status: this.status,
+            message: this.message,
+            errors: this.errors
+        }
+    }
 }
