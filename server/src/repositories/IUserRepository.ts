@@ -9,4 +9,5 @@ export default interface IUserRepository {
     getUserByName(username: string): Promise<UserEntity>
     create(candidate: UserCreateDto): Promise<UserEntity>
     update(id: number, updateData: UserEditDto): Promise<UserEntity>
+    delete(id: number): Promise<UserEntity>
 }

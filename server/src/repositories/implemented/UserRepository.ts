@@ -41,16 +41,27 @@ class UserRepository implements IUserRepository {
         if (user) {
             throw ApiError.Conflict('User with this bio already exists')
         }
-        const newUser = await this.userRep.save(candidate)
-        return newUser
+        const newUser = this.userRep.create(candidate)
+        newUser.editData()
+        return await this.userRep.save(newUser)
     }
     async update(id: number, updateData: UserEditDto): Promise<UserEntity> {
         const existingUser = await this.getUserById(id)
         if (!existingUser) {
-            throw ApiError.NotFound("No user with such entity was found")
+            throw ApiError.NotFound("No user by such data was found")
         }
         const updatedUser = this.userRep.create(updateData)
+        updatedUser.id = id
         return await this.userRep.save(updatedUser)
+    }
+    async delete(id: number): Promise<UserEntity> {
+        const user = await this.userRep.findOneBy({id})
+        if (!user) {
+            throw ApiError.NotFound("User with such ID was not found")
+        }
+        user.editData()
+        // await this.userRep.delete(user)
+        return user
     }
 }
 

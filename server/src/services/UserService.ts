@@ -3,6 +3,7 @@ import { UserEntity } from "../models/UserEntity"
 import UserCreateDto from "../models/dto/UserCreateDto"
 import UserDetailedDto from "../models/dto/UserDetailedDto"
 import UserEditDto from "../models/dto/UserEditDto"
+import UserShortDto from "../models/dto/UserShortDto"
 import { UserMapper } from "../models/mappers/UserMapper"
 import IUserRepository from "../repositories/IUserRepository"
 import UserRepository from "../repositories/implemented/UserRepository"
@@ -12,13 +13,13 @@ class UserService {
     constructor(private readonly repository: IUserRepository) {}
 
     // TODO: create wider DTO for GET
-    async getUsers(): Promise<UserCreateDto[]> {
+    async getUsers(): Promise<UserShortDto[]> {
         const users = await this.repository.getUsers()
         if (!users) {
             throw ApiError.NotFound("Users were not found")
         }
         return users.map(user => {
-            return UserMapper.mapUserToUserCreateDto(user)
+            return UserMapper.mapUserToUserShortDto(user)
         })
     }
     async getUserByName(username: string): Promise<UserDetailedDto> {
@@ -34,8 +35,8 @@ class UserService {
         })
         return UserMapper.mapUserToUserCreateDto(user)
     }
-    async update(updateData: UserEditDto): Promise<UserEntity> {
-        const existingUser = await this.repository.getUserById(updateData.id)
+    async update(id: number, updateData: UserEditDto): Promise<UserEntity> {
+        const existingUser = await this.repository.getUserById(id)
         const arePasswordsEqual = await bcrypt.compare(updateData.password, existingUser.password)
         if (arePasswordsEqual) {
             updateData.password = existingUser.password
@@ -43,7 +44,7 @@ class UserService {
             const hashedPassword = await bcrypt.hash(updateData.password, 3)
             updateData.password = hashedPassword
         }
-        const updatedUser = await this.repository.update(existingUser.id, updateData)
+        const updatedUser = await this.repository.update(id, updateData)
         return updatedUser
     }
 }

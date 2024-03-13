@@ -42,8 +42,7 @@ class UserController {
     async update(req: Request, res: Response, next: NextFunction) {
         try {
             const { id, username, password, biography, emailAddress } = req.body
-            const updatedUser = await UserService.update({
-                id: Number(id),
+            const updatedUser = await UserService.update(Number(id), {
                 username,
                 password,
                 biography,

@@ -1,6 +1,5 @@
-export default interface UserEditDto {
+export type UserCreate = {
     username: string,
     password: string,
-    biography: string,
     emailAddress: string
 }
