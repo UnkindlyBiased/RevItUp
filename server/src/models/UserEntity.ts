@@ -20,8 +20,7 @@ export class UserEntity {
     @CreateDateColumn()
     registrationDate: Date
 
-    @BeforeInsert()
-    @BeforeUpdate()
+    
     editData() {
         this.username = this.username.trim()
         this.emailAddress = this.emailAddress.trim()

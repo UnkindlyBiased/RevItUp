@@ -1,14 +1,18 @@
-import { UserShort } from "../../../types/UserShort"
+import { UserShort } from "../../../types/users/UserShort"
+import { H2 } from "../default/TestHeaderTags"
 
 type PropsType = {
-    user: UserShort
+    user: UserShort,
+    onClick?: () => void
 }
 
-function UserShortComp({ user }: PropsType) {
+function UserShortComp({ user, onClick }: PropsType) {
     return (
         <>
-            <h2>{user.username}</h2>
-            <span>ID: {user.id}</span>
+            <div className="flex flex-col" onClick={onClick}>
+                <H2>{user.username}</H2>
+                <span className="italic">ID: {user.id}</span>
+            </div>
         </>
     )
 }

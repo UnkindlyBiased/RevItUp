@@ -1,7 +1,7 @@
-export type User = {
+export type UserDetailed = {
     id: number
     username: string
     emailAddress: string
     biography: string
-    registrationDate: Date
+    registrationDate: string
 }

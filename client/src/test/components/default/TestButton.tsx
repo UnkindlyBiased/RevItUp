@@ -1,6 +1,6 @@
 type TestButtonProps = {
-    children: React.ReactNode,
-    onClick: () => void
+    children?: React.ReactNode,
+    onClick?: () => void
 }
 
 function TestButton({ children, onClick }: TestButtonProps) {

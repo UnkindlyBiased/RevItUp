@@ -1,12 +1,12 @@
 import { Repository } from "typeorm"
-import { UserEntity } from "../../models/UserEntity"
-import PgDataSource from "../../../utils/AppDataSource"
-import UserCreateDto from "../../models/dto/UserCreateDto"
-import { ApiError } from "../../../utils/ApiError"
-import IUserRepository from "../IUserRepository"
-import UserEditDto from "../../models/dto/UserEditDto"
+import { UserEntity } from "../../../models/UserEntity"
+import PgDataSource from "../../../../utils/data/AppDataSource"
+import UserCreateDto from "../../../models/dto/UserCreateDto"
+import { ApiError } from "../../../../utils/errors/ApiError"
+import IUserRepository from "../../IUserRepository"
+import UserEditDto from "../../../models/dto/UserEditDto"
 
-class UserRepository implements IUserRepository {
+class PgUserRepository implements IUserRepository {
     private readonly userRep: Repository<UserEntity>
 
     constructor() {
@@ -45,24 +45,28 @@ class UserRepository implements IUserRepository {
         newUser.editData()
         return await this.userRep.save(newUser)
     }
+    // TODO: clean up this mess, figure out with updates and UNIQUE on emails
     async update(id: number, updateData: UserEditDto): Promise<UserEntity> {
         const existingUser = await this.getUserById(id)
         if (!existingUser) {
             throw ApiError.NotFound("No user by such data was found")
         }
-        const updatedUser = this.userRep.create(updateData)
-        updatedUser.id = id
-        return await this.userRep.save(updatedUser)
+        const updatedUser = this.userRep.create({
+            id: id,
+            ...updateData
+        })
+        updatedUser.editData()
+        await this.userRep.save(updatedUser)
+        return updatedUser
     }
     async delete(id: number): Promise<UserEntity> {
         const user = await this.userRep.findOneBy({id})
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }
-        user.editData()
-        // await this.userRep.delete(user)
+        await this.userRep.remove(user)
         return user
     }
 }
 
-export default new UserRepository()
+export default new PgUserRepository()

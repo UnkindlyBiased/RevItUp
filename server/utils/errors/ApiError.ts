@@ -1,3 +1,5 @@
+import { HttpStatusCodes } from "../enums/HttpStatusCodes"
+
 export class ApiError extends Error {
     public readonly status: number
     public readonly errors: string[]
@@ -9,15 +11,15 @@ export class ApiError extends Error {
         this.message = message
     }
 
-    static NotFound(message: string, errors: string[] = []) {
-        return new ApiError(404, message, errors)
+    static NotFound(message: string, errors: string[] = []): ApiError {
+        return new ApiError(HttpStatusCodes.NOT_FOUND, message, errors)
     }
 
-    static Conflict(message: string, errors: string[] = []) {
-        return new ApiError(409, message, errors)
+    static Conflict(message: string, errors: string[] = []): ApiError {
+        return new ApiError(HttpStatusCodes.CONFLICT, message, errors)
     }
 
-    showErrorData() {
+    showErrorData(): object {
         return {
             status: this.status,
             message: this.message,

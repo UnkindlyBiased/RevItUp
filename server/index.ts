@@ -1,7 +1,7 @@
 import express from 'express'
 import 'reflect-metadata'
 import { config } from 'dotenv'
-import PgDataSource from './utils/AppDataSource'
+import PgDataSource from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
 
@@ -11,7 +11,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors({ 
-    origin: 'http://localhost:5173' 
+    origin: 'http://localhost:4004' 
 }))
 
 app.use('/users', UserRouter)

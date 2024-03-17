@@ -1,13 +1,15 @@
 import { useState } from "react"
-import { UserShort } from "../../types/UserShort"
+import { UserShort } from "../../types/users/UserShort"
 import UserService from "../../services/UserService"
 import UserShortComp from "../components/users/UserElement"
 import TestButton from "../components/default/TestButton"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { TestInputButton } from "../components/default/TestInput"
-import { UserCreate } from "../../types/UserCreate"
+import { UserCreate } from "../../types/users/UserCreate"
+import { useNavigate } from "react-router-dom"
 
 // * Supposed to be badly written, for test purposes
+// * If you are feeling anger 'cause of violating SRP in this code, just go outside and touch some grass
 
 function TestUsersPage() {
     const [users, setUsers] = useState<UserShort[]>([])
@@ -29,6 +31,17 @@ function TestUsersPage() {
         }
     }
 
+    const deleteUser = async (id: number) => {
+        try {
+            await UserService.delete(id)
+            setUsers(users.filter(user => user.id != id))
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const navigate = useNavigate()
+
     return (
         <div className="flex flex-col justify-start space-y-2">
             <span className="text-3xl font-bold">Users</span>
@@ -36,7 +49,12 @@ function TestUsersPage() {
                 <TestButton onClick={getUsers}>Get users</TestButton>
                 <div className="flex flex-col">
                     {users.map(user => (
-                        <UserShortComp user={user} key={user.id} />
+                        <div className="flex items-center space-x-2" key={user.id}>
+                            <UserShortComp user={user} onClick={() => {navigate(`/detailedUser/${user.username}`)}} />
+                            <TestButton onClick={() => {
+                                deleteUser(user.id)
+                            }}>Delete</TestButton>
+                        </div>
                     ))}
                 </div>
             </div>

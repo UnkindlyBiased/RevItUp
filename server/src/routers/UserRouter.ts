@@ -7,6 +7,6 @@ UserRouter.get('/', UserController.getUsers)
 UserRouter.get('/detailed/:username', UserController.getUserByName)
 UserRouter.post('/', UserController.create)
 UserRouter.put('/', UserController.update)
-UserRouter.delete('/')
+UserRouter.delete('/', UserController.delete)
 
 export default UserRouter
