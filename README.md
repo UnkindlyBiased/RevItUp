@@ -6,6 +6,8 @@ Simply it'a website for every and any motorsport article. F1-4, WEC, WRC, IMSA, 
 
 ## Client:
 - React (TypeScript)
+- React Router DOM
+- Tailwind CSS
 
 ## Server:
 - Node.JS (TypeScript), Express.JS
