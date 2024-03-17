@@ -14,9 +14,7 @@ class UserService {
 
     // TODO: implement Country entity
     async getUsers(): Promise<UserShortDto[]> {
-        console.log("Hiiiii")
         const users = await this.repository.getUsers()
-        console.log("after rep call")
         if (!users) {
             throw ApiError.NotFound("Users were not found")
         }

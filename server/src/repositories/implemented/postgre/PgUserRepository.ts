@@ -54,10 +54,19 @@ class PgUserRepository implements IUserRepository {
         if (!existingUser) {
             throw ApiError.NotFound("No user by such data was found")
         }
+
+        const emailCandidate = await this.userRep.findOneBy({ 
+            emailAddress: updateData.emailAddress
+        })
+        if (emailCandidate) {
+            throw ApiError.Conflict("User registrated by this email already exists")
+        }
+
         const updatedUser = this.userRep.create({
             id: id,
             ...updateData
         })
+        
         await this.userRep.save(updatedUser)
         return UserMapper.toDataModel(updatedUser)
     }
