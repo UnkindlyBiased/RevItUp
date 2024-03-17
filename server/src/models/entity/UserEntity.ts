@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'Users' })
 export class UserEntity {
@@ -19,11 +19,4 @@ export class UserEntity {
 
     @CreateDateColumn()
     registrationDate: Date
-
-    
-    editData() {
-        this.username = this.username.trim()
-        this.emailAddress = this.emailAddress.trim()
-    }
-
 }
