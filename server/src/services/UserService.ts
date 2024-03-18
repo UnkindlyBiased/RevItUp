@@ -9,6 +9,7 @@ import IUserRepository from "../repositories/IUserRepository"
 import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 import bcrypt from 'bcrypt'
 import UserModel from "../models/domain/User"
+import { UserHelper } from "../../utils/helpers/UserHelper"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
@@ -29,6 +30,8 @@ class UserService {
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
     async create(candidate: UserCreateDto): Promise<UserCreateDto> {
+        UserHelper.trimUserData(candidate)
+
         const hashPassword = bcrypt.hashSync(candidate.password, 3)
 
         const user = await this.repository.create({
@@ -41,6 +44,8 @@ class UserService {
         return UserMapper.mapUserModelToUserCreateDto(user)
     }
     async update(id: number, updateData: UserEditDto): Promise<UserDetailedDto> {
+        UserHelper.trimUserData(updateData)
+
         const existingUser = await this.repository.getUserById(id)
 
         const arePasswordsEqual = await bcrypt.compare(updateData.password, existingUser.password)

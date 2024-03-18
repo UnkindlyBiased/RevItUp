@@ -11,7 +11,7 @@ const PgDataSource = new DataSource({
     password: process.env.PG_PASSWORD || 'postgres',
     port: Number(process.env.PG_PORT) || 5432,
     database: 'RevItUpDB',
-    entities: [__dirname + '/../../src/models/entity/*.ts'],
+    entities: [__dirname + '/../../src/models/entity/*Entity.ts'],
     synchronize: true,
     logging: false,
     cache: true

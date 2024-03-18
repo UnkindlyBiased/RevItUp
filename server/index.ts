@@ -17,7 +17,7 @@ app.use(cors({
 app.use('/users', UserRouter)
 
 async function startApp() {
-    const port = Number(process.env.APP_PORT) || 5432
+    const port = Number(process.env.APP_PORT) || 8008
     try {
         await PgDataSource.initialize()
         await PgDataSource.synchronize()

@@ -7,6 +7,7 @@ import IUserRepository from "../../IUserRepository"
 import UserEditDto from "../../../models/dto/UserEditDto"
 import UserMapper from "../../../models/mappers/UserMapper"
 import UserModel from "../../../models/domain/User"
+import { UserHelper } from "../../../../utils/helpers/UserHelper"
 
 class PgUserRepository implements IUserRepository {
     private readonly userRep: Repository<UserEntity>
@@ -17,10 +18,8 @@ class PgUserRepository implements IUserRepository {
     
     async getUsers(): Promise<UserModel[]> {
         const users = await this.userRep.find({
-            loadRelationIds: true,
-            relations: ['Countries']
+            relations: ['country']
         })
-        console.log(users[0].country)
         return users.map(user => UserMapper.toDataModel(user))
     }
     async getUserById(id: number): Promise<UserModel> {
@@ -31,7 +30,10 @@ class PgUserRepository implements IUserRepository {
         return UserMapper.toDataModel(user)
     }
     async getUserByName(username: string): Promise<UserModel> {
-        const user = await this.userRep.findOneBy({ username })
+        const user = await this.userRep.findOne({
+            where: { username },
+            relations: ['country']
+        })
         if (!user) {
             throw ApiError.NotFound("User with this name doesn't exist")
         }
@@ -42,17 +44,19 @@ class PgUserRepository implements IUserRepository {
             where: [
                 { username: candidate.username },
                 { emailAddress: candidate.emailAddress }
-            ]
+            ],
+            relations: ['country']
         })
+
         if (user) {
             throw ApiError.Conflict('User with this bio already exists')
         }
         const newUser = this.userRep.create(candidate)
+        
         await this.userRep.save(newUser)
 
         return UserMapper.toDataModel(newUser)
     }
-    // TODO: clean up this mess, figure out with updates and UNIQUE on emails
     async update(id: number, updateData: UserEditDto): Promise<UserModel> {
         const existingUser = await this.getUserById(id)
         if (!existingUser) {
