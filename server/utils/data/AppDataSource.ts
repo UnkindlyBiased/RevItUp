@@ -13,7 +13,8 @@ const PgDataSource = new DataSource({
     database: 'RevItUpDB',
     entities: [__dirname + '/../../src/models/entity/*.ts'],
     synchronize: true,
-    logging: false
+    logging: false,
+    cache: true
 })
 
 export default PgDataSource

@@ -16,7 +16,11 @@ class PgUserRepository implements IUserRepository {
     }
     
     async getUsers(): Promise<UserModel[]> {
-        const users = await this.userRep.find()
+        const users = await this.userRep.find({
+            loadRelationIds: true,
+            relations: ['Countries']
+        })
+        console.log(users[0].country)
         return users.map(user => UserMapper.toDataModel(user))
     }
     async getUserById(id: number): Promise<UserModel> {

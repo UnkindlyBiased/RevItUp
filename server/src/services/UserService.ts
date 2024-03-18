@@ -8,6 +8,7 @@ import UserMapper from "../models/mappers/UserMapper"
 import IUserRepository from "../repositories/IUserRepository"
 import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 import bcrypt from 'bcrypt'
+import UserModel from "../models/domain/User"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
@@ -33,7 +34,8 @@ class UserService {
         const user = await this.repository.create({
             username: candidate.username,
             password: hashPassword,
-            emailAddress: candidate.emailAddress
+            emailAddress: candidate.emailAddress,
+            country: candidate.country
         })
 
         return UserMapper.mapUserModelToUserCreateDto(user)
@@ -52,7 +54,7 @@ class UserService {
         const updatedUser = await this.repository.update(id, updateData)
         return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
     }
-    async delete(id: number): Promise<UserEntity> {
+    async delete(id: number): Promise<UserModel> {
         const userToRemove = await this.repository.delete(id)
         return userToRemove
     }

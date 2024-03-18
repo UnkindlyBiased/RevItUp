@@ -1,6 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { CountryEntity } from "./CountryEntity";
 
-@Entity({ name: 'Users' })
+@Entity({ 
+    name: 'Users',
+    orderBy: {
+        "registrationDate": "DESC"
+    }
+ })
 export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
@@ -19,4 +25,7 @@ export class UserEntity {
 
     @CreateDateColumn()
     registrationDate: Date
+
+    @ManyToOne(() => CountryEntity, country => country.users)
+    country: CountryEntity
 }

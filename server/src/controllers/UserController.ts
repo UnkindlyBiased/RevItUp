@@ -27,11 +27,12 @@ class UserController {
     }
     async create(req: Request, res: Response, _next: NextFunction) {
         try {
-            const { username, password, emailAddress } = req.body
+            const { username, password, emailAddress, country } = req.body
             const user = await UserService.create({
                 username,
                 password,
-                emailAddress
+                emailAddress,
+                country
             })
             res.status(HttpStatusCodes.UPLOADED).send(user)
         } catch (e) {

@@ -14,7 +14,8 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             password: entity.password,
             biography: entity.biography,
             emailAddress: entity.emailAddress,
-            registrationDate: entity.registrationDate
+            registrationDate: entity.registrationDate,
+            country: entity.country
         }
     }
     toDataEntity(model: UserModel): UserEntity {
@@ -26,14 +27,16 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
     mapUserModelToUserShortDto(model: UserModel): UserShortDto {
         return {
             id: model.id,
-            username: model.username
+            username: model.username,
+            country: model.country
         }
     }
     mapUserModelToUserCreateDto(model: UserModel): UserCreateDto {
         return {
             username: model.username,
             password: model.password,
-            emailAddress: model.emailAddress
+            emailAddress: model.emailAddress,
+            country: model.country
         }
     }
     mapUserModelToUserEditDto(model: UserModel): UserEditDto {
@@ -50,7 +53,8 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             username: model.username,
             emailAddress: model.emailAddress,
             biography: model.biography,
-            registrationDate: model.registrationDate
+            registrationDate: model.registrationDate,
+            country: model.country
         }
     }
 }
