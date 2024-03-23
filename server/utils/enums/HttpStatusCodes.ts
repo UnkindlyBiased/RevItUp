@@ -3,5 +3,6 @@ export enum HttpStatusCodes {
     UPLOADED = 201,
 
     NOT_FOUND = 404,
-    CONFLICT = 409
+    CONFLICT = 409,
+    MISSING_PARAMS = 422
 }

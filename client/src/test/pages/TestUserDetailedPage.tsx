@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom"
-import { UserDetailed } from "../../types/users/UserDetailed"
+import UserDetailed from "../../types/users/UserDetailed"
 import { H1 } from "../components/default/TestHeaderTags"
 import { useEffect, useState } from "react"
 import UserService from "../../services/UserService"
-import { UserEdit } from "../../types/users/UserEdit"
+import UserEdit from "../../types/users/UserEdit"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { TestInputButton } from "../components/default/TestInput"
+import CountryDisplay from "../components/country/CountryDisplay"
 
 function TestUserDetailedPage() {
     const { username } = useParams()
@@ -46,6 +47,7 @@ function TestUserDetailedPage() {
                         <H1>{userData.username}</H1>
                         <span>{userData.biography}</span>
                         <span>{`${new Date(userData.registrationDate).toUTCString()}`}</span>
+                        <CountryDisplay country={userData.country} />
                     </div>
                     <form className="flex flex-col space-y-3" onSubmit={handleSubmit(updateSubmitHandler)}>
                         <input className="border-black border-2 rounded-md pl-2" {...register("username")}/>
