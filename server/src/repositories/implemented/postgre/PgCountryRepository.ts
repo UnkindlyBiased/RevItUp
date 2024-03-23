@@ -4,6 +4,7 @@ import ICountryRepository from "../../ICountryRepository";
 import { CountryEntity } from "../../../models/entity/CountryEntity";
 import PgDataSource from "../../../../utils/data/AppDataSource";
 import CountryMapper from "../../../models/mappers/CountryMapper";
+import { ApiError } from "../../../../utils/errors/ApiError";
 
 class PgCountryRepository implements ICountryRepository {
     private countryRep: Repository<CountryEntity>
@@ -18,6 +19,17 @@ class PgCountryRepository implements ICountryRepository {
     }
     async getById(id: number): Promise<CountryModel> {
         throw new Error("Method not implemented.");
+    }
+    async getByCode(code: string): Promise<CountryModel> {
+        const country = await this.countryRep.findOneBy({ 
+            countryCode: code
+        })
+
+        if (!country) {
+            throw ApiError.NotFound("Country with this code was not found")
+        }
+
+        return CountryMapper.toDataModel(country)
     }
 }
 

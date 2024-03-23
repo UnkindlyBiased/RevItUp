@@ -1,4 +1,9 @@
-export type UserShort = {
+import Country from "../country/Country"
+
+type UserShort = {
     id: number,
-    username: string
+    username: string,
+    country: Country
 }
+
+export default UserShort

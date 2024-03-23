@@ -1,4 +1,4 @@
-import IDataMapper from "../IDataMapper";
+import IDataMapper from "../misc/IDataMapper";
 import CountryModel from "../domain/Country";
 import { CountryEntity } from "../entity/CountryEntity";
 

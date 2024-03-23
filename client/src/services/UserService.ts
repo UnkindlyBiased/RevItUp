@@ -21,7 +21,7 @@ class UserService {
         return users
     }
     async getUserByUsername(username: string): Promise<UserDetailed> {
-        const userPath = `${this.PREFIX}/detailed/${username}`
+        const userPath = `${this.PREFIX}/${username}`
         const user = (await api.get<UserDetailed>(userPath)).data
         return user
     }

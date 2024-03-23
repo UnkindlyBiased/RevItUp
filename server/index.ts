@@ -4,6 +4,7 @@ import { config } from 'dotenv'
 import PgDataSource from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
+import CountryRouter from './src/routers/CountryRouter'
 
 config()
 
@@ -15,6 +16,7 @@ app.use(cors({
 }))
 
 app.use('/users', UserRouter)
+app.use('/countries', CountryRouter)
 
 async function startApp() {
     const port = Number(process.env.APP_PORT) || 8008

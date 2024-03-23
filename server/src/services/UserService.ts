@@ -1,5 +1,4 @@
 import { ApiError } from "../../utils/errors/ApiError"
-import { UserEntity } from "../models/entity/UserEntity"
 import UserCreateDto from "../models/dto/UserCreateDto"
 import UserDetailedDto from "../models/dto/UserDetailedDto"
 import UserEditDto from "../models/dto/UserEditDto"
@@ -14,7 +13,6 @@ import { UserHelper } from "../../utils/helpers/UserHelper"
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
 
-    // TODO: implement Country entity
     async getUsers(): Promise<UserShortDto[]> {
         const users = await this.repository.getUsers()
         if (!users) {

@@ -7,7 +7,6 @@ import IUserRepository from "../../IUserRepository"
 import UserEditDto from "../../../models/dto/UserEditDto"
 import UserMapper from "../../../models/mappers/UserMapper"
 import UserModel from "../../../models/domain/User"
-import { UserHelper } from "../../../../utils/helpers/UserHelper"
 
 class PgUserRepository implements IUserRepository {
     private readonly userRep: Repository<UserEntity>

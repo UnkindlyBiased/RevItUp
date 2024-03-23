@@ -15,7 +15,7 @@ export class CountryEntity {
     name: string
 
     @Column({ unique: true })
-    shortenedName: string
+    countryCode: string
 
     @Column()
     flagImgLink: string

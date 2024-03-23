@@ -4,7 +4,7 @@ import UserDetailedDto from "../dto/UserDetailedDto";
 import UserEditDto from "../dto/UserEditDto";
 import UserShortDto from "../dto/UserShortDto";
 import UserModel from "../domain/User";
-import IDataMapper from "../IDataMapper";
+import IDataMapper from "../misc/IDataMapper";
 
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
