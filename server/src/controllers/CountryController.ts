@@ -3,7 +3,7 @@ import CountryService from '../services/CountryService'
 import { ApiError } from '../../utils/errors/ApiError'
 
 class CountryController {
-    async getCountries(req: Request, res: Response) {
+    async getCountries(_req: Request, res: Response) {
         try {
             const countries = await CountryService.getCountries()
             res.send(countries)
