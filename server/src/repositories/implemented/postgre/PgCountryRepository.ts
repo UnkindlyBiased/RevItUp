@@ -24,7 +24,6 @@ class PgCountryRepository implements ICountryRepository {
         const country = await this.countryRep.findOneBy({ 
             countryCode: code
         })
-
         if (!country) {
             throw ApiError.NotFound("Country with this code was not found")
         }

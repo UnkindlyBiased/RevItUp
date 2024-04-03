@@ -1,4 +1,4 @@
-import CountryModel from "../domain/Country"
+import CountryModel from "../../domain/Country"
 
 export default interface UserDetailedDto {
     id: number

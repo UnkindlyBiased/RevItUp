@@ -1,8 +1,7 @@
-import UserModel from "../../src/models/domain/User"
-import UserCreateDto from "../../src/models/dto/UserCreateDto"
-import UserEditDto from "../../src/models/dto/UserEditDto"
+import UserCreateDto from "../../src/models/dto/users/UserCreateDto"
+import UserEditDto from "../../src/models/dto/users/UserEditDto"
 
-export class UserHelper {
+class UserHelper {
     static trimUserData(model: UserCreateDto | UserEditDto): void {
         model.username = model.username.trim()
         model.emailAddress = model.emailAddress.trim()
@@ -11,3 +10,5 @@ export class UserHelper {
         }
     }
 }
+
+export default UserHelper

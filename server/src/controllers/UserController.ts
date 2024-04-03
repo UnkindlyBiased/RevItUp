@@ -28,7 +28,7 @@ class UserController {
     async create(req: Request, res: Response, _next: NextFunction) {
         try {
             const { username, password, emailAddress, country } = req.body
-            const user = await UserService.create({
+            const user = await UserService.register({
                 username,
                 password,
                 emailAddress,

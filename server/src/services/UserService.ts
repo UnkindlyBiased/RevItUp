@@ -1,18 +1,19 @@
 import { ApiError } from "../../utils/errors/ApiError"
-import UserCreateDto from "../models/dto/UserCreateDto"
-import UserDetailedDto from "../models/dto/UserDetailedDto"
-import UserEditDto from "../models/dto/UserEditDto"
-import UserShortDto from "../models/dto/UserShortDto"
+import UserCreateDto from "../models/dto/users/UserCreateDto"
+import UserDetailedDto from "../models/dto/users/UserDetailedDto"
+import UserEditDto from "../models/dto/users/UserEditDto"
+import UserShortDto from "../models/dto/users/UserShortDto"
 import UserMapper from "../models/mappers/UserMapper"
 import IUserRepository from "../repositories/IUserRepository"
 import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 import bcrypt from 'bcrypt'
 import UserModel from "../models/domain/User"
-import { UserHelper } from "../../utils/helpers/UserHelper"
+import UserHelper from "../../utils/helpers/UserHelper"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
 
+    // * CRUD work
     async getUsers(): Promise<UserShortDto[]> {
         const users = await this.repository.getUsers()
         if (!users) {
@@ -27,7 +28,7 @@ class UserService {
         const user = await this.repository.getUserByName(username)
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
-    async create(candidate: UserCreateDto): Promise<UserCreateDto> {
+    async register(candidate: UserCreateDto): Promise<UserCreateDto> {
         UserHelper.trimUserData(candidate)
 
         const hashPassword = bcrypt.hashSync(candidate.password, 3)

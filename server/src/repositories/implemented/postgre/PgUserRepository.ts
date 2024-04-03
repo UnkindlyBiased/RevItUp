@@ -1,10 +1,10 @@
 import { Repository } from "typeorm"
 import { UserEntity } from "../../../models/entity/UserEntity"
 import PgDataSource from "../../../../utils/data/AppDataSource"
-import UserCreateDto from "../../../models/dto/UserCreateDto"
+import UserCreateDto from "../../../models/dto/users/UserCreateDto"
 import { ApiError } from "../../../../utils/errors/ApiError"
 import IUserRepository from "../../IUserRepository"
-import UserEditDto from "../../../models/dto/UserEditDto"
+import UserEditDto from "../../../models/dto/users/UserEditDto"
 import UserMapper from "../../../models/mappers/UserMapper"
 import UserModel from "../../../models/domain/User"
 

@@ -1,8 +1,8 @@
 import { UserEntity } from "../entity/UserEntity";
-import UserCreateDto from "../dto/UserCreateDto";
-import UserDetailedDto from "../dto/UserDetailedDto";
-import UserEditDto from "../dto/UserEditDto";
-import UserShortDto from "../dto/UserShortDto";
+import UserCreateDto from "../dto/users/UserCreateDto";
+import UserDetailedDto from "../dto/users/UserDetailedDto";
+import UserEditDto from "../dto/users/UserEditDto";
+import UserShortDto from "../dto/users/UserShortDto";
 import UserModel from "../domain/User";
 import IDataMapper from "../misc/IDataMapper";
 
