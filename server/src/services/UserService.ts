@@ -9,6 +9,12 @@ import PgUserRepository from "../repositories/implemented/postgre/PgUserReposito
 import bcrypt from 'bcrypt'
 import UserModel from "../models/domain/User"
 import UserHelper from "../../utils/helpers/UserHelper"
+import { v4 } from 'uuid'
+import MailService from "./MailService"
+import UserTokenDto from "../models/dto/users/UserTokenDto"
+import TokenHelper from "../../utils/helpers/TokenHelper"
+import TokenService from "./TokenService"
+import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
@@ -28,19 +34,37 @@ class UserService {
         const user = await this.repository.getUserByName(username)
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
-    async register(candidate: UserCreateDto): Promise<UserCreateDto> {
+    async register(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
         UserHelper.trimUserData(candidate)
 
         const hashPassword = bcrypt.hashSync(candidate.password, 3)
+        const activationLink = v4()
 
         const user = await this.repository.create({
             username: candidate.username,
             password: hashPassword,
             emailAddress: candidate.emailAddress,
+            activationLink,
             country: candidate.country
         })
+        // await MailService.sendActivationMail(candidate.emailAddress, '')
 
-        return UserMapper.mapUserModelToUserCreateDto(user)
+        const dto: UserTokenDto = {
+            id: user.id,
+            username: candidate.username,
+            emailAddress: candidate.emailAddress,
+            isActivated: false
+        }
+        const tokens = TokenHelper.createTokenPair(dto)
+        console.log("here")
+        await TokenService.saveToken(dto.id, tokens.refreshToken)
+
+        return {
+            id: dto.id,
+            username: dto.username,
+            emailAddress: dto.emailAddress,
+            tokens
+        } as UserCreateOutputDto
     }
     async update(id: number, updateData: UserEditDto): Promise<UserDetailedDto> {
         UserHelper.trimUserData(updateData)

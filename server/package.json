@@ -20,6 +20,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.25",
     "@types/nodemailer": "^6.4.14",
+    "@types/uuid": "^9.0.8",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -29,6 +30,7 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.2",
+    "uuid": "^9.0.1"
   }
 }

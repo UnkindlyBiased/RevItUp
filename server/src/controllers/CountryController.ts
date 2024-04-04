@@ -1,19 +1,17 @@
-import { Request, Response } from 'express' 
+import { Request, Response, NextFunction } from 'express' 
 import CountryService from '../services/CountryService'
 import { ApiError } from '../../utils/errors/ApiError'
 
 class CountryController {
-    async getCountries(_req: Request, res: Response) {
+    async getCountries(_req: Request, res: Response, next: NextFunction) {
         try {
             const countries = await CountryService.getCountries()
             res.send(countries)
         } catch(e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
-    async getCountryByCode(req: Request, res: Response) {
+    async getCountryByCode(req: Request, res: Response, next: NextFunction) {
         try {
             const { code } = req.params
             if (!code) {
@@ -23,9 +21,7 @@ class CountryController {
             const country = await CountryService.getCountryByCode(code)
             res.send(country)
         } catch(e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
 }

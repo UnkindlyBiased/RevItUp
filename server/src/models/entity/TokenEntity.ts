@@ -11,7 +11,7 @@ export class TokenEntity {
     @Column({ unique: true })
     refreshToken: string
 
-    @OneToOne(() => UserEntity)
+    @OneToOne(() => UserEntity, user => user.refreshToken)
     @JoinColumn()
     user: UserEntity
 }

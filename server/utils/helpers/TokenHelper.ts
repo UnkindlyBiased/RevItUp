@@ -11,6 +11,22 @@ class TokenHelper {
             accessToken, refreshToken
         } as TokenPairDto
     }
+    static validateAccessToken(token: string) {
+        try {
+            const tokenData = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string)
+            return tokenData as UserTokenDto
+        } catch(e) {
+            return null
+        }
+    }
+    static validateRefreshToken(token: string) {
+        try {
+            const tokenData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string)
+            return tokenData as UserTokenDto
+        } catch(e) {
+            return null
+        }
+    }
 }
 
 export default TokenHelper

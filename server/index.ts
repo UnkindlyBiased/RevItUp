@@ -5,6 +5,7 @@ import PgDataSource from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
 import CountryRouter from './src/routers/CountryRouter'
+import errorMiddleware from './utils/middlewares/ErrorMiddleware'
 
 config()
 
@@ -17,6 +18,8 @@ app.use(cors({
 
 app.use('/users', UserRouter)
 app.use('/countries', CountryRouter)
+
+app.use(errorMiddleware)
 
 async function startApp() {
     const port = Number(process.env.APP_PORT) || 8008

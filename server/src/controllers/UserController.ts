@@ -4,28 +4,24 @@ import { ApiError } from "../../utils/errors/ApiError"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 
 class UserController {
-    async getUsers(_req: Request, res: Response, _next: NextFunction) {
+    async getUsers(_req: Request, res: Response, next: NextFunction) {
         try {
             const users = await UserService.getUsers()
             res.status(HttpStatusCodes.SUCCESS).send(users)
         } catch(e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
-    async getUserByName(req: Request, res: Response, _next: NextFunction) {
+    async getUserByName(req: Request, res: Response, next: NextFunction) {
         try {
             const { username } = req.params
             const user = await UserService.getUserByName(username)
             res.status(HttpStatusCodes.SUCCESS).send(user)
         } catch (e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
-    async create(req: Request, res: Response, _next: NextFunction) {
+    async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { username, password, emailAddress, country } = req.body
             const user = await UserService.register({
@@ -36,12 +32,10 @@ class UserController {
             })
             res.status(HttpStatusCodes.UPLOADED).send(user)
         } catch (e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
-    async update(req: Request, res: Response, _next: NextFunction) {
+    async update(req: Request, res: Response, next: NextFunction) {
         try {
             const { id, username, password, biography, emailAddress } = req.body
             const updatedUser = await UserService.update(Number(id), {
@@ -52,20 +46,16 @@ class UserController {
             })
             res.status(HttpStatusCodes.UPLOADED).send(updatedUser)
         } catch(e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())
-            }
+            next(e)
         }
     }
-    async delete(req: Request, res: Response, _next: NextFunction) {
+    async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.body
             const userToRemove = await UserService.delete(Number(id))
             res.status(HttpStatusCodes.SUCCESS).send(userToRemove)
         } catch (e) {
-            if (e instanceof ApiError) {
-                res.status(e.status).send(e.showErrorData())    
-            }
+            next(e)
         }
     }
 }

@@ -9,13 +9,7 @@ import IDataMapper from "../misc/IDataMapper";
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
         return {
-            id: entity.id,
-            username: entity.username,
-            password: entity.password,
-            biography: entity.biography,
-            emailAddress: entity.emailAddress,
-            registrationDate: entity.registrationDate,
-            country: entity.country
+            ...entity
         }
     }
     toDataEntity(model: UserModel): UserEntity {
@@ -36,6 +30,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             username: model.username,
             password: model.password,
             emailAddress: model.emailAddress,
+            activationLink: model.activationLink,
             country: model.country
         }
     }

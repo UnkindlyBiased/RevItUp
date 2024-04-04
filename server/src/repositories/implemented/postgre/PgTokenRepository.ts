@@ -4,9 +4,14 @@ import ITokenRepository from "../../ITokenRepository";
 import { TokenEntity } from "../../../models/entity/TokenEntity";
 import TokenMapper from "../../../models/mappers/TokenMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
+import PgDataSource from "../../../../utils/data/AppDataSource";
 
 class PgTokenRepository implements ITokenRepository {
     private tokenRep: Repository<TokenEntity>
+
+    constructor() {
+        this.tokenRep = PgDataSource.getRepository(TokenEntity)
+    }
 
     async getTokens(): Promise<TokenModel[]> {
         const tokens = await this.tokenRep.find()
@@ -34,14 +39,16 @@ class PgTokenRepository implements ITokenRepository {
         return TokenMapper.toDataEntity(entity)
     }
     async create(refreshToken: string, userId: number): Promise<TokenModel> {
-        const candidte = await this.tokenRep.findOneBy({
-            refreshToken,
-            user: {
-                id: userId
-            }
+        const candidate = await this.tokenRep.findOne({
+            where: {
+                user: {
+                    id: userId
+                }
+            },
+            relations: ['user']
         })
-        if (candidte) {
-            throw ApiError.Conflict('This token entity already exists in the database')
+        if (candidate) {
+            return await this.update(candidate.refreshToken, refreshToken)
         }
 
         const entity = this.tokenRep.create({

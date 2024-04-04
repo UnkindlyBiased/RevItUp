@@ -13,6 +13,7 @@ class TokenMapper implements IDataMapper<TokenModel, TokenEntity> {
             ...model
         }
     }
+
 }
 
 export default new TokenMapper()
