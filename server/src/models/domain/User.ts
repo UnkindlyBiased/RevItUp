@@ -1,6 +1,4 @@
 import CountryModel from "./Country";
-import TokenModel from "./Token";
-
 export default interface UserModel {
     id: number,
     username: string,
@@ -10,6 +8,5 @@ export default interface UserModel {
     registrationDate: Date,
     isActivated: boolean,
     activationLink: string | null,
-    country: CountryModel,
-    refreshToken: TokenModel
+    country: CountryModel
 }

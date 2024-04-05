@@ -8,11 +8,6 @@ class CountryMapper implements IDataMapper<CountryModel, CountryEntity> {
             ...entity
         }
     }
-    toDataEntity(model: CountryModel): CountryEntity {
-        return {
-            ...model
-        }
-    }
 }
 
 export default new CountryMapper()

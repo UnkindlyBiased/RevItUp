@@ -12,11 +12,6 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             ...entity
         }
     }
-    toDataEntity(model: UserModel): UserEntity {
-        return {
-            ...model
-        }
-    }
 
     mapUserModelToUserShortDto(model: UserModel): UserShortDto {
         return {

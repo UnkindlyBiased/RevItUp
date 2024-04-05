@@ -11,7 +11,10 @@ export class TokenEntity {
     @Column({ unique: true })
     refreshToken: string
 
-    @OneToOne(() => UserEntity, user => user.refreshToken)
+    @OneToOne(() => UserEntity, user => user.refreshToken, {
+        cascade: true,
+        onDelete: "CASCADE"
+    })
     @JoinColumn()
     user: UserEntity
 }

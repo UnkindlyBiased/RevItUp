@@ -8,11 +8,6 @@ class TokenMapper implements IDataMapper<TokenModel, TokenEntity> {
             ...entity
         }
     }
-    toDataEntity(model: TokenModel): TokenEntity {
-        return {
-            ...model
-        }
-    }
 
 }
 

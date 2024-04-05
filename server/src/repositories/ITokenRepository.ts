@@ -7,5 +7,5 @@ export default interface ITokenRepository {
     getByRefreshToken: (refreshToken: string) => Promise<TokenModel>
     create: (refreshToken: string, userId: number) => Promise<TokenModel>
     update: (oldRefresh: string, newRefresh: string) => Promise<TokenModel>
-    delete: (userId: number) => Promise<TokenModel>
+    delete: (refreshToken: string) => Promise<TokenModel>
 }

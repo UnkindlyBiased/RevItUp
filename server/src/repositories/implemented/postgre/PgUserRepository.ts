@@ -19,6 +19,7 @@ class PgUserRepository implements IUserRepository {
         const users = await this.userRep.find({
             relations: ['country']
         })
+
         return users.map(user => UserMapper.toDataModel(user))
     }
     async getUserById(id: number): Promise<UserModel> {
@@ -26,6 +27,7 @@ class PgUserRepository implements IUserRepository {
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }
+
         return UserMapper.toDataModel(user)
     }
     async getUserByName(username: string): Promise<UserModel> {
@@ -36,6 +38,7 @@ class PgUserRepository implements IUserRepository {
         if (!user) {
             throw ApiError.NotFound("User with this name doesn't exist")
         }
+        
         return UserMapper.toDataModel(user)
     }
     async getUserByActivationLink(activationLink: string): Promise<UserModel> {
@@ -60,7 +63,7 @@ class PgUserRepository implements IUserRepository {
         }
         const newUser = this.userRep.create(candidate)
         
-        await this.userRep.save(newUser)
+        await this.userRep.insert(newUser)
 
         return UserMapper.toDataModel(newUser)
     }
@@ -70,19 +73,12 @@ class PgUserRepository implements IUserRepository {
             throw ApiError.NotFound("No user by such data was found")
         }
 
-        const emailCandidate = await this.userRep.findOneBy({ 
-            emailAddress: updateData.emailAddress
-        })
-        if (emailCandidate) {
-            throw ApiError.Conflict("User registrated by this email already exists")
-        }
-
         const updatedUser = this.userRep.create({
             id: id,
             ...updateData
         })
         
-        await this.userRep.save(updatedUser)
+        await this.userRep.update(updatedUser.id, updatedUser)
         return UserMapper.toDataModel(updatedUser)
     }
     async delete(id: number): Promise<UserModel> {
@@ -90,6 +86,7 @@ class PgUserRepository implements IUserRepository {
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }
+        
         await this.userRep.remove(user)
         return UserMapper.toDataModel(user)
     }

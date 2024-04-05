@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
-import UserShort from "../../types/users/UserShort"
+import { useEffect, useState } from "react"
 import UserService from "../../services/UserService"
 import UserShortComp from "../components/users/UserElement"
 import TestButton from "../components/default/TestButton"
@@ -10,13 +9,18 @@ import { useNavigate } from "react-router-dom"
 import Country from "../../types/country/Country"
 import CountryService from "../../services/CountryService"
 import UserRegisterInput from "../../types/users/UserRegisterInput"
+import { useDocumentTitle } from "@uidotdev/usehooks";
+import useGetUsers from "../hooks/useGetUsers"
 
 // * Supposed to be badly written, for test purposes
 // * If you are feeling anger 'cause of violating SRP in this code, just go outside and touch some grass
 
 function TestUsersPage() {
-    const [users, setUsers] = useState<UserShort[]>([])
     const { register, reset, handleSubmit } = useForm<UserRegisterInput>()
+
+    const { data, refetch } = useGetUsers()
+
+    useDocumentTitle("Users' page")
 
     const onSubmit: SubmitHandler<UserRegisterInput> = async (data) => {
         try {
@@ -36,12 +40,6 @@ function TestUsersPage() {
 
     const [countries, setCountries] = useState<Country[]>()
 
-    const getUsers = async () => {
-        const fetchedUsers = await UserService.getUsers()
-        if (fetchedUsers) {
-            setUsers(fetchedUsers)
-        }
-    }
     useEffect(() => {
         async function getCountries() {
             try {
@@ -54,31 +52,18 @@ function TestUsersPage() {
         getCountries()
     }, [])
 
-    const memoizedUsers = useMemo(() => users, [users])
-
-    const deleteUser = async (id: number) => {
-        try {
-            await UserService.delete(id)
-            setUsers(memoizedUsers.filter(user => user.id != id))
-        } catch (e) {
-            console.log(e)
-        }
-    }
-
     const navigate = useNavigate()
 
     return (
         <div className="flex flex-col justify-start space-y-2">
             <span className="text-3xl font-bold">Users</span>
             <div className="flex items-center space-x-12">
-                <TestButton onClick={getUsers}>Get users</TestButton>
+                <TestButton onClick={refetch}>Get users</TestButton>
                 <div className="flex flex-col">
-                    {memoizedUsers.map(user => (
+                    {data?.map(user => (
                         <div className="flex items-center space-x-2" key={user.id}>
                             <UserShortComp user={user} onClick={() => {navigate(`/detailedUser/${user.username}`)}} />
-                            <TestButton onClick={() => {
-                                deleteUser(user.id)
-                            }}>Delete</TestButton>
+                            <TestButton onClick={() => {}}>Delete</TestButton>
                         </div>
                     ))}
                 </div>

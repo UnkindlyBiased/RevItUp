@@ -36,7 +36,7 @@ class PgTokenRepository implements ITokenRepository {
             throw ApiError.NotFound("This refresh token was not found")
         }
 
-        return TokenMapper.toDataEntity(entity)
+        return TokenMapper.toDataModel(entity)
     }
     async create(refreshToken: string, userId: number): Promise<TokenModel> {
         const candidate = await this.tokenRep.findOne({
@@ -61,18 +61,19 @@ class PgTokenRepository implements ITokenRepository {
         return TokenMapper.toDataModel(entity)
     }
     async update(oldRefresh: string, newRefresh: string): Promise<TokenModel> {
-        const entity = TokenMapper.toDataModel(
-            await this.getByRefreshToken(oldRefresh)
-        )
+        const entity = await this.getByRefreshToken(oldRefresh)
         entity.refreshToken = newRefresh
         
         await this.tokenRep.update(entity.id, entity)
-        return TokenMapper.toDataModel(entity)
+        return entity
     }
-    async delete(userId: number): Promise<TokenModel> {
-        const entity = await this.tokenRep.remove(
-            TokenMapper.toDataEntity(await this.getByUserId(userId))
-        )
+    async delete(refreshToken: string): Promise<TokenModel> {
+        const entity = await this.tokenRep.findOneBy({ refreshToken })
+        if (!entity) {
+            throw ApiError.NotFound("Such token was not found")
+        }
+        
+        await this.tokenRep.remove(entity)
         
         return TokenMapper.toDataModel(entity)
     }

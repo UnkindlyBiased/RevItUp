@@ -1,6 +1,10 @@
+import { useDocumentTitle } from "@uidotdev/usehooks"
 import { H1, H2, H3 } from "./default/TestHeaderTags"
 
 function Boo() {
+    useDocumentTitle("REVITUP: Motorstport For You")
+
+
     return (
         <>
             <div>

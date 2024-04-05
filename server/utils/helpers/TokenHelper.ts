@@ -1,3 +1,4 @@
+import { Response } from "express";
 import TokenPairDto from "../../src/models/dto/tokens/TokenPairDto";
 import UserTokenDto from "../../src/models/dto/users/UserTokenDto";
 import jwt from 'jsonwebtoken'
@@ -26,6 +27,12 @@ class TokenHelper {
         } catch(e) {
             return null
         }
+    }
+    static putCookie(refreshToken: string, res: Response) {
+        res.cookie('refreshToken', refreshToken, {
+            maxAge: 30 * 24 * 60 * 60 * 1000,
+            httpOnly: true
+        });
     }
 }
 

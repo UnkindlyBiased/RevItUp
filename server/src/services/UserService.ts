@@ -47,23 +47,10 @@ class UserService {
             activationLink,
             country: candidate.country
         })
-        // await MailService.sendActivationMail(candidate.emailAddress, '')
+        await MailService.sendActivationMail(candidate.emailAddress, 
+            `http://localhost:8008/users/activate/${activationLink}`)
 
-        const dto: UserTokenDto = {
-            id: user.id,
-            username: candidate.username,
-            emailAddress: candidate.emailAddress,
-            isActivated: false
-        }
-        const tokens = TokenHelper.createTokenPair(dto)
-        await TokenService.saveToken(dto.id, tokens.refreshToken)
-
-        return {
-            id: dto.id,
-            username: dto.username,
-            emailAddress: dto.emailAddress,
-            tokens
-        } as UserCreateOutputDto
+        return await this.generateDtoWithTokens(user)
     }
     async update(id: number, updateData: UserEditDto): Promise<UserDetailedDto> {
         UserHelper.trimUserData(updateData)
@@ -86,6 +73,20 @@ class UserService {
         return userToRemove
     }
 
+    async login(username: string, password: string): Promise<UserCreateOutputDto> {
+        const user = await this.repository.getUserByName(username)
+        
+        const isPasswordEqual = await bcrypt.compare(password, user.password)
+        if (!isPasswordEqual) {
+            throw ApiError.Conflict('Passwords are not equal')
+        }
+
+        return await this.generateDtoWithTokens(user)
+    }
+    async logout(refreshToken: string) {
+        const token = TokenService.removeToken(refreshToken)
+        return token
+    }
     async activate(activationLink: string): Promise<UserEditDto> {
         const user = await this.repository.getUserByActivationLink(activationLink)
         const dto: UserEditDto = { ...user }
@@ -98,6 +99,41 @@ class UserService {
         await this.repository.update(user.id, dto)
 
         return dto
+    }
+    async refresh(refreshToken: string) {
+        if (!refreshToken) {
+            throw ApiError.Unauthorized('Refresh token is not valid')
+        }
+
+        const userData = TokenHelper.validateRefreshToken(refreshToken)
+
+        const tokenEntity = await TokenService.getByRefreshToken(refreshToken)
+
+        if (!userData || !tokenEntity) {
+            throw ApiError.Unauthorized('User is unauthorized')
+        }
+
+        const user = await this.repository.getUserById(userData.id)
+        if (!user) {
+            throw ApiError.NotFound('User was not found')
+        }
+
+        return await this.generateDtoWithTokens(user)
+    }
+
+    private async generateDtoWithTokens(user: UserModel): Promise<UserCreateOutputDto> {
+        const dto: UserTokenDto = {
+            ...user
+        }
+        const tokens = TokenHelper.createTokenPair(dto)
+        await TokenService.saveToken(dto.id, tokens.refreshToken)
+
+        return {
+            id: dto.id,
+            username: dto.username,
+            emailAddress: dto.emailAddress,
+            tokens
+        } as UserCreateOutputDto
     }
 }
 

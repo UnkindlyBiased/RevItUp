@@ -17,8 +17,8 @@ class TokenService {
         const token = await this.repository.create(refreshToken, userId)
         return token
     }
-    async removeToken(userId: number): Promise<TokenModel> { // Removes the token from DB by user's ID
-        const token = await this.repository.delete(userId)
+    async removeToken(refreshToken: string): Promise<TokenModel> { // Removes the token from DB by user's ID
+        const token = await this.repository.delete(refreshToken)
         return token
     }
 }

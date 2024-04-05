@@ -7,6 +7,7 @@ import UserEdit from "../../types/users/UserEdit"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { TestInputButton } from "../components/default/TestInput"
 import CountryDisplay from "../components/country/CountryDisplay"
+import { useDocumentTitle } from "@uidotdev/usehooks"
 
 function TestUserDetailedPage() {
     const { username } = useParams()
@@ -38,6 +39,8 @@ function TestUserDetailedPage() {
         }
         getData()
     }, [username])
+
+    useDocumentTitle(`User: ${userData?.username}`)
 
     if (userData) {
         return (
