@@ -44,8 +44,7 @@ class PgTokenRepository implements ITokenRepository {
                 user: {
                     id: userId
                 }
-            },
-            relations: ['user']
+            }
         })
         if (candidate) {
             return await this.update(candidate.refreshToken, refreshToken)

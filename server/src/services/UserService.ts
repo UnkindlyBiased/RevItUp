@@ -56,7 +56,6 @@ class UserService {
             isActivated: false
         }
         const tokens = TokenHelper.createTokenPair(dto)
-        console.log("here")
         await TokenService.saveToken(dto.id, tokens.refreshToken)
 
         return {
@@ -85,6 +84,20 @@ class UserService {
     async delete(id: number): Promise<UserModel> {
         const userToRemove = await this.repository.delete(id)
         return userToRemove
+    }
+
+    async activate(activationLink: string): Promise<UserEditDto> {
+        const user = await this.repository.getUserByActivationLink(activationLink)
+        const dto: UserEditDto = { ...user }
+
+        if (dto.activationLink) {
+            dto.isActivated = true
+            dto.activationLink = null
+        }
+
+        await this.repository.update(user.id, dto)
+
+        return dto
     }
 }
 

@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from "express"
 import UserService from "../services/UserService"
-import { ApiError } from "../../utils/errors/ApiError"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 
 class UserController {
     async getUsers(_req: Request, res: Response, next: NextFunction) {
         try {
             const users = await UserService.getUsers()
-            res.status(HttpStatusCodes.SUCCESS).send(users)
+            res.send(users)
         } catch(e) {
             next(e)
         }
@@ -16,7 +15,7 @@ class UserController {
         try {
             const { username } = req.params
             const user = await UserService.getUserByName(username)
-            res.status(HttpStatusCodes.SUCCESS).send(user)
+            res.send(user)
         } catch (e) {
             next(e)
         }
@@ -29,6 +28,11 @@ class UserController {
                 password,
                 emailAddress,
                 country
+            })
+
+            res.cookie('refreshToken', user.tokens.refreshToken, { 
+                maxAge: 30 * 24 * 60 * 60 * 1000, 
+                httpOnly: true 
             })
             res.status(HttpStatusCodes.UPLOADED).send(user)
         } catch (e) {

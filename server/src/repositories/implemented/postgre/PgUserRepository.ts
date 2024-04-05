@@ -38,6 +38,14 @@ class PgUserRepository implements IUserRepository {
         }
         return UserMapper.toDataModel(user)
     }
+    async getUserByActivationLink(activationLink: string): Promise<UserModel> {
+        const entity = await this.userRep.findOneBy({ activationLink })
+        if (!entity) {
+            throw ApiError.NotFound("Either this link doesn't exist or this user is already activated")
+        }
+        
+        return UserMapper.toDataModel(entity)
+    }
     async create(candidate: UserCreateDto): Promise<UserModel> {
         const user = await this.userRep.findOne({
             where: [
