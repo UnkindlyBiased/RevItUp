@@ -1,6 +1,6 @@
 import { authApi } from "../api"
-import AuthResponse from "../types/auth/AuthResponse"
-import UserCreate from "../types/users/UserCreate"
+import AuthResponse from "../types/data/auth/AuthResponse"
+import UserCreate from "../types/data/users/UserCreate"
 
 class AuthService {
     async registrate(user: UserCreate) {

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import UserCreate from "../types/users/UserCreate";
-import UserStore from "../types/users/UserStore";
+import UserCreate from "../types/data/users/UserCreate";
+import UserStore from "../types/data/users/UserStore";
 import AuthService from "../services/AuthService";
 
 interface UserState {
