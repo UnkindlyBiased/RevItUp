@@ -59,7 +59,7 @@ class PgUserRepository implements IUserRepository {
         })
 
         if (user) {
-            throw ApiError.Conflict('User with this bio already exists')
+            throw ApiError.Conflict("This user's data already exists")
         }
         const newUser = this.userRep.create(candidate)
         

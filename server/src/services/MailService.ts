@@ -30,7 +30,7 @@ class MailService {
             `
                 <div>
                     <h1>Please activate your account on REVITUP for access to motorsport news in one place</h1>
-                    <a href="${link}">"${link}"</a>
+                    <a href="${link}">${link}</a>
                 </div>
             `
         })

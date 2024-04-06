@@ -1,39 +1,41 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
-import TestHeader from "./test/components/header/TestHeader"
-import TestUsersPage from "./test/pages/TestUsers"
-import Boo from "./test/components/BlankStuff"
-import TestUserDetailedPage from "./test/pages/TestUserDetailedPage"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { useEffect } from "react"
+import useUserStore from "./store"
+import LoginForm from "./components/LoginForm"
 
 function App() {
-  const queryClient = new QueryClient()
-  const browserRouter = createBrowserRouter([
-    {
-      element: <TestHeader />,
-      children: [
-        {
-          path: '/',
-          element: <Boo />
-        },
-        {
-          path: '/users',
-          element: <TestUsersPage />
-        },
-        {
-          path: '/detailedUser/:username',
-          element: <TestUserDetailedPage />
+  const user = useUserStore((state) => state.user)
+    const logout = useUserStore((state) => state.logout)
+    const checkAuth = useUserStore((state) => state.checkAuth)
+    const isLoading = useUserStore((state) => state.isLoading)
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            checkAuth()
         }
-      ]
+    }, [checkAuth])
+
+    if (isLoading) {
+        return (
+            <div>Is loading</div>
+        )
     }
-  ])
-  
-  return (
-    <>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={browserRouter} />
-      </QueryClientProvider>
-    </>
-  )
+
+    if (!user) {
+        return (
+            <LoginForm />
+        )
+    }
+
+    return (
+        <>
+            <div className='flex flex-col items-center space-y-5'>
+                <span className='text-2xl font-bold'>
+                    User with email {user.emailAddress}
+                </span>
+                <button className='size-fit' onClick={logout}>Logout</button>
+            </div>
+        </>
+    )
 }
 
 export default App

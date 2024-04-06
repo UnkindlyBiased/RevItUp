@@ -5,6 +5,7 @@ import UserEditDto from "../dto/users/UserEditDto";
 import UserShortDto from "../dto/users/UserShortDto";
 import UserModel from "../domain/User";
 import IDataMapper from "../misc/IDataMapper";
+import UserTokenDto from "../dto/users/UserTokenDto";
 
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
@@ -45,6 +46,14 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             biography: model.biography,
             registrationDate: model.registrationDate,
             country: model.country
+        }
+    }
+    mapUserModelToUserTokenDto(model: UserModel): UserTokenDto {
+        return {
+            id: model.id,
+            username: model.username,
+            emailAddress: model.emailAddress,
+            isActivated: model.isActivated
         }
     }
 }

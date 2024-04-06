@@ -1,4 +1,4 @@
-import { api } from "../http"
+import { api } from "../api"
 import Country from "../types/country/Country"
 
 class CountryService {

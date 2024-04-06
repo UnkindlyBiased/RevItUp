@@ -90,7 +90,8 @@ class UserService {
     }
     async activate(activationLink: string): Promise<UserEditDto> {
         const user = await this.repository.getUserByActivationLink(activationLink)
-        const dto: UserEditDto = { ...user }
+
+        const dto: UserEditDto = UserMapper.mapUserModelToUserEditDto(user)
 
         if (dto.activationLink) {
             dto.isActivated = true
@@ -123,16 +124,13 @@ class UserService {
     }
 
     private async generateDtoWithTokens(user: UserModel): Promise<UserCreateOutputDto> {
-        const dto: UserTokenDto = {
-            ...user
-        }
+        const dto: UserTokenDto = UserMapper.mapUserModelToUserTokenDto(user)
+
         const tokens = TokenHelper.createTokenPair(dto)
         await TokenService.saveToken(dto.id, tokens.refreshToken)
 
         return {
-            id: dto.id,
-            username: dto.username,
-            emailAddress: dto.emailAddress,
+            user: dto,
             tokens
         } as UserCreateOutputDto
     }

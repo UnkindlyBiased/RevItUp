@@ -1,8 +1,7 @@
 import TokenPairDto from "../tokens/TokenPairDto"
+import UserTokenDto from "./UserTokenDto"
 
 export default interface UserCreateOutputDto {
-    id: number
-    username: string
-    emailAddress: string
+    user: UserTokenDto,
     tokens: TokenPairDto
 }
