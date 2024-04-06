@@ -16,6 +16,15 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 4004
+    },
+    manifest: {
+      icons: [
+        {
+          src: "./public/favicon.png",
+          size: '512x512',
+          type: 'image/png'
+        }
+      ]
     }
   }
 })

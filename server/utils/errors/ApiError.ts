@@ -11,6 +11,9 @@ export class ApiError extends Error {
     }
     
     // * 4XX - Client error responses
+    static Unauthorized(message: string, errors: string[] = []): ApiError {
+        return new ApiError(HttpStatusCodes.UNAUTHORIZED, message, errors)
+    }
     static NotFound(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.NOT_FOUND, message, errors)
     }

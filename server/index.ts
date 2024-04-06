@@ -5,18 +5,29 @@ import PgDataSource from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
 import CountryRouter from './src/routers/CountryRouter'
+import errorMiddleware from './utils/middlewares/ErrorMiddleware'
+import cookieParser from 'cookie-parser'
+import AuthRouter from './src/routers/AuthRouter'
 
 config()
 
 const app = express()
 
+// * Third-party middlewares
 app.use(express.json())
 app.use(cors({ 
-    origin: 'http://localhost:4004' 
+    origin: 'http://localhost:4004',
+    credentials: true
 }))
+app.use(cookieParser())
 
+// * Routers
 app.use('/users', UserRouter)
+app.use('/auth', AuthRouter)
 app.use('/countries', CountryRouter)
+
+// * Error middleware (should be last)
+app.use(errorMiddleware)
 
 async function startApp() {
     const port = Number(process.env.APP_PORT) || 8008

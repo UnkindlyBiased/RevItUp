@@ -1,26 +1,16 @@
 import { UserEntity } from "../entity/UserEntity";
-import UserCreateDto from "../dto/UserCreateDto";
-import UserDetailedDto from "../dto/UserDetailedDto";
-import UserEditDto from "../dto/UserEditDto";
-import UserShortDto from "../dto/UserShortDto";
+import UserCreateDto from "../dto/users/UserCreateDto";
+import UserDetailedDto from "../dto/users/UserDetailedDto";
+import UserEditDto from "../dto/users/UserEditDto";
+import UserShortDto from "../dto/users/UserShortDto";
 import UserModel from "../domain/User";
 import IDataMapper from "../misc/IDataMapper";
+import UserTokenDto from "../dto/users/UserTokenDto";
 
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
         return {
-            id: entity.id,
-            username: entity.username,
-            password: entity.password,
-            biography: entity.biography,
-            emailAddress: entity.emailAddress,
-            registrationDate: entity.registrationDate,
-            country: entity.country
-        }
-    }
-    toDataEntity(model: UserModel): UserEntity {
-        return {
-            ...model
+            ...entity
         }
     }
 
@@ -36,6 +26,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             username: model.username,
             password: model.password,
             emailAddress: model.emailAddress,
+            activationLink: model.activationLink,
             country: model.country
         }
     }
@@ -55,6 +46,14 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             biography: model.biography,
             registrationDate: model.registrationDate,
             country: model.country
+        }
+    }
+    mapUserModelToUserTokenDto(model: UserModel): UserTokenDto {
+        return {
+            id: model.id,
+            username: model.username,
+            emailAddress: model.emailAddress,
+            isActivated: model.isActivated
         }
     }
 }

@@ -21,10 +21,12 @@ class PgCountryRepository implements ICountryRepository {
         throw new Error("Method not implemented.");
     }
     async getByCode(code: string): Promise<CountryModel> {
-        const country = await this.countryRep.findOneBy({ 
-            countryCode: code
+        const country = await this.countryRep.findOne({
+            where: {
+                countryCode: code
+            },
+            relations: ['users']
         })
-
         if (!country) {
             throw ApiError.NotFound("Country with this code was not found")
         }
