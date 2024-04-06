@@ -7,6 +7,7 @@ import cors from 'cors'
 import CountryRouter from './src/routers/CountryRouter'
 import errorMiddleware from './utils/middlewares/ErrorMiddleware'
 import cookieParser from 'cookie-parser'
+import AuthRouter from './src/routers/AuthRouter'
 
 config()
 
@@ -22,6 +23,7 @@ app.use(cookieParser())
 
 // * Routers
 app.use('/users', UserRouter)
+app.use('/auth', AuthRouter)
 app.use('/countries', CountryRouter)
 
 // * Error middleware (should be last)

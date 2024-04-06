@@ -19,7 +19,7 @@ import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
 
-    // * CRUD work
+    // * CRUD logic
     async getUsers(): Promise<UserShortDto[]> {
         const users = await this.repository.getUsers()
         if (!users) {
@@ -34,7 +34,7 @@ class UserService {
         const user = await this.repository.getUserByName(username)
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
-    async register(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
+    async create(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
         UserHelper.trimUserData(candidate)
 
         const hashPassword = bcrypt.hashSync(candidate.password, 3)
@@ -50,7 +50,7 @@ class UserService {
         await MailService.sendActivationMail(candidate.emailAddress, 
             `http://localhost:8008/users/activate/${activationLink}`)
 
-        return await this.generateDtoWithTokens(user)
+        return this.generateDtoWithTokens(user)
     }
     async update(id: number, updateData: UserEditDto): Promise<UserDetailedDto> {
         UserHelper.trimUserData(updateData)
@@ -73,6 +73,7 @@ class UserService {
         return userToRemove
     }
 
+    // * Auth logic
     async login(username: string, password: string): Promise<UserCreateOutputDto> {
         const user = await this.repository.getUserByName(username)
         
@@ -81,7 +82,7 @@ class UserService {
             throw ApiError.Conflict('Passwords are not equal')
         }
 
-        return await this.generateDtoWithTokens(user)
+        return this.generateDtoWithTokens(user)
     }
     async logout(refreshToken: string) {
         const token = TokenService.removeToken(refreshToken)
