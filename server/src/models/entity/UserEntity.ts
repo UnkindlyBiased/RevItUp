@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CountryEntity } from "./CountryEntity";
 import { TokenEntity } from "./TokenEntity";
+import UserRoles from "../../../utils/enums/UserRoles";
 
 @Entity({ 
     name: 'Users',
@@ -32,6 +33,9 @@ export class UserEntity {
 
     @CreateDateColumn()
     registrationDate: Date
+
+    @Column({ type: 'enum', enum: UserRoles, default: UserRoles.DEFAULT })
+    role: UserRoles
 
     @ManyToOne(() => CountryEntity, country => country.users)
     country: CountryEntity

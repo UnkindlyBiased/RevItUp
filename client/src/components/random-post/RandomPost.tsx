@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 function RandomPost(): React.ReactElement {
     return (
         <>
-            <div className="bg-gradient-to-r from-slate-200 px-8 py-7 flex items-center space-x-6">
+            <div className="bg-gradient-to-r from-slate-200 px-8 py-7 flex items-center justify-between space-x-6">
                 <div className="flex flex-col space-y-5">
                     <span className="font-space-grotesk text-7xl">
                         Don't know which post to choose?

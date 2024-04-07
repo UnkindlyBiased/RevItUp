@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import Container from "./components/container/Container"
 import MainPage from "./pages/MainPage"
+import ColorModeProvider from "./providers/ColorModeProvider"
 
 function App() {
     const queryClient = new QueryClient()
@@ -18,9 +19,11 @@ function App() {
 
     return (
         <>
-            <QueryClientProvider client={queryClient}>
-                <RouterProvider router={browserRouter} />
-            </QueryClientProvider>
+            <ColorModeProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={browserRouter} />
+                </QueryClientProvider>
+            </ColorModeProvider>
         </>
     )
 }
