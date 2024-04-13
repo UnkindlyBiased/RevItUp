@@ -5,7 +5,7 @@ import PgDataSource from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
 import CountryRouter from './src/routers/CountryRouter'
-import errorMiddleware from './utils/middlewares/ErrorMiddleware'
+import errorMiddleware from './utils/middlewares/misc/ErrorMiddleware'
 import cookieParser from 'cookie-parser'
 import AuthRouter from './src/routers/AuthRouter'
 

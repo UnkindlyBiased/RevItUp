@@ -1,8 +1,8 @@
 import { api } from "../api"
-import UserCreate from "../types/users/UserCreate"
-import UserDetailed from "../types/users/UserDetailed"
-import UserEdit from "../types/users/UserEdit"
-import UserShort from "../types/users/UserShort"
+import UserCreate from "../types/data/users/UserCreate"
+import UserDetailed from "../types/data/users/UserDetailed"
+import UserEdit from "../types/data/users/UserEdit"
+import UserShort from "../types/data/users/UserShort"
 
 type UserDeleteRequest = {
     id: number

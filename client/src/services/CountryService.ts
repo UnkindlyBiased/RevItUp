@@ -1,5 +1,5 @@
 import { api } from "../api"
-import Country from "../types/country/Country"
+import Country from "../types/data/country/Country"
 
 class CountryService {
     private PREFIX: string = '/countries'

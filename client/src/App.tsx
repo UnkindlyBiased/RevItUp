@@ -1,12 +1,16 @@
 import { useEffect } from "react"
-import useUserStore from "./store"
-import LoginForm from "./components/LoginForm"
+import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
+import Container from "./components/container/Container"
+import MainPage from "./pages/MainPage"
+import ColorModeProvider from "./providers/ColorModeProvider"
+import LoginPage from "./pages/LoginPage"
+import useUserStore from "./store/UserStore"
+import ErrorPage from "./pages/ErrorPage"
 
 function App() {
-  const user = useUserStore((state) => state.user)
-    const logout = useUserStore((state) => state.logout)
-    const checkAuth = useUserStore((state) => state.checkAuth)
-    const isLoading = useUserStore((state) => state.isLoading)
+    const checkAuth = useUserStore(state => state.checkAuth)
 
     useEffect(() => {
         if (localStorage.getItem('token')) {
@@ -14,26 +18,29 @@ function App() {
         }
     }, [checkAuth])
 
-    if (isLoading) {
-        return (
-            <div>Is loading</div>
-        )
-    }
-
-    if (!user) {
-        return (
-            <LoginForm />
-        )
-    }
+    const queryClient = new QueryClient()
+    const browserRouter = createBrowserRouter([{
+        element: <Container />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                path: '/',
+                element: <MainPage />,
+            },
+            {
+                path: "/login",
+                element: <LoginPage />
+            }
+        ]
+    }])
 
     return (
         <>
-            <div className='flex flex-col items-center space-y-5'>
-                <span className='text-2xl font-bold'>
-                    User with email {user.emailAddress}
-                </span>
-                <button className='size-fit' onClick={logout}>Logout</button>
-            </div>
+            <ColorModeProvider>
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={browserRouter} />
+                </QueryClientProvider>
+            </ColorModeProvider>
         </>
     )
 }
