@@ -35,7 +35,6 @@ const useUserStore = create<UserState>((set) => ({
     registrate: async (data) => {
         try {
             const response = await AuthService.registrate(data)
-            console.log(response)
             localStorage.setItem("token", response.tokens.accessToken)
         } catch (e) {
             console.log(e)
@@ -44,9 +43,7 @@ const useUserStore = create<UserState>((set) => ({
     login: async (username, password) => {
         try {
             set({ isLoading: true })
-
             const response = await AuthService.login(username, password)
-            console.log(response)
 
             localStorage.setItem("token", response.tokens.accessToken)
             set({ user: response.user, isAuth: true })
@@ -68,7 +65,6 @@ const useUserStore = create<UserState>((set) => ({
             const response = await AuthService.refresh()
 
             localStorage.setItem('token', response.tokens.accessToken)
-            console.log(response)
             set({ user: response.user, isAuth: true })
         } catch(e) {
             console.log(e)

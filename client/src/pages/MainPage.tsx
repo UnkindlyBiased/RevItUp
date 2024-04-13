@@ -1,19 +1,21 @@
 import { useDocumentTitle } from '@uidotdev/usehooks'
-import RandomPost from '../components/random-post/RandomPost'
-import { useColorMode } from '@/hooks/useColorMode'
+import RandomPost from '../components/pages/main-page/RandomPost'
 import useGetUsers from '@/hooks/useGetUsers'
+import useUserStore from '@/store/UserStore'
+import { memo } from 'react'
 
 function MainPage(): React.ReactElement {
-    const containerStyle = useColorMode() === 'light' ? 'bg-white text-light-theme-text' : 'bg-black text-white'
     const { data } = useGetUsers()
+    const user = useUserStore(state => state.user)
     
-    useDocumentTitle("REVITUP: The motorsport in one place")
+    useDocumentTitle("REVITUP: Motorsport, one place")
 
     return (
         <>
-            <div className={`${containerStyle} transition-all h-max`}>
+            <div className={`h-max`}>
                 <div className='px-8 py-4 flex flex-col'>
-                    <span>Main page</span>
+                    <span className="text-3xl">Main page</span>
+                    {user && <span>Logged</span>}
                     { data && data.map(user => (
                         <span key={user.id}>{user.username}</span>
                     ))}
@@ -24,4 +26,6 @@ function MainPage(): React.ReactElement {
     )
 }
 
-export default MainPage
+const MemoizedMainPage = memo(MainPage)
+
+export default MemoizedMainPage

@@ -53,7 +53,8 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             id: model.id,
             username: model.username,
             emailAddress: model.emailAddress,
-            isActivated: model.isActivated
+            isActivated: model.isActivated,
+            role: model.role
         }
     }
 }

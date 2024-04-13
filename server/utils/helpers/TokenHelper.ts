@@ -31,7 +31,8 @@ class TokenHelper {
     static putCookie(refreshToken: string, res: Response) {
         res.cookie('refreshToken', refreshToken, {
             maxAge: 30 * 24 * 60 * 60 * 1000,
-            httpOnly: true
+            httpOnly: true,
+            sameSite: false
         });
     }
 }

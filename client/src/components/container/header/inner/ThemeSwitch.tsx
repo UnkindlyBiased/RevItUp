@@ -1,6 +1,7 @@
 import { Switch } from "@/components/ui/switch"
 import { useColorModeStore } from "@/store/ColorModeStore"
 import { useState } from "react"
+
 import HeaderNavLink from "./HeaderNavLink"
 
 function ThemeSwitch(): React.ReactElement {
@@ -13,7 +14,6 @@ function ThemeSwitch(): React.ReactElement {
         setTheme(colorMode)
 
         localStorage.setItem("colorMode", colorMode)
-        console.log(localStorage.getItem("colorMode"))
     }
 
     return (

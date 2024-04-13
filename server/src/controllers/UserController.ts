@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express"
 import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
-import TokenHelper from "../../utils/helpers/TokenHelper";
+import TokenHelper from "../../utils/helpers/TokenHelper"
+import { validationResult } from "express-validator"
 
 class UserController {
     async getUsers(_req: Request, res: Response, next: NextFunction) {
@@ -23,6 +24,14 @@ class UserController {
     }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
+            const result = validationResult(req)
+            if (!result.isEmpty()) {
+                return res.status(HttpStatusCodes.BAD_REQUEST).send({
+                    message: "Validation of body has failed",
+                    errorStack: result
+                })
+            }
+
             const { username, password, emailAddress, country } = req.body
             const user = await UserService.create({
                 username,

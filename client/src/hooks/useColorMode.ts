@@ -1,4 +1,5 @@
 import { useColorModeStore } from "@/store/ColorModeStore";
+import { DarkModeSchema, LightModeSchema } from "@/types/page/style/ColorModeSchema";
 
 function useColorMode() {
     const colorMode = useColorModeStore((state) => state.color)
@@ -11,7 +12,11 @@ function useSetColorMode() {
 
     setColorMode(colorMode)
     localStorage.setItem("colorMode", colorMode)
-    console.log(localStorage.getItem("colorMode"))
 }
 
-export { useColorMode, useSetColorMode }
+function useGetSchema() {
+    const currentColorSchema = useColorModeStore(state => state.color) === 'light' ? LightModeSchema : DarkModeSchema
+    return currentColorSchema
+}
+
+export { useColorMode, useSetColorMode, useGetSchema }

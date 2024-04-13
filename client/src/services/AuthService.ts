@@ -5,16 +5,13 @@ import UserCreate from "../types/data/users/UserCreate"
 class AuthService {
     async registrate(user: UserCreate) {
         const response = await authApi.post<AuthResponse>('/register', { 
-            username: user.username,
-            password: user.password,
-            emailAddress: user.emailAddress,
-            country: user.country,
+            ...user
         })
 
         return response.data
     }
-    async login(email: string, password: string) {
-        const response = await authApi.post<AuthResponse>('/login', { email, password })
+    async login(username: string, password: string) {
+        const response = await authApi.post<AuthResponse>('/login', { username, password })
         return response.data
     }
     async logout() {

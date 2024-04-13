@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
-import { ApiError } from '../errors/ApiError'
-import { HttpStatusCodes } from '../enums/HttpStatusCodes'
+import { ApiError } from '../../errors/ApiError'
+import { HttpStatusCodes } from '../../enums/HttpStatusCodes'
 
 function errorMiddleware(err: Error, _req: Request, res: Response, _next: NextFunction) {
     console.log(err)

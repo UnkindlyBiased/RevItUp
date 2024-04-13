@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  mode: 'jit',
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',
@@ -9,6 +10,9 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sans: ['Manrope', 'sans-serif']
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -20,7 +24,7 @@ module.exports = {
       colors: {
         'light-theme-header': "#e00404",
         'dark-theme-header': '#0a0a0a',
-        'light-theme-text': '#2a2a2a',
+        'light-theme-text': '#2f2f2f',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

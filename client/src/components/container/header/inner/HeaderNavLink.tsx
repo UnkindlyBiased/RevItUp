@@ -5,7 +5,7 @@ type HeaderNavLinkProps = {
 function HeaderNavLink({ children }: HeaderNavLinkProps) {
     return (
         <>
-            <span className="font-manrope font-bold text-lg cursor-pointer">
+            <span className="font-bold text-lg cursor-pointer hover:text-xl transition-all">
                 {children}
             </span>
         </>
