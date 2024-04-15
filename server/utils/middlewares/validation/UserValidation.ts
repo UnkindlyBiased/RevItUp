@@ -11,8 +11,7 @@ const userValidation: ValidationChain[] = [
             minNumbers: 1,
             minSymbols: 1,
         })
-        .withMessage("Password should be not less than 8 characters, contain at least 1 number and 1 symbol")
-        .notEmpty(),
+        .withMessage("Password should be not less than 8 characters, contain at least 1 number and 1 symbol"),
     body("emailAddress")
         .isEmail()
         .notEmpty()

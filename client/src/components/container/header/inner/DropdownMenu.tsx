@@ -6,6 +6,7 @@ import useUserStore from '@/store/UserStore'
 
 function UserDropdown(): React.ReactElement {
     const isAuth = useUserStore(state => state.isAuth)
+    
     return (
         <>
             <DropdownMenu>

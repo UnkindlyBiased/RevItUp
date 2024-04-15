@@ -1,13 +1,15 @@
 import express from 'express'
 import 'reflect-metadata'
 import { config } from 'dotenv'
-import PgDataSource from './utils/data/AppDataSource'
+import { MongoDataSource, PgDataSource } from './utils/data/AppDataSource'
 import UserRouter from './src/routers/UserRouter'
 import cors from 'cors'
 import CountryRouter from './src/routers/CountryRouter'
 import errorMiddleware from './utils/middlewares/misc/ErrorMiddleware'
 import cookieParser from 'cookie-parser'
 import AuthRouter from './src/routers/AuthRouter'
+import CommentRouter from './src/routers/CommentRouter'
+import { connectToCacheClient } from './utils/data/RedisCacheClient'
 
 config()
 
@@ -25,6 +27,7 @@ app.use(cookieParser())
 app.use('/users', UserRouter)
 app.use('/auth', AuthRouter)
 app.use('/countries', CountryRouter)
+app.use('/comments', CommentRouter)
 
 // * Error middleware (should be last)
 app.use(errorMiddleware)
@@ -34,6 +37,12 @@ async function startApp() {
     try {
         await PgDataSource.initialize()
         await PgDataSource.synchronize()
+
+        await connectToCacheClient()
+
+        await MongoDataSource.initialize()
+        await MongoDataSource.synchronize()
+        
         app.listen(port, () => {
             console.log(`App is started on port ${port}`)
         })

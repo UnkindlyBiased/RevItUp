@@ -15,6 +15,7 @@ import UserTokenDto from "../models/dto/users/UserTokenDto"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import TokenService from "./TokenService"
 import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
+import SaverService from "./SaverService"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
@@ -49,6 +50,7 @@ class UserService {
         })
         await MailService.sendActivationMail(candidate.emailAddress, 
             `http://localhost:8008/users/activate/${activationLink}`)
+        await SaverService.create(user.id)
 
         return this.generateDtoWithTokens(user)
     }

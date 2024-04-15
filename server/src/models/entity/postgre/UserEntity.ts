@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { CountryEntity } from "./CountryEntity";
 import { TokenEntity } from "./TokenEntity";
-import UserRoles from "../../../utils/enums/UserRoles";
+import UserRoles from "../../../../utils/enums/UserRoles";
+import CommentEntity from "./CommentEntity";
 
 @Entity({ 
     name: 'Users',
@@ -40,6 +41,9 @@ export class UserEntity {
     @ManyToOne(() => CountryEntity, country => country.users)
     @JoinColumn()
     country: CountryEntity
+
+    @OneToMany(() => CommentEntity, comment => comment.user)
+    comments: CommentEntity[]
 
     @OneToOne(() => TokenEntity, token => token.user)
     refreshToken: TokenEntity

@@ -2,7 +2,7 @@ import { useDocumentTitle } from '@uidotdev/usehooks'
 import RandomPost from '../components/pages/main-page/RandomPost'
 import useGetUsers from '@/hooks/useGetUsers'
 import useUserStore from '@/store/UserStore'
-import { memo } from 'react'
+import { memo, Suspense } from 'react'
 
 function MainPage(): React.ReactElement {
     const { data } = useGetUsers()
@@ -20,7 +20,9 @@ function MainPage(): React.ReactElement {
                         <span key={user.id}>{user.username}</span>
                     ))}
                 </div>
-                <RandomPost />
+                <Suspense>
+                    <RandomPost />
+                </Suspense>
             </div>
         </>
     )

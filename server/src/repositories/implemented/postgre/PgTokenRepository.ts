@@ -1,10 +1,10 @@
 import { Repository } from "typeorm";
 import TokenModel from "../../../models/domain/Token";
 import ITokenRepository from "../../ITokenRepository";
-import { TokenEntity } from "../../../models/entity/TokenEntity";
+import { TokenEntity } from "../../../models/entity/postgre/TokenEntity";
 import TokenMapper from "../../../models/mappers/TokenMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
-import PgDataSource from "../../../../utils/data/AppDataSource";
+import { PgDataSource } from "../../../../utils/data/AppDataSource";
 
 class PgTokenRepository implements ITokenRepository {
     private tokenRep: Repository<TokenEntity>

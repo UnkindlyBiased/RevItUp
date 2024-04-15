@@ -1,6 +1,6 @@
 import { Repository } from "typeorm"
-import { UserEntity } from "../../../models/entity/UserEntity"
-import PgDataSource from "../../../../utils/data/AppDataSource"
+import { UserEntity } from "../../../models/entity/postgre/UserEntity"
+import { PgDataSource } from "../../../../utils/data/AppDataSource"
 import UserCreateDto from "../../../models/dto/users/UserCreateDto"
 import { ApiError } from "../../../../utils/errors/ApiError"
 import IUserRepository from "../../IUserRepository"
@@ -64,6 +64,8 @@ class PgUserRepository implements IUserRepository {
         const newUser = this.userRep.create(candidate)
         
         await this.userRep.insert(newUser)
+
+        await PgDataSource.queryResultCache?.remove(['users'])
 
         return UserMapper.toDataModel(newUser)
     }
