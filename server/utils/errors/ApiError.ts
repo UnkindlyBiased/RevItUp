@@ -23,12 +23,4 @@ export class ApiError extends Error {
     static MissingParameters(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.MISSING_PARAMS, message, errors)
     }
-    
-    showErrorData(): object {
-        return {
-            status: this.status,
-            message: this.message,
-            errors: this.errors
-        }
-    }
 }

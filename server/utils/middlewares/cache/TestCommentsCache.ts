@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { cacheClient } from "../../data/RedisCacheClient";
 
-async function testCommentsCache(_req: Request, res: Response, next: NextFunction) {
+export const cacheMiddleware = (key: string) => async (_req: Request, res: Response, next: NextFunction) => {
     try {
-        const data = await cacheClient.get('comments-test')
+        const data = await cacheClient.get(key)
         if (data) {
             return res.send(JSON.parse(data))
         }
@@ -12,5 +12,3 @@ async function testCommentsCache(_req: Request, res: Response, next: NextFunctio
         next(e)
     }
 }
-
-export { testCommentsCache }

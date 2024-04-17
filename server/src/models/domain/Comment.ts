@@ -1,9 +1,9 @@
-import UserModel from "./User"
+import UserShortDto from "../dto/users/UserShortDto"
 
 export default interface CommentModel {
     id: number
     text: string
-    user: UserModel,
+    user: UserShortDto,
     creationDate: Date,
     repliedToId: number | null
 }

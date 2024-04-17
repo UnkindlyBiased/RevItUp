@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
-import HeaderNavLink from "../header/inner/HeaderNavLink"
 import { useGetSchema } from "@/hooks/useColorMode"
+import { Suspense } from "react"
 
 function Footer(): React.ReactElement {
     const schema = useGetSchema()
@@ -8,8 +8,12 @@ function Footer(): React.ReactElement {
     return (
         <>
             <div className={cn("h-20 flex items-center text-white px-5", schema.headerColor)}>
-                <HeaderNavLink>Hello</HeaderNavLink>
-                <span className="ml-10 text-xl">This</span>
+                <div className="flex items-center space-x-3">
+                    <span className="font-medium text-lg">Created by:</span>
+                    <Suspense>
+                        <img className="w-80" src="./unkindlybiased.png" />
+                    </Suspense>
+                </div>
             </div>
         </>
     )

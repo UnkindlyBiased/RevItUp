@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 import AuthRouter from './src/routers/AuthRouter'
 import CommentRouter from './src/routers/CommentRouter'
 import { connectToCacheClient } from './utils/data/RedisCacheClient'
+import PostRouter from './src/routers/PostService'
 
 config()
 
@@ -27,21 +28,23 @@ app.use(cookieParser())
 app.use('/users', UserRouter)
 app.use('/auth', AuthRouter)
 app.use('/countries', CountryRouter)
+app.use('/posts', PostRouter)
 app.use('/comments', CommentRouter)
 
 // * Error middleware (should be last)
 app.use(errorMiddleware)
 
 async function startApp() {
-    const port = Number(process.env.APP_PORT) || 8008
+    const port = Number(process.env.APP_PORT) || 6006
     try {
+        // * Connections to databases
         await PgDataSource.initialize()
         await PgDataSource.synchronize()
 
-        await connectToCacheClient()
+        // await connectToCacheClient()
 
-        await MongoDataSource.initialize()
-        await MongoDataSource.synchronize()
+        // await MongoDataSource.initialize()
+        // await MongoDataSource.synchronize()
         
         app.listen(port, () => {
             console.log(`App is started on port ${port}`)

@@ -15,12 +15,12 @@ function Header(): React.ReactElement {
                 <div className="flex space-x-8 items-center">
                     <Logo className="w-52 hover:w-56 transition-all" />
                     <div className="flex space-x-7">
-                        <HeaderNavLink children={'News'} />
-                        <HeaderNavLink children={'Events'} />
-                        <HeaderNavLink children={'Threads'} />
-                        <HeaderNavLink children={'Drivers'} />
-                        <HeaderNavLink children={'Categories'} />
-                        <HeaderNavLink children={'Admin panel'} />
+                        <HeaderNavLink link='/news'>News</HeaderNavLink>
+                        <HeaderNavLink link='/sdfsdf'>Events</HeaderNavLink>
+                        <HeaderNavLink link='/asdasd'>Threads</HeaderNavLink>
+                        <HeaderNavLink link='/sdasd'>Drivers</HeaderNavLink>
+                        <HeaderNavLink link='/asdasd'>Categories</HeaderNavLink>
+                        <HeaderNavLink link='/asdasda'>Admin panel</HeaderNavLink>
                     </div>
                 </div>
                 <div className="flex items-center space-x-5">

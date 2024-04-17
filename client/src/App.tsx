@@ -8,6 +8,8 @@ import ColorModeProvider from "./providers/ColorModeProvider"
 import LoginPage from "./pages/LoginPage"
 import useUserStore from "./store/UserStore"
 import ErrorPage from "./pages/ErrorPage"
+import PostDetailedPage from "./pages/posts/PostOpenedPage"
+import PostsPage from "./pages/posts/PostsPage"
 
 function App() {
     const checkAuth = useUserStore(state => state.checkAuth)
@@ -30,6 +32,14 @@ function App() {
             {
                 path: "/login",
                 element: <LoginPage />
+            },
+            {
+                path: '/news',
+                element: <PostsPage />
+            },
+            {
+                path: '/news/:articleId',
+                element: <PostDetailedPage />
             }
         ]
     }])

@@ -80,7 +80,8 @@ module.exports = {
       },
       fontFamily: {
         "manrope": ['Manrope', 'sans-serif'],
-        "space-grotesk": ['Space Grotesk', 'sans-serif']
+        "space-grotesk": ['Space Grotesk', 'sans-serif'],
+        "oswald": ['Oswald', 'sans-serif']
       }
     },
   },

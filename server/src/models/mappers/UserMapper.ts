@@ -6,6 +6,7 @@ import UserShortDto from "../dto/users/UserShortDto";
 import UserModel from "../domain/User";
 import IDataMapper from "../misc/IDataMapper";
 import UserTokenDto from "../dto/users/UserTokenDto";
+import CountryMapper from "./CountryMapper";
 
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
@@ -18,7 +19,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         return {
             id: model.id,
             username: model.username,
-            country: model.country
+            country: CountryMapper.mapCountryToDto(model.country)
         }
     }
     mapUserModelToUserCreateDto(model: UserModel): UserCreateDto {

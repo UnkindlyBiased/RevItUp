@@ -38,7 +38,9 @@ export class UserEntity {
     @Column({ type: 'enum', enum: UserRoles, default: UserRoles.DEFAULT })
     role: UserRoles
 
-    @ManyToOne(() => CountryEntity, country => country.users)
+    @ManyToOne(() => CountryEntity, country => country.users, {
+        eager: true
+    })
     @JoinColumn()
     country: CountryEntity
 
