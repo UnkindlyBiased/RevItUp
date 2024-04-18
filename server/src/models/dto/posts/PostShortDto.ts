@@ -3,4 +3,5 @@ export default interface PostShortDto {
     postTitle: string
     previewText: string
     imageLink: string
+    postLink: string
 }

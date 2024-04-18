@@ -3,6 +3,7 @@ type PostShort = {
     postTitle: string
     previewText: string
     imageLink: string
+    postLink: string
 }
 
 export default PostShort

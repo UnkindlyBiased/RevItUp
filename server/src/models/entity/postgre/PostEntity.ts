@@ -24,6 +24,9 @@ export default class PostEntity {
     @Column()
     imageLink: string
 
+    @Column({ nullable: true })
+    postLink: string
+
     @CreateDateColumn({ type: "timestamp with time zone", default: () => 'CURRENT_TIMESTAMP' })
     creationDate: Date
 

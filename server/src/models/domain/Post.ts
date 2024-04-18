@@ -7,6 +7,7 @@ export default interface PostModel {
     previewText: string
     text: string
     imageLink: string
+    postLink: string
     creationDate: Date
     author: UserShortDto
     comments: CommentModel[]

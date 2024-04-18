@@ -38,7 +38,7 @@ function App() {
                 element: <PostsPage />
             },
             {
-                path: '/news/:articleId',
+                path: '/news/:articleLink',
                 element: <PostDetailedPage />
             }
         ]

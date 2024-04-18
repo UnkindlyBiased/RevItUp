@@ -41,10 +41,10 @@ async function startApp() {
         await PgDataSource.initialize()
         await PgDataSource.synchronize()
 
-        // await connectToCacheClient()
+        await connectToCacheClient()
 
-        // await MongoDataSource.initialize()
-        // await MongoDataSource.synchronize()
+        await MongoDataSource.initialize()
+        await MongoDataSource.synchronize()
         
         app.listen(port, () => {
             console.log(`App is started on port ${port}`)

@@ -13,6 +13,7 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             previewText: entity.previewText,
             text: entity.text,
             imageLink: entity.imageLink,
+            postLink: entity.postLink,
             creationDate: entity.creationDate,
             author: UserMapper.mapUserModelToUserShortDto(entity.author),
             comments: entity.comments.map(comment => CommentMapper.toDataModel(comment))
@@ -24,7 +25,8 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             id: model.id,
             postTitle: model.postTitle,
             previewText: model.previewText,
-            imageLink: model.imageLink
+            imageLink: model.imageLink,
+            postLink: model.postLink
         }
     }
 }

@@ -1,24 +1,15 @@
 import PostsSerivce from "@/services/PostsSerivce";
 import { useQuery } from "@tanstack/react-query";
 
-function useGetPosts() {
-    return useQuery({
-        queryKey: ['posts-all'],
-        queryFn: async () => {
-            const response = await PostsSerivce.getPosts()
-            return response
-        }
-    })
-}
+const useGetPosts = () =>  useQuery({
+    queryKey: ['posts-all'],
+    queryFn: () => PostsSerivce.getPosts()
+})
 
-function useGetPostById(id: number) {
-    return useQuery({
-        queryKey: ['post-detailed', id],
-        queryFn: async () => {
-            const response = await PostsSerivce.getPostById(id)
-            return response
-        }
-    })
-}
+const useGetPostByLink = (link: string) => useQuery({
+    queryKey: ['post-detailed', link],
+    queryFn: () => PostsSerivce.getPostByLink(link),
+    enabled: !!link
+})
 
-export { useGetPosts, useGetPostById }
+export { useGetPosts, useGetPostByLink }

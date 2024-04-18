@@ -15,6 +15,10 @@ class PostService {
         const post = await this.repository.getPostById(id)
         return post
     }
+    async getPostByLink(link: string): Promise<PostModel> {
+        const post = await this.repository.getPostByLink(link)
+        return post
+    }
     async delete(id: number): Promise<PostModel> {
         const post = await this.repository.delete(id)
         return post

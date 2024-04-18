@@ -12,9 +12,7 @@ function LoadingWrapper({ isLoading, children }: LoadingWrapperProps): React.Rea
         )
     }
 
-    return (
-        <>{children}</>
-    )
+    return children
 }
 
 export default LoadingWrapper

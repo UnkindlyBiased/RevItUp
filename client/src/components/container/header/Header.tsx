@@ -11,7 +11,7 @@ function Header(): React.ReactElement {
 
     return (
         <>
-            <header className={cn('h-16 px-8 sticky top-0 text-white flex items-center justify-between space-x-8', schema.headerColor)}>
+            <header className={cn('h-16 px-8 sticky top-0 text-white flex items-center justify-between space-x-8 bg-opacity-95', schema.headerColor)}>
                 <div className="flex space-x-8 items-center">
                     <Logo className="w-52 hover:w-56 transition-all" />
                     <div className="flex space-x-7">

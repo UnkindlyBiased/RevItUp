@@ -21,6 +21,16 @@ class PostController {
             next(e)
         }
     }
+    async getPostByLink(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { link } = req.params
+            const post = await PostService.getPostByLink(link)
+
+            return res.send(post)
+        } catch(e) {
+            next(e)
+        }
+    }
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.body

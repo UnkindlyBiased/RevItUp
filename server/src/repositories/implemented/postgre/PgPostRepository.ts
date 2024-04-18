@@ -33,6 +33,21 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toDataModel(entity)
     }
+    async getPostByLink(link: string) {
+        if (!link) {
+            throw ApiError.MissingParameters("No link was given")
+        }
+
+        const entity = await this.postRep.findOneBy({ postLink: link })
+        if (!entity) {
+            throw ApiError.NotFound("Such post doesn't exist")
+        }
+
+        return PostMapper.toDataModel(entity)
+    }
+    async getRandomPost() {
+        const post = await this.postRep.find()
+    }
     async delete(id: number): Promise<PostModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")

@@ -8,6 +8,9 @@ class SaverService {
     async create(userId: number): Promise<SavedPostsModel> {
         return await this.repository.create(userId)   
     }
+    async delete(userId: number): Promise<SavedPostsModel> {
+        return await this.repository.delete(userId)
+    }
 }
 
 export default new SaverService(MongoSavedPostsRepository)

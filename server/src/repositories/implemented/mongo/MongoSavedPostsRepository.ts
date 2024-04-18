@@ -21,7 +21,6 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
 
         return SavedPostsMapper.toDataModel(candidate)
     }
-
     async create(userId: number): Promise<SavedPostsModel> {
         const entity = this.savedRep.create({ 
             posts: [],
@@ -29,7 +28,16 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
         })
 
         await this.savedRep.insert(entity)
+        return SavedPostsMapper.toDataModel(entity)
+    }
 
+    async delete(userId: number): Promise<SavedPostsModel> {
+        const entity = await this.savedRep.findOneBy({ userId })
+        if (!entity) {
+            throw ApiError.NotFound("This user doesn't exist")
+        }
+
+        await this.savedRep.remove(entity)
         return SavedPostsMapper.toDataModel(entity)
     }
 }

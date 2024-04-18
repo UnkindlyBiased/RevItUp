@@ -7,7 +7,9 @@ function ErrorPage(): React.ReactElement {
     const navigate = useNavigate()
 
     useEffect(() => {
-        setTimeout(() => { navigate('/') }, 3000)
+        const timeout = setTimeout(() => { navigate('/') }, 3000)
+
+        return () => clearTimeout(timeout)
     }, [navigate])
 
     useDocumentTitle("REVITUP: 404")

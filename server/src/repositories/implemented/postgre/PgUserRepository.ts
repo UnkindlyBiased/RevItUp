@@ -76,7 +76,7 @@ class PgUserRepository implements IUserRepository {
         }
 
         const updatedUser = this.userRep.create({
-            id: id,
+            id,
             ...updateData
         })
         
@@ -84,7 +84,7 @@ class PgUserRepository implements IUserRepository {
         return UserMapper.toDataModel(updatedUser)
     }
     async delete(id: number): Promise<UserModel> {
-        const user = await this.userRep.findOneBy({id})
+        const user = await this.userRep.findOneBy({ id })
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }

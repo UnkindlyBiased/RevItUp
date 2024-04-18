@@ -2,7 +2,7 @@ import { useDocumentTitle } from '@uidotdev/usehooks'
 import RandomPost from '../components/pages/main-page/RandomPost'
 import useGetUsers from '@/hooks/useGetUsers'
 import useUserStore from '@/store/UserStore'
-import { memo, Suspense } from 'react'
+import { Suspense } from 'react'
 
 function MainPage(): React.ReactElement {
     const { data } = useGetUsers()
@@ -16,7 +16,7 @@ function MainPage(): React.ReactElement {
                 <div className='px-8 py-4 flex flex-col'>
                     <span className="text-3xl">Main page</span>
                     {user && <span>Logged</span>}
-                    { data && data.map(user => (
+                    { data?.map(user => (
                         <span key={user.id}>{user.username}</span>
                     ))}
                 </div>
@@ -28,6 +28,4 @@ function MainPage(): React.ReactElement {
     )
 }
 
-const MemoizedMainPage = memo(MainPage)
-
-export default MemoizedMainPage
+export default MainPage

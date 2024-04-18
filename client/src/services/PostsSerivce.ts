@@ -9,8 +9,8 @@ class PostService {
         const posts = (await api.get<PostShort[]>(this.URL_PREFIX)).data
         return posts
     }
-    async getPostById(id: number): Promise<PostDetailed> {
-        const post = (await api.get<PostDetailed>(`${this.URL_PREFIX}/${id}`)).data
+    async getPostByLink(link: string): Promise<PostDetailed> {
+        const post = (await api.get<PostDetailed>(`${this.URL_PREFIX}/${link}`)).data
         return post
     }
 }
