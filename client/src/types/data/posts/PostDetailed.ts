@@ -1,3 +1,4 @@
+import Comment from "../comment/Comment"
 import UserShort from "../users/UserShort"
 
 type PostDetailed = {
@@ -7,7 +8,8 @@ type PostDetailed = {
     text: string
     imageLink: string
     creationDate: Date,
-    author: UserShort
+    author: UserShort,
+    comments: Comment[]
 }
 
 export default PostDetailed

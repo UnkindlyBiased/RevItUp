@@ -1,4 +1,4 @@
-import CustomInput from "@/components/generic/CustomInput";
+import CustomInput from "@/components/generic/misc/CustomInput";
 import useUserStore from "@/store/UserStore";
 import UserLogin from "@/types/data/users/UserLogin";
 import { SubmitHandler, useForm } from "react-hook-form"

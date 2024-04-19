@@ -1,5 +1,5 @@
 import { ComponentPropsWithRef, forwardRef, memo } from "react"
-import { Input } from "../ui/input"
+import { Input } from "../../ui/input"
 import { cn } from "@/lib/utils"
 
 const CustomInput = forwardRef<HTMLInputElement, ComponentPropsWithRef<'input'>>(
