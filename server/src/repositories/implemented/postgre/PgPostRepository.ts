@@ -5,6 +5,10 @@ import PostEntity from "../../../models/entity/postgre/PostEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import PostMapper from "../../../models/mappers/PostMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
+import PostInputDto from "../../../models/dto/posts/PostInputDto";
+import PgUserRepository from "./PgUserRepository";
+import UserMapper from "../../../models/mappers/UserMapper";
+import PostLightModel from "../../../models/dto/posts/PostLightModel";
 
 class PgPostRepository implements IPostRepository {
     private postRep: Repository<PostEntity>
@@ -45,8 +49,40 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toDataModel(entity)
     }
-    async getRandomPost() {
-        const post = await this.postRep.find()
+    async getRandomPost(): Promise<PostLightModel> {
+        const post = await this.postRep
+            .createQueryBuilder('post')
+            .orderBy('RANDOM()')
+            .getOne()
+            .then(post => { return post })
+        if (!post) {
+            throw ApiError.NotFound("No posts were found in database")
+        }
+
+        return PostMapper.toLightDataModel(post)
+    }
+    async create(input: PostInputDto): Promise<PostModel> {
+        const candidate = await this.postRep.findOneBy({
+            postTitle: input.postTitle
+        })
+        if (candidate) {
+            throw ApiError.Conflict("Post with this title already exists")
+        }
+
+        const entity = this.postRep.create({
+            postTitle: input.postTitle,
+            previewText: input.previewText,
+            text: input.text,
+            imageLink: input.imageLink,
+            postLink: input.postLink,
+            comments: [],
+            author: UserMapper.mapUserModelToUserShortDto(
+                await PgUserRepository.getUserById(input.authorId)
+            )
+        })
+
+        await this.postRep.insert(entity)
+        return PostMapper.toDataModel(entity)
     }
     async delete(id: number): Promise<PostModel> {
         if (!id) {

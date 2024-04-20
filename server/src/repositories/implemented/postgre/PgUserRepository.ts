@@ -64,9 +64,6 @@ class PgUserRepository implements IUserRepository {
         const newUser = this.userRep.create(candidate)
         
         await this.userRep.insert(newUser)
-
-        await PgDataSource.queryResultCache?.remove(['users'])
-
         return UserMapper.toDataModel(newUser)
     }
     async update(id: number, updateData: UserEditDto): Promise<UserModel> {

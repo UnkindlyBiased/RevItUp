@@ -31,6 +31,30 @@ class PostController {
             next(e)
         }
     }
+    async getRandomPost(_req: Request, res: Response, next: NextFunction) {
+        try {
+            const post = await PostService.getRandomPost()
+            return res.send(post)
+        } catch (e) {
+            next(e)
+        }
+    }
+    async create(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { postTitle, previewText, text, imageLink } = req.body
+
+            const post = await PostService.create({
+                postTitle,
+                previewText,
+                text,
+                imageLink,
+                authorId: req.user.id
+            })
+            res.send(post)
+        } catch(e) {
+            next(e)
+        }
+    }
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.body

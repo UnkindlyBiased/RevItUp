@@ -1,9 +1,11 @@
 import { useGetSchema } from "@/hooks/useColorMode"
+import { useGetRandomPost } from "@/hooks/useGetPosts"
 import { cn } from "@/lib/utils"
 import { Suspense } from "react"
 import { Link } from "react-router-dom"
 
 function RandomPost(): React.ReactElement {
+    const { data } = useGetRandomPost()
     const schema = useGetSchema()
 
     return (
@@ -16,10 +18,10 @@ function RandomPost(): React.ReactElement {
                     <div className="font-space-grotesk font-medium">
                         <span className="text-6xl text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-red-500">
                             Choose 
-                            <Link to={'/'} className="hover:text-7xl px-3 transition-all">THIS</Link>
+                            <Link to={`/news/${data?.postLink}`} className="hover:text-7xl px-3 transition-all">THIS</Link>
                             post 
                         </span>
-                        <span className="text-3xl pl-5 opacity-45">("title")</span>
+                        <span className="text-xl pl-5 opacity-45">("{data?.postTitle}")</span>
                     </div>
                 </div>
                 <Suspense fallback={'Idk what to put here'}>

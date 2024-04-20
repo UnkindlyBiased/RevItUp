@@ -10,7 +10,7 @@ import cookieParser from 'cookie-parser'
 import AuthRouter from './src/routers/AuthRouter'
 import CommentRouter from './src/routers/CommentRouter'
 import { connectToCacheClient } from './utils/data/RedisCacheClient'
-import PostRouter from './src/routers/PostService'
+import PostRouter from './src/routers/PostRouter'
 
 config()
 
@@ -18,11 +18,11 @@ const app = express()
 
 // * Third-party middlewares
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({ 
     origin: 'http://localhost:4004',
     credentials: true
 }))
-app.use(cookieParser())
 
 // * Routers
 app.use('/users', UserRouter)

@@ -4,8 +4,7 @@
   "description": "Server part of RevItUp",
   "main": "index.ts",
   "scripts": {
-    "dev": "nodemon index.ts",
-    "test": "mocha -r ts-node/register tests/**/*.ts"
+    "dev": "nodemon index.ts"
   },
   "keywords": [],
   "author": "",

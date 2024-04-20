@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./UserEntity";
 import CommentEntity from "./CommentEntity";
 
@@ -30,7 +30,7 @@ export default class PostEntity {
     @CreateDateColumn({ type: "timestamp with time zone", default: () => 'CURRENT_TIMESTAMP' })
     creationDate: Date
 
-    @OneToOne(() => UserEntity, {
+    @ManyToOne(() => UserEntity, {
         eager: true,
         onDelete: 'CASCADE'
     })

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 import { ApiError } from '../../errors/ApiError'
 import { HttpStatusCodes } from '../../enums/HttpStatusCodes'
 
-function errorMiddleware(err: Error, _req: Request, res: Response, _next: NextFunction) {
+function errorMiddleware(err: Error, req: Request, res: Response, next: NextFunction) {
     console.log(err)
     if (err instanceof ApiError) {
         return res.status(err.status).json({

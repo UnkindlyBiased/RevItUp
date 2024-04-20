@@ -1,13 +1,13 @@
-import PostShort from "@/types/data/posts/PostShort"
+import PostPreview from "@/types/data/posts/PostPreview"
 import PostTitle from "../PostTitle"
 import { Link } from "react-router-dom"
 import { Suspense } from "react"
 
-type PostPreviewProps = {
-    post: PostShort
+type PostPreviewCompProps = {
+    post: PostPreview
 }
 
-function PostPreview({ post }: PostPreviewProps): React.ReactElement {
+function PostPreviewComp({ post }: PostPreviewCompProps): React.ReactElement {
     return (
         <div className="flex items-center space-x-4 w-[75%]">
             <Suspense fallback={post.postTitle}>
@@ -25,4 +25,4 @@ function PostPreview({ post }: PostPreviewProps): React.ReactElement {
     )
 }
 
-export default PostPreview
+export default PostPreviewComp

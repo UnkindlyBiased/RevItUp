@@ -12,4 +12,9 @@ const useGetPostByLink = (link: string) => useQuery({
     enabled: !!link
 })
 
-export { useGetPosts, useGetPostByLink }
+const useGetRandomPost = () => useQuery({
+    queryKey: ['random-post'],
+    queryFn: () => PostsSerivce.getRandomPost()
+})
+
+export { useGetPosts, useGetPostByLink, useGetRandomPost }

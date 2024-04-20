@@ -1,9 +1,5 @@
-type PostShort = {
-    id: number
-    postTitle: string
-    previewText: string
-    imageLink: string
-    postLink: string
-}
+import PostPreview from "./PostPreview";
+
+type PostShort = Pick<PostPreview, "postTitle" | "postLink">
 
 export default PostShort
