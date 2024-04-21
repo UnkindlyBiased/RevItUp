@@ -12,16 +12,19 @@ export class ApiError extends Error {
     
     // * 4XX - Client error responses
     static Unauthorized(message: string, errors: string[] = []): ApiError {
-        return new ApiError(HttpStatusCodes.UNAUTHORIZED, message, errors) as ApiError
+        return new ApiError(HttpStatusCodes.UNAUTHORIZED, message, errors)
+    }
+    static Forbidden(message: string, errors: string[] = []): ApiError {
+        return new ApiError(HttpStatusCodes.FORBIDDEN, message, errors)
     }
     static NotFound(message: string, errors: string[] = []): ApiError {
-        return new ApiError(HttpStatusCodes.NOT_FOUND, message, errors) as ApiError
+        return new ApiError(HttpStatusCodes.NOT_FOUND, message, errors)
     }
     static Conflict(message: string, errors: string[] = []): ApiError {
-        return new ApiError(HttpStatusCodes.CONFLICT, message, errors) as ApiError
+        return new ApiError(HttpStatusCodes.CONFLICT, message, errors)
     }
     static MissingParameters(message: string, errors: string[] = []): ApiError {
-        return new ApiError(HttpStatusCodes.MISSING_PARAMS, message, errors) as ApiError
+        return new ApiError(HttpStatusCodes.MISSING_PARAMS, message, errors)
     }
 
     showErrorData(): object {

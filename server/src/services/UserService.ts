@@ -70,8 +70,15 @@ class UserService {
         const updatedUser = await this.repository.update(id, updateData)
         return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
     }
-    async delete(id: number): Promise<UserModel> {
-        const userToRemove = await this.repository.delete(id)
+    async delete(id: number, password: string): Promise<UserModel> {
+        const userToRemove = await this.repository.getUserById(id)
+        
+        const arePasswordsEqual = await bcrypt.compare(password, userToRemove.password)
+        if (!arePasswordsEqual) {
+            throw ApiError.Forbidden("Passwords are not equal, not possible to verify your identity")
+        }
+
+        await this.repository.delete(id)
         return userToRemove
     }
 

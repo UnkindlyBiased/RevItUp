@@ -1,7 +1,10 @@
+import PostHelper from "../../utils/helpers/PostHelper";
 import PostModel from "../models/domain/Post";
 import PostInputDto from "../models/dto/posts/PostInputDto";
+import PostLightModel from "../models/dto/posts/PostLightModel";
 import PostPreviewDto from "../models/dto/posts/PostPreviewDto";
 import PostShortDto from "../models/dto/posts/PostShortDto";
+import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 import PostMapper from "../models/mappers/PostMapper";
 import PgPostRepository from "../repositories/implemented/postgre/PgPostRepository";
 import IPostRepository from "../repositories/IPostRepository";
@@ -26,15 +29,15 @@ class PostService {
         return PostMapper.mapPostToPostShortDto(randomPost)
     }
     async create(candidate: PostInputDto): Promise<PostModel> {
-        const symbols = "!:,\"".split("")
-        let splittedTitle = candidate.postTitle
-
-        for (const symbol of symbols) {
-            splittedTitle = splittedTitle.replace(symbol, "")
-        }
-        candidate.postLink = splittedTitle.toLowerCase().split(" ").join('-')
+        candidate.postLink = PostHelper.putDashes(candidate.postTitle)
 
         return await this.repository.create(candidate)
+    }
+    async update(postId: number, input: PostUpdateDto): Promise<PostLightModel> {
+        PostHelper.trimPostData(input)
+
+        const updatedPost = await this.repository.update(postId, input)
+        return updatedPost
     }
     async delete(id: number): Promise<PostModel> {
         const post = await this.repository.delete(id)

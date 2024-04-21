@@ -9,6 +9,7 @@ import PostInputDto from "../../../models/dto/posts/PostInputDto";
 import PgUserRepository from "./PgUserRepository";
 import UserMapper from "../../../models/mappers/UserMapper";
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
+import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
 
 class PgPostRepository implements IPostRepository {
     private postRep: Repository<PostEntity>
@@ -54,7 +55,7 @@ class PgPostRepository implements IPostRepository {
             .createQueryBuilder('post')
             .orderBy('RANDOM()')
             .getOne()
-            .then(post => { return post })
+            .then(post => post)
         if (!post) {
             throw ApiError.NotFound("No posts were found in database")
         }
@@ -83,6 +84,29 @@ class PgPostRepository implements IPostRepository {
 
         await this.postRep.insert(entity)
         return PostMapper.toDataModel(entity)
+    }
+    async update(postId: number, input: PostUpdateDto): Promise<PostLightModel> {
+        const candidate = await this.postRep.findOneBy({ 
+            postTitle: input.postTitle
+        })
+        if (candidate) {
+            throw ApiError.Conflict("Post with this title already exists")
+        }
+
+        await this.postRep.update(postId, {
+            postTitle: input.postTitle,
+            previewText: input.postTitle,
+            text: input.text,
+        })
+
+        const entity = await this.postRep.preload({
+            id: postId
+        })
+        if (!entity) {
+            throw ApiError.NotFound("No such post exists")
+        }
+
+        return PostMapper.toLightDataModel(entity)
     }
     async delete(id: number): Promise<PostModel> {
         if (!id) {

@@ -10,6 +10,7 @@ PostRouter.get("/random", PostController.getRandomPost)
 PostRouter.get('/:link', PostController.getPostByLink)
 PostRouter.get('/by-id/:id', PostController.getPostById)
 PostRouter.post('/', authMiddleware, PostController.create)
-PostRouter.delete('/', PostController.delete)
+PostRouter.put('/', authMiddleware,  PostController.update)
+PostRouter.delete('/', authMiddleware, PostController.delete)
 
 export default PostRouter

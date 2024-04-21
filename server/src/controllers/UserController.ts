@@ -62,9 +62,10 @@ class UserController {
     }
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.body
-            const userToRemove = await UserService.delete(Number(id))
-            res.status(HttpStatusCodes.SUCCESS).send(userToRemove)
+            const { id, password } = req.body
+            const userToRemove = await UserService.delete(Number(id), password)
+
+            res.send(userToRemove)
         } catch (e) {
             next(e)
         }

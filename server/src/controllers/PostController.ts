@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
+import { ApiError } from "../../utils/errors/ApiError";
 
 class PostController {
     async getPosts(_req: Request, res: Response, next: NextFunction) {
@@ -51,6 +52,23 @@ class PostController {
                 authorId: req.user.id
             })
             res.send(post)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async update(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id, postTitle, previewText, text, authorId } = req.body
+            if (req.user.id !== Number(authorId)) {
+                throw ApiError.Forbidden("The update can't be done because you're not the author of this article")
+            }
+
+            const updatedPost = await PostService.update(Number(id), {
+                postTitle,
+                previewText,
+                text
+            })
+            res.send(updatedPost)
         } catch(e) {
             next(e)
         }
