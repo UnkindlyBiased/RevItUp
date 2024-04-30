@@ -1,8 +1,7 @@
 import UserShortDto from "../dto/users/UserShortDto"
-import CommentModel from "./Comment"
 
 export default interface PostModel {
-    id: number
+    id: string
     postTitle: string
     previewText: string
     text: string
@@ -10,5 +9,4 @@ export default interface PostModel {
     postLink: string
     creationDate: Date
     author: UserShortDto
-    comments: CommentModel[]
 }

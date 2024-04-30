@@ -5,22 +5,18 @@ import AuthService from "../services/AuthService";
 const BASE_URL = process.env.API_URL
 
 export const api = axios.create({
-    baseURL: BASE_URL
-})
-
-export const authApi = axios.create({
-    baseURL: `${BASE_URL}/auth`,
+    baseURL: BASE_URL,
     withCredentials: true
 })
 
-authApi.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
     const accessToken = localStorage.getItem('token')
     config.headers.Authorization = `Bearer ${accessToken}`
     
     return config
 })
 
-authApi.interceptors.response.use((config) => config, async (err) => {
+api.interceptors.response.use(config => config, async (err) => {
     const originalRequest = err.config
 
     if (err.response.code === 401 && err.config && !err.config._isRetry) {

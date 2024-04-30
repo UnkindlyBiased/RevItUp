@@ -1,5 +1,5 @@
 export default interface PostPreviewDto {
-    id: number
+    id: string
     postTitle: string
     previewText: string
     imageLink: string

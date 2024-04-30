@@ -1,6 +1,7 @@
-import UserShort from "@/types/data/users/UserShort"
 import { Suspense } from "react"
 import { Link } from "react-router-dom"
+
+import UserShort from "@/types/data/users/UserShort"
 
 type AuthorBoxProps = {
     author: UserShort

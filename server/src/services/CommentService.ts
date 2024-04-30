@@ -13,7 +13,10 @@ class CommentService {
 
         return comments
     }
-
+    async getCommentsForPost(postId: string): Promise<CommentModel[]> {
+        const postComments = await this.repository.getCommentsForPost(postId)
+        return postComments
+    }
     async create(data: CommentInputDto): Promise<CommentModel> {
         const comment = await this.repository.create(data)
         return comment

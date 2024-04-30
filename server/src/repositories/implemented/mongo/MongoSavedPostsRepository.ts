@@ -14,7 +14,7 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
     }
 
     async getByUserId(userId: number): Promise<SavedPostsModel> {
-        const candidate = await this.savedRep.findOneBy({ userId})
+        const candidate = await this.savedRep.findOneBy({ userId })
         if (!candidate) {
             throw ApiError.NotFound("User with this ID was not found")
         }

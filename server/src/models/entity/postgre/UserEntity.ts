@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, One
 import { CountryEntity } from "./CountryEntity";
 import { TokenEntity } from "./TokenEntity";
 import UserRoles from "../../../../utils/enums/UserRoles";
-import CommentEntity from "./CommentEntity";
+import PostCommentEntity from "./CommentEntity";
 
 @Entity({ 
     name: 'Users',
@@ -44,8 +44,8 @@ export class UserEntity {
     @JoinColumn()
     country: CountryEntity
 
-    @OneToMany(() => CommentEntity, comment => comment.user)
-    comments: CommentEntity[]
+    @OneToMany(() => PostCommentEntity, comment => comment.user)
+    comments: PostCommentEntity[]
 
     @OneToOne(() => TokenEntity, token => token.user)
     refreshToken: TokenEntity

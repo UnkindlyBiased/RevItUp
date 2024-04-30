@@ -1,17 +1,18 @@
 import { Repository } from "typeorm";
-import CommentEntity from "../../../models/entity/postgre/CommentEntity";
+import PostCommentEntity from "../../../models/entity/postgre/CommentEntity";
 import ICommentRepository from "../../ICommentRepository";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import { ApiError } from "../../../../utils/errors/ApiError";
 import CommentInputDto from "../../../models/dto/comments/CommentInputDto";
 import CommentModel from "../../../models/domain/Comment";
 import CommentMapper from "../../../models/mappers/CommentMapper";
+import PgUserRepository from "./PgUserRepository";
 
 class PgCommentRepository implements ICommentRepository {
-    private commentRep: Repository<CommentEntity>
+    private commentRep: Repository<PostCommentEntity>
 
     constructor() {
-        this.commentRep = PgDataSource.getRepository(CommentEntity)
+        this.commentRep = PgDataSource.getRepository(PostCommentEntity)
     }
 
     // ! Too much data
@@ -36,15 +37,38 @@ class PgCommentRepository implements ICommentRepository {
 
         return entities.map(entity => CommentMapper.toDataModel(entity))
     }
+    async getCommentsForPost(postId: string) {
+        if (!postId) {
+            throw ApiError.NotFound("No ID was not found")
+        }
 
+        const entities = await this.commentRep.find({
+            where: {
+                post: {
+                    id: postId
+                }
+            },
+            order: {
+                creationDate: "ASC"
+            }
+        })
+
+        return entities.map(entity => CommentMapper.toDataModel(entity))
+    }
     async create(data: CommentInputDto): Promise<CommentModel> {
+        const user = await PgUserRepository.getUserById(data.userId)
         const entity = this.commentRep.create({ 
             text: data.text,
             user: {
-                id: data.userId
+                id: data.userId,
+                username: user.username,
+                country: user.country
             },
             repliedTo: {
                 id: data.repliedToId?.valueOf()
+            },
+            post: {
+                id: data.postId
             }
         })
 

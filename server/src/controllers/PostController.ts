@@ -15,7 +15,7 @@ class PostController {
     async getPostById(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.params
-            const post = await PostService.getPostById(Number(id))
+            const post = await PostService.getPostById(id)
 
             return res.send(post)
         } catch(e) {
@@ -37,6 +37,20 @@ class PostController {
             const post = await PostService.getRandomPost()
             return res.send(post)
         } catch (e) {
+            next(e)
+        }
+    }
+    async search(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { inputStr } = req.query
+            if (!inputStr) {
+                throw ApiError.MissingParameters("No search parameters were given")
+            }
+
+            const searchedPosts = await PostService.search(inputStr.toString())
+
+            return res.send(searchedPosts)
+        } catch(e) {
             next(e)
         }
     }
@@ -63,7 +77,7 @@ class PostController {
                 throw ApiError.Forbidden("The update can't be done because you're not the author of this article")
             }
 
-            const updatedPost = await PostService.update(Number(id), {
+            const updatedPost = await PostService.update(id, {
                 postTitle,
                 previewText,
                 text
@@ -76,7 +90,7 @@ class PostController {
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
             const { id } = req.body
-            const post = await PostService.delete(Number(id))
+            const post = await PostService.delete(id)
 
             return res.status(HttpStatusCodes.DELETED).send(post)
         } catch(e) {

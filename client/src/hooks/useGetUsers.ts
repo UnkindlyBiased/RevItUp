@@ -1,14 +1,16 @@
-import UserService from "@/services/UserService"
 import { useQuery } from "@tanstack/react-query"
 
-function useGetUsers() {
-    return useQuery({
-        queryKey: ['users'],
-        queryFn: async () => {
-            const users = await UserService.getUsers()
-            return users
-        }
-    })
-}
+import UserService from "@/services/UserService"
 
-export default useGetUsers
+const useGetUsers = () => useQuery({
+    queryKey: ['users'],
+    queryFn: () => UserService.getUsers()
+})
+
+const useGetUserById = (id: number | undefined) => useQuery({
+    queryKey: ["user", id],
+    queryFn: () => UserService.getUserById(id!),
+    enabled: !!id
+})
+
+export { useGetUsers, useGetUserById }

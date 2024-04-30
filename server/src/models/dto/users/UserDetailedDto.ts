@@ -6,5 +6,6 @@ export default interface UserDetailedDto {
     emailAddress: string
     biography: string
     registrationDate: Date,
+    isVerified: boolean,
     country: CountryModel
 }

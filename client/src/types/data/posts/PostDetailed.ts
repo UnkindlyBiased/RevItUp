@@ -1,15 +1,13 @@
-import Comment from "../comment/Comment"
 import UserShort from "../users/UserShort"
 
 type PostDetailed = {
-    id: number
+    id: string
     postTitle: string
     previewText: string
     text: string
     imageLink: string
     creationDate: Date,
-    author: UserShort,
-    comments: Comment[]
+    author: UserShort
 }
 
 export default PostDetailed

@@ -3,12 +3,13 @@ import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import { validationResult } from "express-validator"
+import SaverService from "../services/SaverService"
 
 class UserController {
     async getUsers(_req: Request, res: Response, next: NextFunction) {
         try {
             const users = await UserService.getUsers()
-            res.send(users)
+            return res.send(users)
         } catch(e) {
             next(e)
         }
@@ -17,8 +18,19 @@ class UserController {
         try {
             const { username } = req.params
             const user = await UserService.getUserByName(username)
-            res.send(user)
+
+            return res.send(user)
         } catch (e) {
+            next(e)
+        }
+    }
+    async getUserById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params
+            const user = await UserService.getUserById(Number(id))
+
+            return res.send(user)
+        } catch(e) {
             next(e)
         }
     }
@@ -112,6 +124,14 @@ class UserController {
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async getSavedPosts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const savedPosts = await SaverService.getByUserId(req.user.id)
+            return res.send(savedPosts)
         } catch(e) {
             next(e)
         }

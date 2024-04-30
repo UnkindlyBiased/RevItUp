@@ -6,7 +6,7 @@ export default class SavedPostsEntity {
     _id: ObjectId
 
     @Column({ default: [] })
-    posts: number[]
+    posts: string[]
 
     @Column({ unique: true })
     userId: number

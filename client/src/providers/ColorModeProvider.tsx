@@ -1,7 +1,8 @@
+import { useEffect } from "react"
+
 import { useColorModeStore } from "@/store/ColorModeStore"
 import ChildProp from "@/types/page/ChildProp"
 import ColorMode from "@/types/page/style/ColorMode"
-import { useEffect } from "react"
 
 function ColorModeProvider({ children }: ChildProp): React.ReactElement {
     const setMode = useColorModeStore(state => state.setColorMode)

@@ -1,4 +1,4 @@
 export default interface SavedPostsModel {
-    posts: number[]
+    posts: string[]
     userId: number
 }

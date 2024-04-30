@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
-import { useGetSchema } from "@/hooks/useColorMode"
 import { Suspense } from "react"
+
+import { useGetSchema } from "@/hooks/useColorMode"
 import SocialLinks from "./inner/SocialLinks"
 
 function Footer(): React.ReactElement {
@@ -8,7 +9,7 @@ function Footer(): React.ReactElement {
 
     return (
         <>
-            <div className={cn("h-20 flex items-center text-white px-7 sticky justify-between", schema.headerColor)}>
+            <div className={cn("h-20 flex items-center text-white px-7 sticky justify-between", schema.primaryBgColor)}>
                 <div className="flex items-center space-x-3">
                     <span className="font-medium text-lg">Created by:</span>
                     <Suspense>

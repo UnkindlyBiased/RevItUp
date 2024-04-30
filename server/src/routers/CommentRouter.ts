@@ -7,6 +7,7 @@ import { cacheMiddleware } from '../../utils/middlewares/cache/TestCommentsCache
 const CommentRouter = Router()
 
 CommentRouter.get('/', cacheMiddleware('comments-test'), CommentController.getComments)
+CommentRouter.get("/post/:postId", CommentController.getCommentsForPost)
 CommentRouter.post('/', authMiddleware, commentValidation, CommentController.create)
 
 export default CommentRouter

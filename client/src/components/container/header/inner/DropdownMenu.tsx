@@ -1,4 +1,4 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { useNavigate } from 'react-router-dom'
 import { FaUser } from 'react-icons/fa6'
 
@@ -11,28 +11,33 @@ function UserDropdown(): React.ReactElement {
     const navigate = useNavigate()
     
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger>
-                    <FaUser className='size-6' />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="mr-8">
-                    { !isAuth && <>
-                        <DropdownMenuItem className='cursor-pointer'>
-                            <span>Register</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className='cursor-pointer' onClick={() => navigate('/login')}>
-                            <span>Login</span>
-                        </DropdownMenuItem>
-                    </> }
-                    { isAuth && <>
-                        <DropdownMenuItem onClick={logout}>
-                            <span>Logout</span>
-                        </DropdownMenuItem>
-                    </> }
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </>
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <FaUser className='size-6' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mr-8">
+                { !isAuth && <>
+                    <DropdownMenuItem className='cursor-pointer'>
+                        Register
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate('/login')}>
+                        Login
+                    </DropdownMenuItem>
+                </> }
+                { isAuth && <>
+                    <DropdownMenuItem onClick={() => navigate('/me')}>
+                        Your profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/me/saved-posts')}>
+                        Saved posts
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={logout}>
+                        Logout
+                    </DropdownMenuItem>
+                </> }
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
 

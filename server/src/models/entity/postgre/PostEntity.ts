@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./UserEntity";
-import CommentEntity from "./CommentEntity";
 
 @Entity({ 
     name: "Posts",
@@ -9,8 +8,8 @@ import CommentEntity from "./CommentEntity";
     }
  })
 export default class PostEntity {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn("uuid")
+    id: string
 
     @Column({ unique: true })
     postTitle: string
@@ -36,9 +35,4 @@ export default class PostEntity {
     })
     @JoinColumn()
     author: UserEntity
-
-    @OneToMany(() => CommentEntity, comment => comment.post, {
-        eager: true
-    })
-    comments: CommentEntity[]
 }

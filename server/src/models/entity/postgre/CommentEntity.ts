@@ -30,7 +30,7 @@ export default class CommentEntity {
     @OneToMany(() => CommentEntity, comment => comment.repliedTo)
     replies: CommentEntity[];
 
-    @ManyToOne(() => PostEntity, post => post.comments, {
+    @ManyToOne(() => PostEntity, {
         cascade: true,
         onDelete: 'CASCADE'
     })

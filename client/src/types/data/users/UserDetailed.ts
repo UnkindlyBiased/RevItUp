@@ -4,8 +4,9 @@ type UserDetailed = {
     id: number
     username: string
     emailAddress: string
-    biography: string
-    registrationDate: string,
+    biography: string | null
+    registrationDate: Date,
+    isVerified: boolean,
     country: Country
 }
 

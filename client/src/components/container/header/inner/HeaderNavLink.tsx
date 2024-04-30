@@ -8,14 +8,11 @@ type HeaderNavLinkProps = {
 
 function HeaderNavLink({ children, link }: HeaderNavLinkProps) {
     return (
-        <>
-            <NavLink to={link} className={({ isActive }) => cn(
-                'font-bold text-lg cursor-pointer hover:text-xl transition-all',
-                isActive && 'text-xl'
-            )}>
-                <span>{children}</span>
-            </NavLink>
-        </>
+        <NavLink to={link} className={({ isActive }) => cn(
+            'font-bold text-lg cursor-pointer hover:text-xl transition-all',
+            isActive && 'text-xl')}
+            children={children}
+        />
     )
 }
 

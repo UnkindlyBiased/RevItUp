@@ -4,18 +4,18 @@ import PostPreview from "@/types/data/posts/PostPreview"
 import PostShort from "@/types/data/posts/PostShort"
 
 class PostService {
-    private URL_PREFIX: string = '/posts'
+    private ROUTE_PREFIX: string = '/posts'
     
     async getPosts() {
-        const posts = (await api.get<PostPreview[]>(this.URL_PREFIX)).data
+        const posts = (await api.get<PostPreview[]>(this.ROUTE_PREFIX)).data
         return posts
     }
     async getPostByLink(link: string): Promise<PostDetailed> {
-        const post = (await api.get<PostDetailed>(`${this.URL_PREFIX}/${link}`)).data
+        const post = (await api.get<PostDetailed>(`${this.ROUTE_PREFIX}/${link}`)).data
         return post
     }
     async getRandomPost(): Promise<PostShort> {
-        return (await api.get<PostShort>(`${this.URL_PREFIX}/random`)).data
+        return (await api.get<PostShort>(`${this.ROUTE_PREFIX}/random`)).data
     }
 }
 

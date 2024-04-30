@@ -1,5 +1,5 @@
 export default interface PostLightModel {
-    id: number
+    id: string
     postTitle: string
     previewText: string
     text: string

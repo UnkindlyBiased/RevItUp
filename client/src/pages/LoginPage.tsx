@@ -1,6 +1,7 @@
+import { useDocumentTitle } from "@uidotdev/usehooks"
+
 import LoginForm from "@/components/pages/login-page/LoginForm"
 import useUserStore from "@/store/UserStore"
-import { useDocumentTitle } from "@uidotdev/usehooks"
 
 function LoginPage(): React.ReactNode {
     const isAuth = useUserStore(state => state.isAuth)

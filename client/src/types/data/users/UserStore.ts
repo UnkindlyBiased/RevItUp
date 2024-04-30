@@ -3,6 +3,7 @@ type UserStore = {
     username: string
     emailAddress: string,
     isActivated: boolean,
+    role: "banned" | "default" | "writer" | "admin"
 }
 
 export default UserStore

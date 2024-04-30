@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { ILike, Like, Repository } from "typeorm";
 import PostModel from "../../../models/domain/Post";
 import IPostRepository from "../../IPostRepository";
 import PostEntity from "../../../models/entity/postgre/PostEntity";
@@ -10,6 +10,7 @@ import PgUserRepository from "./PgUserRepository";
 import UserMapper from "../../../models/mappers/UserMapper";
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
+import PostPreviewDto from "../../../models/dto/posts/PostPreviewDto";
 
 class PgPostRepository implements IPostRepository {
     private postRep: Repository<PostEntity>
@@ -26,7 +27,7 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
-    async getPostById(id: number): Promise<PostModel> {
+    async getPostById(id: string): Promise<PostModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
@@ -62,6 +63,15 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
+    async search(searchStr: string): Promise<PostPreviewDto[]> {
+        const entities = await this.postRep.find({
+            where: {
+                postTitle: ILike(`%${searchStr}%`)
+            }
+        })
+
+        return entities.map(entity => PostMapper.mapPostToPostPreviewDto(entity))
+    }
     async create(input: PostInputDto): Promise<PostModel> {
         const candidate = await this.postRep.findOneBy({
             postTitle: input.postTitle
@@ -76,7 +86,6 @@ class PgPostRepository implements IPostRepository {
             text: input.text,
             imageLink: input.imageLink,
             postLink: input.postLink,
-            comments: [],
             author: UserMapper.mapUserModelToUserShortDto(
                 await PgUserRepository.getUserById(input.authorId)
             )
@@ -85,7 +94,7 @@ class PgPostRepository implements IPostRepository {
         await this.postRep.insert(entity)
         return PostMapper.toDataModel(entity)
     }
-    async update(postId: number, input: PostUpdateDto): Promise<PostLightModel> {
+    async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
         const candidate = await this.postRep.findOneBy({ 
             postTitle: input.postTitle
         })
@@ -108,7 +117,7 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(entity)
     }
-    async delete(id: number): Promise<PostModel> {
+    async delete(id: string): Promise<PostModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }

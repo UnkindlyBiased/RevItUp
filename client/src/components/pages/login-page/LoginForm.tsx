@@ -1,8 +1,10 @@
-import CustomInput from "@/components/generic/misc/CustomInput";
-import useUserStore from "@/store/UserStore";
-import UserLogin from "@/types/data/users/UserLogin";
 import { SubmitHandler, useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom";
+
+import CustomInput from "@/components/generic/CustomInput";
+import useUserStore from "@/store/UserStore";
+import UserLogin from "@/types/data/users/UserLogin";
+import GenericButton from "@/components/generic/GenericButton";
 
 function LoginForm(): React.ReactElement {
     const { register, handleSubmit } = useForm<UserLogin>()
@@ -19,18 +21,16 @@ function LoginForm(): React.ReactElement {
     }
 
     return (
-        <>
-            <div className="flex justify-center items-center flex-col space-y-2 mt-4">
-                <span className="font-medium text-2xl">Login</span>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="flex flex-col space-y-5 items-center">
-                        <CustomInput placeholder="Username" {...register("username")} />
-                        <CustomInput placeholder="Password" type="password" {...register("password")} />
-                        <button type="submit" className="size-fit px-4 py-2 rounded-lg font-semibold">Login</button>
-                    </div>
-                </form>
-            </div>
-        </>
+        <div className="flex justify-center items-center flex-col space-y-2 mt-4">
+            <span className="font-medium text-2xl">Login</span>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex flex-col space-y-5 items-center">
+                    <CustomInput placeholder="Username" {...register("username")} />
+                    <CustomInput placeholder="Password" type="password" {...register("password")} />
+                    <GenericButton type="submit">Login</GenericButton>
+                </div>
+            </form>
+        </div>
     )
 }
 

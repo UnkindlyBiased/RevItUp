@@ -4,9 +4,23 @@ import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { validationResult } from "express-validator";
 
 class CommentController {
-    async getComments(_req: Request, res: Response, _next: NextFunction) {
-        const comments = await CommentService.getComments()
-        return res.send(comments)
+    async getComments(_req: Request, res: Response, next: NextFunction) {
+        try {
+            const comments = await CommentService.getComments()
+            return res.send(comments)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async getCommentsForPost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { postId } = req.params
+            const comments = await CommentService.getCommentsForPost(postId)
+
+            return res.send(comments)
+        } catch(e) {
+            next(e)
+        }
     }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
@@ -18,10 +32,10 @@ class CommentController {
                 })
             }
             
-            const { text, repliedToId } = req.body
+            const { text, repliedToId, postId } = req.body
             const user = req.user
 
-            const comment = await CommentService.create({ text, userId: user.id, repliedToId })
+            const comment = await CommentService.create({ text, userId: user.id, repliedToId, postId })
             return res.status(HttpStatusCodes.UPLOADED).send(comment)
         } catch(e) {
             next(e)

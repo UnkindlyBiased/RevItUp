@@ -35,6 +35,11 @@ class UserService {
         const user = await this.repository.getUserByName(username)
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
+    async getUserById(id: number): Promise<UserDetailedDto> {
+        return UserMapper.mapUserModelToUserDetailedDto(
+            await this.repository.getUserById(id)
+        )
+    }
     async create(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
         UserHelper.trimUserData(candidate)
 
@@ -49,7 +54,7 @@ class UserService {
             country: candidate.country
         })
         await MailService.sendActivationMail(candidate.emailAddress, 
-            `http://localhost:8008/users/activate/${activationLink}`)
+            `http://localhost:${process.env.APP_PORT}/auth/activate/${activationLink}`)
         await SaverService.create(user.id)
 
         return this.generateDtoWithTokens(user)

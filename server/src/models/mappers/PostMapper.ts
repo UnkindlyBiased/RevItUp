@@ -17,8 +17,7 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             imageLink: entity.imageLink,
             postLink: entity.postLink,
             creationDate: entity.creationDate,
-            author: UserMapper.mapUserModelToUserShortDto(entity.author),
-            comments: entity.comments.map(comment => CommentMapper.toDataModel(comment))
+            author: UserMapper.mapUserModelToUserShortDto(entity.author)
         }
     }
     toLightDataModel(entity: PostEntity): PostLightModel {

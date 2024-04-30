@@ -1,4 +1,5 @@
 import PostsSerivce from "@/services/PostsSerivce";
+import UserService from "@/services/UserService";
 import { useQuery } from "@tanstack/react-query";
 
 const useGetPosts = () =>  useQuery({
@@ -17,4 +18,9 @@ const useGetRandomPost = () => useQuery({
     queryFn: () => PostsSerivce.getRandomPost()
 })
 
-export { useGetPosts, useGetPostByLink, useGetRandomPost }
+const useGetSavedPosts = () => useQuery({
+    queryKey: ['saved-posts'],
+    queryFn: () => UserService.getSavedPosts()
+})
+
+export { useGetPosts, useGetPostByLink, useGetRandomPost, useGetSavedPosts }

@@ -17,7 +17,6 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
 
     mapUserModelToUserShortDto(model: UserModel): UserShortDto {
         return {
-            id: model.id,
             username: model.username,
             country: CountryMapper.mapCountryToDto(model.country)
         }
@@ -46,6 +45,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             emailAddress: model.emailAddress,
             biography: model.biography,
             registrationDate: model.registrationDate,
+            isVerified: model.isActivated,
             country: model.country
         }
     }

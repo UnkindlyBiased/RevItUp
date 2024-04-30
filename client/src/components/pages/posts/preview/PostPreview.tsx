@@ -1,7 +1,8 @@
-import PostPreview from "@/types/data/posts/PostPreview"
-import PostTitle from "../PostTitle"
 import { Link } from "react-router-dom"
 import { Suspense } from "react"
+
+import PostPreview from "@/types/data/posts/PostPreview"
+import MainTitle from "../MainTitle"
 
 type PostPreviewCompProps = {
     post: PostPreview
@@ -15,9 +16,9 @@ function PostPreviewComp({ post }: PostPreviewCompProps): React.ReactElement {
             </Suspense>
             <div className="flex flex-col space-y-3">
                 <Link to={`/news/${post.postLink}`}>
-                    <PostTitle className="text-4xl">
+                    <MainTitle className="text-4xl">
                         {post.postTitle}
-                    </PostTitle>
+                    </MainTitle>
                 </Link>
                 <span>{post.previewText}</span>
             </div>

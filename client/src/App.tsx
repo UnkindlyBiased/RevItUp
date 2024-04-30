@@ -10,6 +10,10 @@ import useUserStore from "./store/UserStore"
 import ErrorPage from "./pages/ErrorPage"
 import PostDetailedPage from "./pages/posts/PostOpenedPage"
 import PostsPage from "./pages/posts/PostsPage"
+import UserSavedPosts from "./pages/users/UserSavedPosts"
+import LoggedUserPage from "./pages/users/defined/LoggedUserPage"
+
+const appQueryClient = new QueryClient()
 
 function App() {
     const checkAuth = useUserStore(state => state.checkAuth)
@@ -20,7 +24,6 @@ function App() {
         }
     }, [checkAuth])
 
-    const queryClient = new QueryClient()
     const browserRouter = createBrowserRouter([{
         element: <Container />,
         errorElement: <ErrorPage />,
@@ -40,6 +43,14 @@ function App() {
             {
                 path: '/news/:articleLink',
                 element: <PostDetailedPage />
+            },
+            {
+                path: '/me',
+                element: <LoggedUserPage />
+            },
+            {
+                path: '/me/saved-posts',
+                element: <UserSavedPosts />
             }
         ]
     }])
@@ -47,7 +58,7 @@ function App() {
     return (
         <>
             <ColorModeProvider>
-                <QueryClientProvider client={queryClient}>
+                <QueryClientProvider client={appQueryClient}>
                     <RouterProvider router={browserRouter} />
                 </QueryClientProvider>
             </ColorModeProvider>
@@ -55,4 +66,4 @@ function App() {
     )
 }
 
-export default App
+export { App, appQueryClient }

@@ -1,7 +1,8 @@
-import Logo from "@/components/generic/misc/Logo"
 import { useDocumentTitle } from "@uidotdev/usehooks"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+
+import Logo from "@/components/generic/Logo"
 
 function ErrorPage(): React.ReactElement {
     const navigate = useNavigate()

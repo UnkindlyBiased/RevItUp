@@ -6,4 +6,4 @@ const useGetCountries = () => useQuery({
     queryFn: () => CountryService.getCountries()
 })
 
-export default useGetCountries
+export { useGetCountries }
