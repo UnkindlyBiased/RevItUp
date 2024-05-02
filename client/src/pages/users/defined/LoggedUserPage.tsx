@@ -6,14 +6,18 @@ import { useNavigate } from "react-router-dom"
 
 function LoggedUserPage() {
     const embedUser = useUserStore(state => state.user)
-    const { data: loggedUser, fetchStatus } = useGetUserById(embedUser?.id)
+    const { data: loggedUser } = useGetUserById(embedUser?.id)
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (fetchStatus === 'idle' && !loggedUser) {
-            navigate('/login')
-        }  
-    }, [navigate, fetchStatus, loggedUser])
+        const timeOut = setTimeout(() => {
+            if (!loggedUser) {
+                navigate('/login')
+            }
+        }, 500)
+
+        return () => clearTimeout(timeOut)
+    }, [navigate, loggedUser])
 
     if (loggedUser) return (
         <UserPage user={loggedUser} />

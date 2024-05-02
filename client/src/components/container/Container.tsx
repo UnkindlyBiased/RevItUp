@@ -5,6 +5,7 @@ import { useMemo } from "react"
 import Header from "./header/Header"
 import Footer from "./footer/Footer"
 import { useGetSchema } from "@/hooks/useColorMode"
+import ContentBox from "@/hoc/ContentBox"
 
 function Container(): React.ReactElement {
     const schema = useGetSchema()
@@ -18,7 +19,9 @@ function Container(): React.ReactElement {
         )}>
             {memoHeader}
             <div className="flex-grow">
-                <Outlet />
+                <ContentBox>
+                    <Outlet />
+                </ContentBox>
             </div>
             {memoFooter}
         </div>

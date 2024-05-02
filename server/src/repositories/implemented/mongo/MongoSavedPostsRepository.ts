@@ -30,15 +30,27 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
         await this.savedRep.insert(entity)
         return SavedPostsMapper.toDataModel(entity)
     }
-
-    async delete(userId: number): Promise<SavedPostsModel> {
-        const entity = await this.savedRep.findOneBy({ userId })
-        if (!entity) {
-            throw ApiError.NotFound("This user doesn't exist")
+    async savePost(postId: string, userId: number): Promise<SavedPostsModel> {
+        const userPosts = await this.savedRep.findOneBy({ userId })
+        if (!userPosts) {
+            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
         }
 
-        await this.savedRep.remove(entity)
-        return SavedPostsMapper.toDataModel(entity)
+        userPosts.posts.push(postId)
+        this.savedRep.update(userPosts._id,userPosts)
+
+        return userPosts
+    }
+    async removePost(postId: string, userId: number): Promise<SavedPostsModel> {
+        const userPosts = await this.savedRep.findOneBy({ userId })
+        if (!userPosts) {
+            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
+        }
+
+        userPosts.posts = userPosts.posts.filter(id => id !== postId)
+        this.savedRep.update(userPosts._id,userPosts)
+
+        return userPosts
     }
 }
 

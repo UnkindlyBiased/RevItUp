@@ -1,5 +1,4 @@
 import CommentModel from "../domain/Comment";
-import CommentInputDto from "../dto/comments/CommentInputDto";
 import CommentEntity from "../entity/postgre/CommentEntity";
 import IDataMapper from "../misc/IDataMapper";
 import UserMapper from "./UserMapper";

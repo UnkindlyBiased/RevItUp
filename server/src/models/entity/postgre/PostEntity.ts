@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./UserEntity";
+import CategoryEntity from "./CategoryEntity";
 
 @Entity({ 
     name: "Posts",
@@ -35,4 +36,12 @@ export default class PostEntity {
     })
     @JoinColumn()
     author: UserEntity
+
+    @ManyToOne(() => CategoryEntity, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        eager: true
+    })
+    @JoinColumn()
+    category: CategoryEntity
 }

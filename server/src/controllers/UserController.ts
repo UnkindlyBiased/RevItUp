@@ -130,7 +130,7 @@ class UserController {
     }
     async getSavedPosts(req: Request, res: Response, next: NextFunction) {
         try {
-            const savedPosts = await SaverService.getByUserId(req.user.id)
+            const savedPosts = await SaverService.getUserSavedPosts(req.user.id)
             return res.send(savedPosts)
         } catch(e) {
             next(e)

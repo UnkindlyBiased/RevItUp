@@ -13,18 +13,16 @@ function ErrorPage(): React.ReactElement {
         return () => clearTimeout(timeout)
     }, [navigate])
 
-    useDocumentTitle("REVITUP: 404")
+    useDocumentTitle("REVITUP: Error")
 
     return (
-        <>
-            <div className="flex flex-col h-screen justify-center items-center space-y-8 text-black">
-                <Logo isDark className='w-[38rem]' />
-                <div className='flex flex-col items-center space-y-3'>
-                    <span className="text-5xl font-bold">404 Not Found</span>
-                    <span className="text-3xl font-bold">Redirecting to main page in 3 seconds</span>
-                </div>
+        <div className="flex flex-col h-screen justify-center items-center space-y-8 text-black">
+            <Logo isDark className='w-[38rem]' />
+            <div className='flex flex-col items-center space-y-3'>
+                <span className="text-5xl font-bold">404 Not Found</span>
+                <span className="text-3xl font-bold">Redirecting to main page in 3 seconds</span>
             </div>
-        </>
+        </div>
     )
 }
 

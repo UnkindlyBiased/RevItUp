@@ -11,6 +11,7 @@ import AuthRouter from './src/routers/AuthRouter'
 import CommentRouter from './src/routers/CommentRouter'
 import { connectToCacheClient } from './utils/data/RedisCacheClient'
 import PostRouter from './src/routers/PostRouter'
+import CategoryRouter from './src/routers/CategoryRouter'
 
 config()
 
@@ -30,6 +31,7 @@ app.use('/auth', AuthRouter)
 app.use('/countries', CountryRouter)
 app.use('/posts', PostRouter)
 app.use('/comments', CommentRouter)
+app.use('/categories', CategoryRouter)
 
 // * Error middleware (should be last)
 app.use(errorMiddleware)

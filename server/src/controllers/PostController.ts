@@ -2,11 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
+import SaverService from "../services/SaverService";
 
 class PostController {
-    async getPosts(_req: Request, res: Response, next: NextFunction) {
+    async getPosts(req: Request, res: Response, next: NextFunction) {
         try {
-            const posts = await PostService.getPosts()
+            const { take, skip } = req.query;
+            const posts = await PostService.getPosts({ 
+                take: Number(take) | 0,
+                skip: Number(skip) | 0
+            });
             return res.send(posts)
         } catch(e) {
             next(e)
@@ -37,6 +42,20 @@ class PostController {
             const post = await PostService.getRandomPost()
             return res.send(post)
         } catch (e) {
+            next(e)
+        }
+    }
+    async getPostsByCategoryCode(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { code } = req.params
+            const { take, skip } = req.query
+
+            const posts = await PostService.getPostsByCategoryCode(code, {
+                take: Number(take) | 0,
+                skip: Number(skip) | 0
+            })
+            return res.send(posts)
+        } catch(e) {
             next(e)
         }
     }
@@ -93,6 +112,28 @@ class PostController {
             const post = await PostService.delete(id)
 
             return res.status(HttpStatusCodes.DELETED).send(post)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async savePost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user
+            const { postId } = req.body
+
+            const userPosts = await SaverService.savePost(postId, user.id)
+            return res.send(userPosts)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async removePost(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user
+            const { postId } = req.body
+
+            const userPosts = await SaverService.removePost(postId, user.id)
+            return res.send(userPosts)
         } catch(e) {
             next(e)
         }

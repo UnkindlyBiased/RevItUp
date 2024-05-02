@@ -16,18 +16,16 @@ api.interceptors.request.use(config => {
     return config
 })
 
-api.interceptors.response.use(config => config, async (err) => {
-    const originalRequest = err.config
-
-    if (err.response.code === 401 && err.config && !err.config._isRetry) {
-        originalRequest._isRetry = true
-        
+api.interceptors.response.use((config) => config,async (err) => {
+    const originalRequest = err.config;
+    if (err.response?.status === 401 && err.config) {
         try {
-            const response = await AuthService.refresh()
-            localStorage.setItem('token', response.tokens.accessToken)
-            return api.request(originalRequest)
-        } catch(e) {
-            console.log(e)
+            const response = await AuthService.refresh();
+            localStorage.setItem('accessToken', response.tokens.accessToken);
+            return api.request(originalRequest);
+        } catch (e) {
+            console.log(e);
         }
     }
-})
+    },
+);

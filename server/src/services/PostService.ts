@@ -1,5 +1,6 @@
 import { cacheClient } from "../../utils/data/RedisCacheClient";
 import PostHelper from "../../utils/helpers/PostHelper";
+import PostFindOptions from "../../utils/types/PostFindOptions";
 import PostModel from "../models/domain/Post";
 import PostInputDto from "../models/dto/posts/PostInputDto";
 import PostLightModel from "../models/dto/posts/PostLightModel";
@@ -13,8 +14,8 @@ import IPostRepository from "../repositories/IPostRepository";
 class PostService {
     constructor(private repository: IPostRepository) {}
 
-    async getPosts(): Promise<PostPreviewDto[]> {
-        const posts = await this.repository.getPosts()
+    async getPosts(options: PostFindOptions): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.getPosts(options)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     async getPostById(id: string): Promise<PostModel> {
@@ -35,6 +36,10 @@ class PostService {
     async getRandomPost(): Promise<PostShortDto> {
         const randomPost = await this.repository.getRandomPost()
         return PostMapper.mapPostToPostShortDto(randomPost)
+    }
+    async getPostsByCategoryCode(code: string, options: PostFindOptions): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.getPostsByCategoryCode(code, options)
+        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
         const posts = await this.repository.search(inputStr)

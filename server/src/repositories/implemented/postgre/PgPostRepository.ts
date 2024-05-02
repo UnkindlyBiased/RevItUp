@@ -1,4 +1,4 @@
-import { ILike, Like, Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 import PostModel from "../../../models/domain/Post";
 import IPostRepository from "../../IPostRepository";
 import PostEntity from "../../../models/entity/postgre/PostEntity";
@@ -11,6 +11,7 @@ import UserMapper from "../../../models/mappers/UserMapper";
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
 import PostPreviewDto from "../../../models/dto/posts/PostPreviewDto";
+import PostFindOptions from "../../../../utils/types/PostFindOptions";
 
 class PgPostRepository implements IPostRepository {
     private postRep: Repository<PostEntity>
@@ -19,8 +20,11 @@ class PgPostRepository implements IPostRepository {
         this.postRep = PgDataSource.getRepository(PostEntity)
     }
 
-    async getPosts(): Promise<PostModel[]> {
-        const entities = await this.postRep.find()
+    async getPosts(options: PostFindOptions): Promise<PostModel[]> {
+        const entities = await this.postRep.find({
+            take: options.take,
+            skip: options.skip
+        })
         if (!entities) {
             throw ApiError.NotFound("No posts were found")
         }
@@ -62,6 +66,19 @@ class PgPostRepository implements IPostRepository {
         }
 
         return PostMapper.toLightDataModel(post)
+    }
+    async getPostsByCategoryCode(code: string, options: PostFindOptions): Promise<PostModel[]> {
+        const entities = await this.postRep.find({
+            where: {
+                category: {
+                    categoryCode: code
+                }
+            },
+            take: options.take,
+            skip: options.skip,
+        })
+
+        return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async search(searchStr: string): Promise<PostPreviewDto[]> {
         const entities = await this.postRep.find({

@@ -4,7 +4,7 @@ import PostPreviewDto from "../dto/posts/PostPreviewDto";
 import PostShortDto from "../dto/posts/PostShortDto";
 import PostEntity from "../entity/postgre/PostEntity";
 import IDataMapper from "../misc/IDataMapper";
-import CommentMapper from "./CommentMapper";
+import CategoryMapper from "./CategoryMapper";
 import UserMapper from "./UserMapper";
 
 class PostMapper implements IDataMapper<PostModel, PostEntity> {
@@ -17,7 +17,8 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             imageLink: entity.imageLink,
             postLink: entity.postLink,
             creationDate: entity.creationDate,
-            author: UserMapper.mapUserModelToUserShortDto(entity.author)
+            author: UserMapper.mapUserModelToUserShortDto(entity.author),
+            category: CategoryMapper.mapModelToCategoryShortDto(entity.category)
         }
     }
     toLightDataModel(entity: PostEntity): PostLightModel {
@@ -38,7 +39,8 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             postTitle: model.postTitle,
             previewText: model.previewText,
             imageLink: model.imageLink,
-            postLink: model.postLink
+            postLink: model.postLink,
+            category: model.category
         }
     }
     mapPostToPostShortDto(model: PostModel | PostLightModel): PostShortDto {

@@ -4,11 +4,7 @@ import { Suspense } from "react"
 import PostPreview from "@/types/data/posts/PostPreview"
 import MainTitle from "../MainTitle"
 
-type PostPreviewCompProps = {
-    post: PostPreview
-}
-
-function PostPreviewComp({ post }: PostPreviewCompProps): React.ReactElement {
+function PostPreviewComp({ post }: { post: PostPreview }): React.ReactElement {
     return (
         <div className="flex items-center space-x-4 w-[75%]">
             <Suspense fallback={post.postTitle}>

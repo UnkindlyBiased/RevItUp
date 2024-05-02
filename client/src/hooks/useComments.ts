@@ -4,10 +4,10 @@ import CommentBeloning from "@/types/data/comment/CommentBelonging";
 import CommentInput from "@/types/data/comment/CommentInput";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-const useGetCommentsForPost = (postId: string) => useQuery({
-    queryKey: ['post-comments', postId],
-    queryFn: () => CommentService.getCommentForPost(postId),
-    enabled: !!postId
+const useGetComments = (readableId: string, commentFetchType: CommentBeloning) => useQuery({
+    queryKey: [commentFetchType, readableId],
+    queryFn: () => CommentService.getCommentForPost(readableId),
+    enabled: !!readableId
 })
 
 const useCreateComment = (input: CommentInput, commentFetchType: CommentBeloning) => useMutation({
@@ -19,4 +19,4 @@ const useCreateComment = (input: CommentInput, commentFetchType: CommentBeloning
     }
 })
 
-export { useCreateComment, useGetCommentsForPost }
+export { useCreateComment, useGetComments as useGetCommentsForPost }

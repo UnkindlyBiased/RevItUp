@@ -13,7 +13,7 @@ function RandomPost(): React.ReactNode {
     )
 
     return (
-        <div className={cn('px-8 py-7 flex items-center justify-between space-x-3 mx-12 mt-2 rounded-xl bg-gradient-to-r', schema.randomPostBgGradient)}>
+        <div className={cn('px-8 py-7 flex items-center justify-between space-x-3 rounded-xl bg-gradient-to-r', schema.randomPostBgGradient)}>
             <div className="flex flex-col space-y-5">
                 <span className="font-space-grotesk text-7xl opacity-85">
                     Don't know which post to choose?
