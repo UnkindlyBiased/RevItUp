@@ -45,7 +45,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             emailAddress: model.emailAddress,
             biography: model.biography,
             registrationDate: model.registrationDate,
-            isVerified: model.isActivated,
+            isActivated: model.isActivated,
             country: model.country
         }
     }

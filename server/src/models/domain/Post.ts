@@ -1,6 +1,5 @@
 import CategoryShortDto from "../dto/categories/CategoryShortDto"
 import UserShortDto from "../dto/users/UserShortDto"
-import CategoryModel from "./Category"
 
 export default interface PostModel {
     id: string

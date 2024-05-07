@@ -5,7 +5,7 @@ import { FaUser } from 'react-icons/fa6'
 import useUserStore from '@/store/UserStore'
 
 function UserDropdown(): React.ReactElement {
-    const isAuth = useUserStore(state => state.isAuth)
+    const user = useUserStore(state => state.user)
     const logout = useUserStore(state => state.logout)
 
     const navigate = useNavigate()
@@ -16,7 +16,7 @@ function UserDropdown(): React.ReactElement {
                 <FaUser className='size-6' />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-8">
-                { !isAuth && <>
+                { !user && <>
                     <DropdownMenuItem className='cursor-pointer'>
                         Register
                     </DropdownMenuItem>
@@ -24,7 +24,7 @@ function UserDropdown(): React.ReactElement {
                         Login
                     </DropdownMenuItem>
                 </> }
-                { isAuth && <>
+                { user && <>
                     <DropdownMenuItem onClick={() => navigate('/me')}>
                         Your profile
                     </DropdownMenuItem>
@@ -32,6 +32,14 @@ function UserDropdown(): React.ReactElement {
                         Saved posts
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    { user.role === "writer" || user.role === "admin" && (
+                        <>
+                            <DropdownMenuItem>
+                                Your articles
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                        </>
+                    )}
                     <DropdownMenuItem onClick={logout}>
                         Logout
                     </DropdownMenuItem>

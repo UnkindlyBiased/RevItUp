@@ -1,10 +1,5 @@
-import CategoryShortDto from "../categories/CategoryShortDto"
+import PostModel from "../../domain/Post"
 
-export default interface PostPreviewDto {
-    id: string
-    postTitle: string
-    previewText: string
-    imageLink: string
-    postLink: string
-    category: CategoryShortDto
-}
+type PostPreivewDto = Omit<PostModel, "creationDate" | "author" | "text">
+
+export default PostPreivewDto

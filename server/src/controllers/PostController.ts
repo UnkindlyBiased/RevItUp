@@ -116,6 +116,15 @@ class PostController {
             next(e)
         }
     }
+
+    async getSavedPosts(req: Request, res: Response, next: NextFunction) {
+        try {
+            const savedPosts = await SaverService.getUserSavedPosts(req.user.id)
+            return res.send(savedPosts)
+        } catch(e) {
+            next(e)
+        }
+    }
     async savePost(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user

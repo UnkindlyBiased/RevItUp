@@ -1,3 +1,4 @@
+import CategoryShort from "../category/CategoryShort"
 import UserShort from "../users/UserShort"
 
 type PostDetailed = {
@@ -8,6 +9,7 @@ type PostDetailed = {
     imageLink: string
     creationDate: Date,
     author: UserShort
+    category: CategoryShort
 }
 
 export default PostDetailed

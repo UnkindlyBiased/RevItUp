@@ -1,9 +1,5 @@
-export default interface PostLightModel {
-    id: string
-    postTitle: string
-    previewText: string
-    text: string
-    imageLink: string
-    postLink: string
-    creationDate: Date
-}
+import PostModel from "../../domain/Post";
+
+type PostLightModel = Omit<PostModel, "author" | "category">
+
+export default PostLightModel

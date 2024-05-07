@@ -128,14 +128,6 @@ class UserController {
             next(e)
         }
     }
-    async getSavedPosts(req: Request, res: Response, next: NextFunction) {
-        try {
-            const savedPosts = await SaverService.getUserSavedPosts(req.user.id)
-            return res.send(savedPosts)
-        } catch(e) {
-            next(e)
-        }
-    }
 }
 
 export default new UserController()

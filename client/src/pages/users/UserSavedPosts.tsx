@@ -1,10 +1,10 @@
 import MainTitle from "@/components/pages/posts/MainTitle"
-import PostPreviewComp from "@/components/pages/posts/preview/PostPreview"
+import SavedPost from "@/components/pages/posts/saved/SavedPost"
 import RequireAuth from "@/hoc/RequireAuth"
 import { useGetSavedPosts } from "@/hooks/useGetPosts"
 import { useDocumentTitle } from "@uidotdev/usehooks"
 
-function UserSavedPosts() {
+function UserSavedPostsPage() {
     useDocumentTitle('REVITUP: Saved posts')
     const { data: savedPosts } = useGetSavedPosts()
 
@@ -13,10 +13,10 @@ function UserSavedPosts() {
             <div className="flex flex-col space-y-3">
                 <MainTitle className="text-6xl">Your saved posts</MainTitle>
                 <span className="text-lg">Amount: {savedPosts?.length}</span>
-                {savedPosts ? 
+                {savedPosts?.length ? 
                     <div className="flex flex-col space-y-2">
-                        {savedPosts.map(post => (
-                            <PostPreviewComp key={post.id} post={post} />
+                        {savedPosts.map((post, i) => (
+                            <SavedPost key={i} post={post} />
                         ))}
                     </div> : 
                     <span>No posts saved</span>
@@ -26,4 +26,4 @@ function UserSavedPosts() {
     )
 }
 
-export default UserSavedPosts
+export default UserSavedPostsPage

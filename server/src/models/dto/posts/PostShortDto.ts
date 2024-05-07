@@ -1,4 +1,5 @@
-export default interface PostShortDto {
-    postTitle: string
-    postLink: string
-}
+import PostModel from "../../domain/Post";
+
+type PostShortDto = Pick<PostModel, "postTitle" | "postLink">
+
+export default PostShortDto

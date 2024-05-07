@@ -1,5 +1,5 @@
 import Country from "./Country";
 
-type CountryShort = Omit<Country, "id" | "countryCode">
+type CountryShort = Pick<Country, "name" | "flagImgLink">
 
 export default CountryShort

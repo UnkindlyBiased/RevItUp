@@ -9,13 +9,11 @@ type LogoProps = {
 
 function Logo({ isDark, className }: LogoProps): React.ReactElement {
     return (
-        <>
-            <Link to={'/'} className={className}>
-                <Suspense fallback={'REVITUP logo'}>
-                    <img src="/REVITUP_logo.png" className={cn(isDark && 'invert')} />
-                </Suspense>
-            </Link>
-        </>
+        <Link to={'/'} className={className}>
+            <Suspense fallback={'REVITUP logo'}>
+                <img src="/REVITUP_logo.png" className={cn(isDark && 'invert')} />
+            </Suspense>
+        </Link>
     )
 }
 

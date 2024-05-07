@@ -4,7 +4,7 @@ import { useColorModeStore } from "@/store/ColorModeStore"
 import ChildProp from "@/types/page/ChildProp"
 import ColorMode from "@/types/page/style/ColorMode"
 
-function ColorModeProvider({ children }: ChildProp): React.ReactElement {
+function ColorModeProvider({ children }: ChildProp): React.ReactNode {
     const setMode = useColorModeStore(state => state.setColorMode)
 
     useEffect(() => {
@@ -17,11 +17,7 @@ function ColorModeProvider({ children }: ChildProp): React.ReactElement {
         }
     }, [setMode])
 
-    return (
-        <>
-            {children}
-        </>
-    )
+    return children
 }
 
 export default ColorModeProvider

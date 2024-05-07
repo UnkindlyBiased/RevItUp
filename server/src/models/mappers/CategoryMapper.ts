@@ -12,7 +12,8 @@ class CategoryMapper implements IDataMapper<CategoryModel, CategoryEntity> {
         return {
             categoryName: model.categoryName,
             categoryColor: model.categoryColor,
-            categoryLogo: model.categoryLogo
+            categoryLogo: model.categoryLogo,
+            categoryCode: model.categoryCode
         }
     }
 }

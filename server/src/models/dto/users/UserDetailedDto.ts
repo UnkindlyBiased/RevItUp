@@ -1,11 +1,5 @@
-import CountryModel from "../../domain/Country"
+import UserModel from "../../domain/User"
 
-export default interface UserDetailedDto {
-    id: number
-    username: string
-    emailAddress: string
-    biography: string
-    registrationDate: Date,
-    isVerified: boolean,
-    country: CountryModel
-}
+type UserDetailedDto = Omit<UserModel, "password" | "activationLink" | "role">
+
+export default UserDetailedDto

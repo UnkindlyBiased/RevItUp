@@ -9,7 +9,7 @@ export default interface UserModel {
     emailAddress: string,
     registrationDate: Date,
     isActivated: boolean,
-    activationLink: string | null,
+    activationLink?: string | null,
     role: UserRoles,
     country: CountryModel
 }

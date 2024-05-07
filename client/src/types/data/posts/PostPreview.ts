@@ -1,8 +1,6 @@
-type PostPreview = {
-    id: number
-    postTitle: string
-    previewText: string
-    imageLink: string
+import PostDetailed from "./PostDetailed"
+
+type PostPreview = Omit<PostDetailed, "text" | "creationDate" | "author"> & {
     postLink: string
 }
 

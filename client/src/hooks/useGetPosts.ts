@@ -1,26 +1,34 @@
-import PostsSerivce from "@/services/PostsSerivce";
-import UserService from "@/services/UserService";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-const useGetPosts = () =>  useQuery({
+import PostSerivce from "@/services/PostSerivce";
+import { appQueryClient } from "@/App";
+
+const useGetPosts = (findOptions: string = "") =>  useQuery({
     queryKey: ['posts-all'],
-    queryFn: () => PostsSerivce.getPosts()
+    queryFn: () => PostSerivce.getPosts(findOptions)
 })
 
 const useGetPostByLink = (link: string) => useQuery({
     queryKey: ['post-detailed', link],
-    queryFn: () => PostsSerivce.getPostByLink(link),
+    queryFn: () => PostSerivce.getPostByLink(link),
     enabled: !!link
 })
 
 const useGetRandomPost = () => useQuery({
     queryKey: ['random-post'],
-    queryFn: () => PostsSerivce.getRandomPost()
+    queryFn: () => PostSerivce.getRandomPost()
 })
 
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
-    queryFn: () => UserService.getSavedPosts()
+    queryFn: () => PostSerivce.getSavedPosts()
 })
 
-export { useGetPosts, useGetPostByLink, useGetRandomPost, useGetSavedPosts }
+const useSavePost = (postId: string) => useMutation({
+    mutationFn: () => PostSerivce.savePost(postId),
+    onSuccess: () => {
+        appQueryClient.invalidateQueries({ queryKey: ['saved-posts'] })
+    }
+})
+
+export { useGetPosts, useGetPostByLink, useGetRandomPost, useGetSavedPosts, useSavePost }

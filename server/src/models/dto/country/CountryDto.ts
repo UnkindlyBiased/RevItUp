@@ -1,4 +1,5 @@
-export default interface CountryDto {
-    name: string
-    flagImgLink: string
-}
+import CountryModel from "../../domain/Country";
+
+type CountryDto = Pick<CountryModel, "name" | "flagImgLink">
+
+export default CountryDto

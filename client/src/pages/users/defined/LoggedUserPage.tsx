@@ -1,27 +1,23 @@
 import { useGetUserById } from "@/hooks/useGetUsers"
 import useUserStore from "@/store/UserStore"
 import UserPage from "../UserPage"
-import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
-function LoggedUserPage() {
+function LoggedUserPage(): React.ReactNode {
     const embedUser = useUserStore(state => state.user)
-    const { data: loggedUser } = useGetUserById(embedUser?.id)
+    const { data: loggedUser, isLoading, error } = useGetUserById(embedUser?.id)
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const timeOut = setTimeout(() => {
-            if (!loggedUser) {
-                navigate('/login')
-            }
-        }, 500)
+    if (isLoading) return <p>Is loading...</p>
 
-        return () => clearTimeout(timeOut)
-    }, [navigate, loggedUser])
+    if (error) return <p>Error</p>
 
-    if (loggedUser) return (
-        <UserPage user={loggedUser} />
-    )
+    if (!loggedUser) {
+        navigate('/')
+        return <p>Not logged</p>
+    }
+
+    return <UserPage user={loggedUser} />
 }
 
 export default LoggedUserPage

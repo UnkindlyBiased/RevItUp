@@ -35,10 +35,7 @@ class UserService {
     async update(id: number, userData: UserEdit): Promise<void> {
         await api.put<UserUpdateRequest>(this.ROUTE_PREFIX, {
             id,
-            username: userData.username,
-            password: userData.password,
-            emailAddress: userData.emailAddress,
-            biography: userData.biography
+            ...userData
         })
     }
     async delete(id: number): Promise<void> {
@@ -47,9 +44,6 @@ class UserService {
                 id
             }
         })
-    }
-    async getSavedPosts(): Promise<PostPreview[]> {
-        return (await api.get<PostPreview[]>(`${this.ROUTE_PREFIX}/saved`)).data
     }
 }
 

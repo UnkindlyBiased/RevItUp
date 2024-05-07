@@ -6,7 +6,6 @@ const UserRouter = Router()
 
 // * CRUD routes
 UserRouter.get('/', UserController.getUsers)
-UserRouter.get('/saved', authMiddleware, UserController.getSavedPosts)
 UserRouter.get("/by-id/:id", UserController.getUserById)
 UserRouter.get('/:username', UserController.getUserByName)
 UserRouter.put('/', UserController.update)
