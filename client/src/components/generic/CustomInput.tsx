@@ -1,4 +1,4 @@
-import { ComponentPropsWithRef, forwardRef } from "react"
+import { ComponentPropsWithRef, forwardRef, memo } from "react"
 import { Input } from "../ui/input"
 import { cn } from "@/lib/utils"
 
@@ -10,4 +10,6 @@ const CustomInput = forwardRef<HTMLInputElement, ComponentPropsWithRef<'input'>>
     }
 )
 
-export default CustomInput
+const MemoizedCustomInput = memo(CustomInput)
+
+export default MemoizedCustomInput

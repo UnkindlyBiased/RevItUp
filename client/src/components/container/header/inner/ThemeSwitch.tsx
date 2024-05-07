@@ -1,8 +1,7 @@
 import { Switch } from "@/components/ui/switch"
-import { useColorModeStore } from "@/store/ColorModeStore"
 import { useState } from "react"
 
-import HeaderNavLink from "./HeaderNavLink"
+import { useColorModeStore } from "@/store/ColorModeStore"
 
 function ThemeSwitch(): React.ReactElement {
     const [checked, setChecked] = useState(localStorage.getItem("colorMode") === 'dark')
@@ -17,13 +16,13 @@ function ThemeSwitch(): React.ReactElement {
     }
 
     return (
-        <>
-            <div className="flex items-center space-x-4">
-                <HeaderNavLink children={'Dark theme'} />
-                <Switch className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
-                    checked={checked} onCheckedChange={changeTheme} />
-            </div>
-        </>
+        <div className="flex items-center space-x-4">
+            <span className="font-bold text-lg" children={'Dark theme'} />
+            <Switch 
+                className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
+                checked={checked} 
+                onCheckedChange={changeTheme} />
+        </div>
     )
 }
 

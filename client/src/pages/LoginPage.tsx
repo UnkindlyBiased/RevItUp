@@ -1,7 +1,7 @@
-import LoginForm from "@/components/pages/login-page/LoginForm"
-import CheckLoading from "@/hoc/CheckLoading"
-import useUserStore from "@/store/UserStore"
 import { useDocumentTitle } from "@uidotdev/usehooks"
+
+import LoginForm from "@/components/pages/login-page/LoginForm"
+import useUserStore from "@/store/UserStore"
 
 function LoginPage(): React.ReactNode {
     const isAuth = useUserStore(state => state.isAuth)
@@ -10,9 +10,7 @@ function LoginPage(): React.ReactNode {
 
     return (
         <>
-            <CheckLoading>
-                { isAuth ? <span className="text-xl m-4">You are already logined</span> : <LoginForm /> }
-            </CheckLoading>
+            { isAuth ? <span className="text-xl m-4">You are already logined</span> : <LoginForm /> }
         </>
     )
 }

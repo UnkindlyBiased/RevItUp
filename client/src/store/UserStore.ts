@@ -1,4 +1,5 @@
 import { create } from "zustand";
+
 import UserCreate from "../types/data/users/UserCreate";
 import UserStore from "../types/data/users/UserStore";
 import AuthService from "../services/AuthService";
@@ -20,7 +21,7 @@ interface UserState {
 const useUserStore = create<UserState>((set) => ({
     user: null,
     isAuth: false,
-    isLoading: false,
+    isLoading: true,
 
     setUser: (user) => {
         set({ user })
@@ -42,7 +43,6 @@ const useUserStore = create<UserState>((set) => ({
     },
     login: async (username, password) => {
         try {
-            set({ isLoading: true })
             const response = await AuthService.login(username, password)
 
             localStorage.setItem("token", response.tokens.accessToken)
@@ -61,7 +61,6 @@ const useUserStore = create<UserState>((set) => ({
     },
     checkAuth: async () => {
         try {
-            set({ isLoading: true })
             const response = await AuthService.refresh()
 
             localStorage.setItem('token', response.tokens.accessToken)

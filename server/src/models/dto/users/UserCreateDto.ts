@@ -1,9 +1,5 @@
-import CountryModel from "../../domain/Country"
+import UserModel from "../../domain/User"
 
-export default interface UserCreateDto {
-    username: string
-    password: string
-    emailAddress: string,
-    activationLink?: string | null,
-    country: CountryModel
-}
+type UserCreateDto = Pick<UserModel, "username" | "password" | "emailAddress" | "activationLink" | "country">
+
+export default UserCreateDto

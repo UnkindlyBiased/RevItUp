@@ -1,9 +1,8 @@
-import Country from "../country/Country"
+import CountryShort from "../country/CountryShort"
 
 type UserShort = {
-    id: number,
     username: string,
-    country: Country
+    country: CountryShort
 }
 
 export default UserShort

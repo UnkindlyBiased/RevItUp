@@ -1,5 +1,5 @@
 type ChildProp = {
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 
 export default ChildProp

@@ -1,29 +1,51 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { Link } from 'react-router-dom'
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { useNavigate } from 'react-router-dom'
 import { FaUser } from 'react-icons/fa6'
+
 import useUserStore from '@/store/UserStore'
 
 function UserDropdown(): React.ReactElement {
-    const isAuth = useUserStore(state => state.isAuth)
+    const user = useUserStore(state => state.user)
+    const logout = useUserStore(state => state.logout)
+
+    const navigate = useNavigate()
+    
     return (
-        <>
-            <DropdownMenu>
-                <DropdownMenuTrigger>
-                    <FaUser className='size-6' />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="mr-8">
-                    { !isAuth && <DropdownMenuItem>
-                        <Link to={'/login'}>
-                            <span>Login</span>
-                        </Link>
-                    </DropdownMenuItem> }
-                    { isAuth && <DropdownMenuItem>
-                        <span>Logout</span>
-                    </DropdownMenuItem> }
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </>
+        <DropdownMenu>
+            <DropdownMenuTrigger>
+                <FaUser className='size-6' />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="mr-8">
+                { !user && <>
+                    <DropdownMenuItem className='cursor-pointer'>
+                        Register
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate('/login')}>
+                        Login
+                    </DropdownMenuItem>
+                </> }
+                { user && <>
+                    <DropdownMenuItem onClick={() => navigate('/me')}>
+                        Your profile
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/me/saved-posts')}>
+                        Saved posts
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    { user.role === "writer" || user.role === "admin" && (
+                        <>
+                            <DropdownMenuItem>
+                                Your articles
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                        </>
+                    )}
+                    <DropdownMenuItem onClick={logout}>
+                        Logout
+                    </DropdownMenuItem>
+                </> }
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
 

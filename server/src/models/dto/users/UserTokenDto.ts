@@ -1,9 +1,5 @@
-import UserRoles from "../../../../utils/enums/UserRoles"
+import UserModel from "../../domain/User"
 
-export default interface UserTokenDto {
-    id: number
-    username: string
-    emailAddress: string,
-    isActivated: boolean,
-    role: UserRoles
-}
+type UserTokenDto = Pick<UserModel, "id" | "username" | "emailAddress" | "isActivated" | "role">
+
+export default UserTokenDto

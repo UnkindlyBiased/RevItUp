@@ -14,6 +14,9 @@ export class ApiError extends Error {
     static Unauthorized(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.UNAUTHORIZED, message, errors)
     }
+    static Forbidden(message: string, errors: string[] = []): ApiError {
+        return new ApiError(HttpStatusCodes.FORBIDDEN, message, errors)
+    }
     static NotFound(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.NOT_FOUND, message, errors)
     }
@@ -23,7 +26,7 @@ export class ApiError extends Error {
     static MissingParameters(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.MISSING_PARAMS, message, errors)
     }
-    
+
     showErrorData(): object {
         return {
             status: this.status,

@@ -15,6 +15,7 @@ import UserTokenDto from "../models/dto/users/UserTokenDto"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import TokenService from "./TokenService"
 import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
+import SaverService from "./SaverService"
 
 class UserService {
     constructor(private readonly repository: IUserRepository) {}
@@ -34,6 +35,11 @@ class UserService {
         const user = await this.repository.getUserByName(username)
         return UserMapper.mapUserModelToUserDetailedDto(user)
     }
+    async getUserById(id: number): Promise<UserDetailedDto> {
+        return UserMapper.mapUserModelToUserDetailedDto(
+            await this.repository.getUserById(id)
+        )
+    }
     async create(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
         UserHelper.trimUserData(candidate)
 
@@ -48,7 +54,8 @@ class UserService {
             country: candidate.country
         })
         await MailService.sendActivationMail(candidate.emailAddress, 
-            `http://localhost:8008/users/activate/${activationLink}`)
+            `http://localhost:${process.env.APP_PORT}/auth/activate/${activationLink}`)
+        await SaverService.create(user.id)
 
         return this.generateDtoWithTokens(user)
     }
@@ -68,8 +75,15 @@ class UserService {
         const updatedUser = await this.repository.update(id, updateData)
         return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
     }
-    async delete(id: number): Promise<UserModel> {
-        const userToRemove = await this.repository.delete(id)
+    async delete(id: number, password: string): Promise<UserModel> {
+        const userToRemove = await this.repository.getUserById(id)
+        
+        const arePasswordsEqual = await bcrypt.compare(password, userToRemove.password)
+        if (!arePasswordsEqual) {
+            throw ApiError.Forbidden("Passwords are not equal, not possible to verify your identity")
+        }
+
+        await this.repository.delete(id)
         return userToRemove
     }
 

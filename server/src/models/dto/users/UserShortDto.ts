@@ -1,7 +1,6 @@
-import CountryModel from "../../domain/Country";
+import CountryDto from "../country/CountryDto";
 
 export default interface UserShortDto {
-    id: number,
     username: string,
-    country: CountryModel
+    country: CountryDto
 }

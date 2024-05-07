@@ -24,7 +24,7 @@ module.exports = {
       colors: {
         'light-theme-header': "#e00404",
         'dark-theme-header': '#0a0a0a',
-        'light-theme-text': '#2f2f2f',
+        'light-theme-text': '#3a3a3a',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -80,7 +80,8 @@ module.exports = {
       },
       fontFamily: {
         "manrope": ['Manrope', 'sans-serif'],
-        "space-grotesk": ['Space Grotesk', 'sans-serif']
+        "space-grotesk": ['Space Grotesk', 'sans-serif'],
+        "oswald": ['Oswald', 'sans-serif']
       }
     },
   },

@@ -1,4 +1,4 @@
-import { UserEntity } from "../entity/UserEntity";
+import { UserEntity } from "../entity/postgre/UserEntity";
 import UserCreateDto from "../dto/users/UserCreateDto";
 import UserDetailedDto from "../dto/users/UserDetailedDto";
 import UserEditDto from "../dto/users/UserEditDto";
@@ -6,6 +6,7 @@ import UserShortDto from "../dto/users/UserShortDto";
 import UserModel from "../domain/User";
 import IDataMapper from "../misc/IDataMapper";
 import UserTokenDto from "../dto/users/UserTokenDto";
+import CountryMapper from "./CountryMapper";
 
 class UserMapper implements IDataMapper<UserModel, UserEntity> {
     toDataModel(entity: UserEntity): UserModel {
@@ -16,9 +17,8 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
 
     mapUserModelToUserShortDto(model: UserModel): UserShortDto {
         return {
-            id: model.id,
             username: model.username,
-            country: model.country
+            country: CountryMapper.mapCountryToDto(model.country)
         }
     }
     mapUserModelToUserCreateDto(model: UserModel): UserCreateDto {
@@ -45,6 +45,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             emailAddress: model.emailAddress,
             biography: model.biography,
             registrationDate: model.registrationDate,
+            isActivated: model.isActivated,
             country: model.country
         }
     }

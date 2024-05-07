@@ -1,3 +1,4 @@
+import PostPreview from "@/types/data/posts/PostPreview"
 import { api } from "../api"
 import UserCreate from "../types/data/users/UserCreate"
 import UserDetailed from "../types/data/users/UserDetailed"
@@ -14,32 +15,31 @@ type UserUpdateRequest = {
 }
 
 class UserService {
-    private PREFIX = '/users'
+    private ROUTE_PREFIX = '/users'
 
     async getUsers(): Promise<UserShort[]> {
-        const users = (await api.get<UserShort[]>(this.PREFIX)).data
+        const users = (await api.get<UserShort[]>(this.ROUTE_PREFIX)).data
         return users
     }
     async getUserByUsername(username: string): Promise<UserDetailed> {
-        const userPath = `${this.PREFIX}/${username}`
+        const userPath = `${this.ROUTE_PREFIX}/${username}`
         const user = (await api.get<UserDetailed>(userPath)).data
         return user
     }
-    async create(userData: UserCreate) {
-        await api.post(this.PREFIX, userData)
-        console.log("Done")
+    async getUserById(id: number) {
+        return (await api.get<UserDetailed>(this.ROUTE_PREFIX + `/by-id/${id}`)).data
     }
-    async update(id: number, userData: UserEdit) {
-        await api.put<UserUpdateRequest>(this.PREFIX, {
+    async create(userData: UserCreate): Promise<void> {
+        await api.post(this.ROUTE_PREFIX, userData)
+    }
+    async update(id: number, userData: UserEdit): Promise<void> {
+        await api.put<UserUpdateRequest>(this.ROUTE_PREFIX, {
             id,
-            username: userData.username,
-            password: userData.password,
-            emailAddress: userData.emailAddress,
-            biography: userData.biography
+            ...userData
         })
     }
-    async delete(id: number) {
-        await api.delete<UserDeleteRequest>(this.PREFIX, {
+    async delete(id: number): Promise<void> {
+        await api.delete<UserDeleteRequest>(this.ROUTE_PREFIX, {
             data: {
                 id
             }

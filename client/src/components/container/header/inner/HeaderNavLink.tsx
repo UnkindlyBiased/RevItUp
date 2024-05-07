@@ -1,14 +1,18 @@
+import { cn } from "@/lib/utils"
+import { NavLink } from "react-router-dom"
+
 type HeaderNavLinkProps = {
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    link: string
 }
 
-function HeaderNavLink({ children }: HeaderNavLinkProps) {
+function HeaderNavLink({ children, link }: HeaderNavLinkProps) {
     return (
-        <>
-            <span className="font-bold text-lg cursor-pointer hover:text-xl transition-all">
-                {children}
-            </span>
-        </>
+        <NavLink to={link} className={({ isActive }) => cn(
+            'font-bold text-lg cursor-pointer hover:text-xl transition-all',
+            isActive && 'text-xl')}
+            children={children}
+        />
     )
 }
 

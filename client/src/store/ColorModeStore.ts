@@ -1,5 +1,6 @@
-import ColorMode from "@/types/page/style/ColorMode"
 import { create } from "zustand"
+
+import ColorMode from "@/types/page/style/ColorMode"
 
 type ColorModeState = {
     color: ColorMode,
