@@ -3,6 +3,10 @@ import PostDetailed from "@/types/data/posts/PostDetailed"
 import PostPreview from "@/types/data/posts/PostPreview"
 import PostShort from "@/types/data/posts/PostShort"
 
+type SavedCheckReponse = {
+    response: boolean
+}
+
 class PostService {
     private ROUTE_PREFIX: string = '/posts'
     
@@ -24,6 +28,9 @@ class PostService {
     }
     async removeSavedPost(postId: string): Promise<void> {
         await api.delete(this.ROUTE_PREFIX + '/saved', { data: { postId } })
+    }
+    async checkIfSaved(postId: string): Promise<boolean> {
+        return (await api.post<SavedCheckReponse>(this.ROUTE_PREFIX + '/saved/check', { postId })).data.response
     }
 }
 

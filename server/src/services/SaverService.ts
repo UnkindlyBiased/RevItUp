@@ -20,11 +20,14 @@ class SaverService {
     async create(userId: number): Promise<SavedPostsModel> {
         return this.repository.create(userId)   
     }
-    async savePost(postId: string, userId: number) {
+    async savePost(postId: string, userId: number): Promise<SavedPostsModel> {
         return this.repository.savePost(postId, userId)
     }
-    async removePost(postId: string, userId: number) {
+    async removePost(postId: string, userId: number): Promise<SavedPostsModel> {
         return this.repository.removePost(postId, userId)
+    }
+    async checkIfSaved(postId: string, userId: number): Promise<boolean> {
+        return this.repository.checkIfSaved(postId, userId)
     }
 }
 

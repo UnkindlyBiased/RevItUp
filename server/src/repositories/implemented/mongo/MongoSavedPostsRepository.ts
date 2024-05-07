@@ -52,6 +52,14 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
 
         return userPosts
     }
+    async checkIfSaved(postId: string, userId: number): Promise<boolean> {
+        const userPosts = await this.savedRep.findOneBy({ userId })
+        if (!userPosts) {
+            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
+        }
+
+        return userPosts.posts.includes(postId)
+    }
 }
 
 export default new MongoSavedPostsRepository()

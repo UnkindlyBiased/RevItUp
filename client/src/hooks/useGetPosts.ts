@@ -28,7 +28,29 @@ const useSavePost = (postId: string) => useMutation({
     mutationFn: () => PostSerivce.savePost(postId),
     onSuccess: () => {
         appQueryClient.invalidateQueries({ queryKey: ['saved-posts'] })
+        appQueryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
     }
 })
 
-export { useGetPosts, useGetPostByLink, useGetRandomPost, useGetSavedPosts, useSavePost }
+const useRemoveSavedPost = (postId: string) => useMutation({
+    mutationFn: () => PostSerivce.removeSavedPost(postId),
+    onSuccess: () => {
+        appQueryClient.invalidateQueries({ queryKey: ['saved-posts'] })
+        appQueryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
+    }
+})
+
+const useGetSavedCheck = (postId: string) => useQuery({
+    queryKey: ['saved-check', postId],
+    queryFn: () => PostSerivce.checkIfSaved(postId)
+})
+
+export { 
+    useGetPosts, 
+    useGetPostByLink, 
+    useGetRandomPost, 
+    useGetSavedPosts, 
+    useSavePost, 
+    useRemoveSavedPost, 
+    useGetSavedCheck 
+}

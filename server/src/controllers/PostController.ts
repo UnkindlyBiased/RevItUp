@@ -136,13 +136,24 @@ class PostController {
             next(e)
         }
     }
-    async removePost(req: Request, res: Response, next: NextFunction) {
+    async removeSavedPost(req: Request, res: Response, next: NextFunction) {
         try {
             const user = req.user
             const { postId } = req.body
 
             const userPosts = await SaverService.removePost(postId, user.id)
             return res.send(userPosts)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async checkIfSaved(req: Request, res: Response, next: NextFunction) {
+        try {
+            const user = req.user
+            const { postId } = req.body
+
+            const response = await SaverService.checkIfSaved(postId, user.id)
+            return res.send({ response })
         } catch(e) {
             next(e)
         }

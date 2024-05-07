@@ -5,4 +5,5 @@ export default interface ISavedPostsRepository {
     create: (userId: number) => Promise<SavedPostsModel>
     savePost: (postId: string, userId: number) => Promise<SavedPostsModel>
     removePost: (postId: string, userId: number) => Promise<SavedPostsModel>
+    checkIfSaved: (postId: string, userId: number) => Promise<boolean>
 }

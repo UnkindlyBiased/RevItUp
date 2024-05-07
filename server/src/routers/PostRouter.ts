@@ -18,6 +18,7 @@ PostRouter.put('/', authMiddleware,  PostController.update)
 PostRouter.delete('/', authMiddleware, PostController.delete)
 
 PostRouter.post('/saved', authMiddleware, PostController.savePost)
-PostRouter.delete('/saved', authMiddleware, PostController.removePost)
+PostRouter.delete('/saved', authMiddleware, PostController.removeSavedPost)
+PostRouter.post('/saved/check', authMiddleware, PostController.checkIfSaved)
 
 export default PostRouter
