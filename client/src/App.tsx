@@ -13,6 +13,7 @@ const PostsPage = lazy(() => import("./pages/posts/PostsPage"))
 const PostDetailedPage = lazy(() => import("./pages/posts/PostOpenedPage"))
 const LoggedUserPage = lazy(() => import("./pages/users/defined/LoggedUserPage"))
 const UserSavedPostsPage = lazy(() => import("./pages/users/UserSavedPosts"))
+const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPage"))
 
 const appQueryClient = new QueryClient()
 
@@ -52,6 +53,10 @@ function App() {
             {
                 path: '/me/saved-posts',
                 element: <Suspense children={<UserSavedPostsPage />} />
+            },
+            {
+                path: '/me/written-articles',
+                element: <Suspense children={<UserWrittenPostsPage />} />
             }
         ]
     }])

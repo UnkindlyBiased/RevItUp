@@ -105,24 +105,23 @@ class PgPostRepository implements IPostRepository {
             postLink: input.postLink,
             author: UserMapper.mapUserModelToUserShortDto(
                 await PgUserRepository.getUserById(input.authorId)
-            )
+            ),
+            category: {
+                id: input.categoryId,
+            }
         })
 
         await this.postRep.insert(entity)
+
         return PostMapper.toDataModel(entity)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
-        const candidate = await this.postRep.findOneBy({ 
-            postTitle: input.postTitle
-        })
-        if (candidate) {
-            throw ApiError.Conflict("Post with this title already exists")
-        }
-
         await this.postRep.update(postId, {
             postTitle: input.postTitle,
-            previewText: input.postTitle,
+            previewText: input.previewText,
             text: input.text,
+            postLink: input.postLink,
+            imageLink: input.imageLink
         })
 
         const entity = await this.postRep.preload({

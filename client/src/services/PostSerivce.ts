@@ -1,5 +1,6 @@
 import { api } from "@/api"
 import PostDetailed from "@/types/data/posts/PostDetailed"
+import PostInput from "@/types/data/posts/PostInput"
 import PostPreview from "@/types/data/posts/PostPreview"
 import PostShort from "@/types/data/posts/PostShort"
 
@@ -16,8 +17,21 @@ class PostService {
     async getPostByLink(link: string): Promise<PostDetailed> {
         return (await api.get<PostDetailed>(`${this.ROUTE_PREFIX}/${link}`)).data
     }
+    async getPostById(postId: string): Promise<PostInput> {
+        return (await api.get<PostInput>(this.ROUTE_PREFIX + `/by-id/${postId}`)).data
+    }
     async getRandomPost(): Promise<PostShort> {
         return (await api.get<PostShort>(`${this.ROUTE_PREFIX}/random`)).data
+    }
+    async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
+        await api.put(this.ROUTE_PREFIX, { 
+            id: postId,
+            ...inputData,
+            authorId: userId
+        })
+    }
+    async delete(postId: string) {
+        await api.delete(this.ROUTE_PREFIX, { data: { postId } })
     }
 
     async getSavedPosts(): Promise<PostPreview[]> {

@@ -7,6 +7,9 @@ import Footer from "./footer/Footer"
 import { useGetSchema } from "@/hooks/useColorMode"
 import ContentBox from "@/hoc/ContentBox"
 
+/**
+ * @description A container which **CONTAINS** `<div>` element with header, content (`<Outlet />` element) and footer
+ */
 function Container(): React.ReactElement {
     const schema = useGetSchema()
 

@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  mode: 'jit',
+  safelist: [
+    {pattern: /bg-./},
+  ],
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',

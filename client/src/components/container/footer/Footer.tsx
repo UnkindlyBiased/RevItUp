@@ -14,7 +14,7 @@ function Footer(): React.ReactElement {
                 <Suspense>
                     <img className="w-80" src="/unkindlybiased.png" />
                 </Suspense>
-                <span>(Taras Blyznyuk)</span>
+                <span>(Taras Blyzniuk)</span>
             </div>
             <SocialLinks />
         </footer>

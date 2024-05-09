@@ -17,6 +17,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
 
     mapUserModelToUserShortDto(model: UserModel): UserShortDto {
         return {
+            id: model.id,
             username: model.username,
             country: CountryMapper.mapCountryToDto(model.country)
         }

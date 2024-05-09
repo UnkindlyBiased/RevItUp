@@ -19,8 +19,7 @@ class PostService {
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     async getPostById(id: string): Promise<PostModel> {
-        const post = await this.repository.getPostById(id)
-        return post
+        return this.repository.getPostById(id)
     }
     async getPostByLink(link: string): Promise<PostModel> {
         const cachedPostString = await cacheClient.get(`post-${link}`)
@@ -42,23 +41,21 @@ class PostService {
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
-        const posts = await this.repository.search(inputStr)
-        return posts
+        return this.repository.search(inputStr)
     }
     async create(candidate: PostInputDto): Promise<PostModel> {
         candidate.postLink = PostHelper.putDashes(candidate.postTitle)
-
-        return await this.repository.create(candidate)
+        return this.repository.create(candidate)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
+        await cacheClient.del(`post-${input.postLink}`)
+        input.postLink = PostHelper.putDashes(input.postTitle)
         PostHelper.trimPostData(input)
 
-        const updatedPost = await this.repository.update(postId, input)
-        return updatedPost
+        return this.repository.update(postId, input)
     }
     async delete(id: string): Promise<PostModel> {
-        const post = await this.repository.delete(id)
-        return post
+        return this.repository.delete(id)
     }
 }
 
