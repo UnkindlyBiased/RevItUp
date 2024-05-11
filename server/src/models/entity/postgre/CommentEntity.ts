@@ -2,7 +2,12 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, Pri
 import { UserEntity } from "./UserEntity";
 import PostEntity from "./PostEntity";
 
-@Entity({ name: "Comments" })
+@Entity({ 
+    name: "Comments",
+    orderBy: {
+        "creationDate": "ASC"
+    }
+})
 export default class CommentEntity {
     @PrimaryGeneratedColumn()
     id: number

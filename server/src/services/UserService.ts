@@ -47,11 +47,9 @@ class UserService {
         const activationLink = v4()
 
         const user = await this.repository.create({
-            username: candidate.username,
+            ...candidate,
             password: hashPassword,
-            emailAddress: candidate.emailAddress,
             activationLink,
-            country: candidate.country
         })
         await MailService.sendActivationMail(candidate.emailAddress, 
             `http://localhost:${process.env.APP_PORT}/auth/activate/${activationLink}`)

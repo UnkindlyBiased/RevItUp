@@ -59,6 +59,16 @@ class PostController {
             next(e)
         }
     }
+    async getPostsByAuthorship(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { authorId } = req.params
+
+            const posts = await PostService.getPostsByAuthorship(Number(authorId))
+            return res.send(posts)
+        } catch(e) {
+            next(e)
+        }
+    }
     async search(req: Request, res: Response, next: NextFunction) {
         try {
             const { inputStr } = req.query
@@ -103,10 +113,10 @@ class PostController {
                 text,
                 imageLink,
                 postLink,
-                userId: req.user.id,
+                userId: Number(authorId),
                 categoryId: Number(categoryId)
             })
-            res.send(updatedPost)
+            return res.send(updatedPost)
         } catch(e) {
             next(e)
         }

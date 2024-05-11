@@ -40,6 +40,11 @@ class PostService {
         const posts = await this.repository.getPostsByCategoryCode(code, options)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
+    async getPostsByAuthorship(authorId: number): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.getPostsByAuthorship(authorId)
+
+        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+    }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
         return this.repository.search(inputStr)
     }

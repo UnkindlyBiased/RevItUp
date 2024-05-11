@@ -1,6 +1,7 @@
 import CategoryModel from "../models/domain/Category";
 import CategoryCreateDto from "../models/dto/categories/CategoryCreateDto";
 import CategoryShortDto from "../models/dto/categories/CategoryShortDto";
+import CategoryMapper from "../models/mappers/CategoryMapper";
 import ICategoryRepository from "../repositories/ICategoryRepository";
 import PgCategoryRepository from "../repositories/implemented/postgre/PgCategoryRepository";
 
@@ -9,7 +10,7 @@ class CategoryService {
 
     async getCategories(): Promise<CategoryShortDto[]> {
         const categories = await this.repository.getCategories();
-        return categories
+        return categories.map(category => CategoryMapper.mapModelToCategoryShortDto(category));
     }
     async getByCategoryCode(code: string): Promise<CategoryModel> {
         const category = await this.repository.getByCategoryCode(code)

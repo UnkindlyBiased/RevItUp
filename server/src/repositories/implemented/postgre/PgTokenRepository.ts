@@ -21,9 +21,7 @@ class PgTokenRepository implements ITokenRepository {
         return tokenModels
     }
     async getByUserId(userId: number): Promise<TokenModel> {
-        const entity = await this.tokenRep.findOneBy({ user: {
-            id: userId
-        } })
+        const entity = await this.tokenRep.findOneBy({ user: { id: userId } })
         if (!entity) {
             throw ApiError.NotFound("Refresh token for such user doesn't exist")
         }
@@ -39,22 +37,14 @@ class PgTokenRepository implements ITokenRepository {
         return TokenMapper.toDataModel(entity)
     }
     async create(refreshToken: string, userId: number): Promise<TokenModel> {
-        const candidate = await this.tokenRep.findOne({
-            where: {
-                user: {
-                    id: userId
-                }
-            }
-        })
+        const candidate = await this.tokenRep.findOneBy({ user: { id: userId } })
         if (candidate) {
             return await this.update(candidate.refreshToken, refreshToken)
         }
 
         const entity = this.tokenRep.create({
             refreshToken,
-            user: {
-                id: userId
-            }
+            user: { id: userId }
         })
         await this.tokenRep.insert(entity)
 

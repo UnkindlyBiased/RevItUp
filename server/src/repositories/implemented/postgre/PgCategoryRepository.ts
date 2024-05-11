@@ -15,21 +15,12 @@ class PgCategoryRepository implements ICategoryRepository {
         this.categoryRep = PgDataSource.getRepository(CategoryEntity)
     }
 
-    async getCategories(): Promise<CategoryShortDto[]> {
-        const entities = await this.categoryRep.find({
-            select: {
-                categoryName: true,
-                categoryColor: true,
-                categoryLogo: true,
-                categoryCode: true
-            }
-        })
-        return entities.map(entity => CategoryMapper.mapModelToCategoryShortDto(entity))
+    async getCategories(): Promise<CategoryModel[]> {
+        const entities = await this.categoryRep.find()
+        return entities.map(entity => CategoryMapper.toDataModel(entity))
     }
     async getByCategoryCode(code: string): Promise<CategoryModel> {
-        const entity = await this.categoryRep.findOneBy({ 
-            categoryCode: code 
-        })
+        const entity = await this.categoryRep.findOneBy({ categoryCode: code })
         if (!entity) {
             throw ApiError.NotFound("Post category was not found by such code")
         }
@@ -53,9 +44,7 @@ class PgCategoryRepository implements ICategoryRepository {
         return CategoryMapper.toDataModel(entity)
     }
     async deleteByCategoryCode(code: string): Promise<CategoryModel> {
-        const entity = await this.categoryRep.findOneBy({ 
-            categoryCode: code 
-        })
+        const entity = await this.categoryRep.findOneBy({ categoryCode: code })
         if (!entity) {
             throw ApiError.NotFound("Post category was not found by such code")
         }

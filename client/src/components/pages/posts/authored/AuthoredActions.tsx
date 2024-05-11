@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useGetSchema } from "@/hooks/useColorMode"
 import { useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
 import PostInput from "@/types/data/posts/PostInput"
+import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
     return (
@@ -20,6 +21,10 @@ function AddNewPost(): React.ReactElement {
                 <DialogHeader className="text-xl font-medium">
                     Add new post
                 </DialogHeader>
+                <DialogDescription>
+                    <span>Remember that article's title should be unique</span>
+                </DialogDescription>
+                <DialogFooter></DialogFooter>
             </DialogContent>
         </Dialog>
     )
@@ -28,7 +33,7 @@ function AddNewPost(): React.ReactElement {
 function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
     const { register, setValue, watch } = useForm<PostInput>()
     const { data: postToEdit, refetch } = useGetPostById(postId)
-    const { mutateAsync: editPost, isPending: isMutating } = useEditPost(postId, watch())
+    const { mutateAsync: editPost, isPending: isMutating, isSuccess } = useEditPost(postId, watch())
 
     const handleOpenChange = () => {
         for (const key in postToEdit) {
@@ -41,18 +46,31 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
             <DialogTrigger className="cursor-pointer" onClick={() => refetch()}>
                 <MdEdit size={24} />
             </DialogTrigger>
-            { postToEdit && <DialogContent>
+            { postToEdit && <DialogContent className="max-h-[90%] overflow-y-scroll">
                 <DialogHeader className="font-medium text-xl">Edit the post</DialogHeader>
                 <DialogDescription className="flex flex-col space-y-2">
                     <span>Post ID: {postId}</span>
-                    <Textarea {...register('postTitle')} defaultValue={postToEdit.postTitle} />
-                    <Textarea className="text-black" {...register('previewText')} defaultValue={postToEdit.previewText} />
-                    <Textarea className="text-black h-44" {...register('text')} defaultValue={postToEdit.text} />
-                    <Textarea {...register('imageLink')} defaultValue={postToEdit.imageLink} />
+                    <Textarea
+                        {...register('postTitle', { required: true, minLength: 10 })}
+                        className="text-black h-2"  
+                        defaultValue={postToEdit.postTitle} />
+                    <Textarea
+                        {...register('previewText', { required: true })} 
+                        className="text-black"
+                        defaultValue={postToEdit.previewText} />
+                    <Textarea
+                        {...register('text', { required: true })}
+                        className="text-black h-44"
+                        defaultValue={postToEdit.text} />
+                    <Textarea 
+                        {...register('imageLink', { required: true })} 
+                        defaultValue={postToEdit.imageLink} />
+                    <CategorySelect onValueChange={(value) => setValue("categoryId", value) } />
                 </DialogDescription>
                 <DialogFooter>
                     { isMutating && <span className="opacity-50">Editing</span> }
-                    <button type="submit" onClick={() => { editPost(); editPost() }}>
+                    { isSuccess && <span className="opacity-50">Successfully edited</span> }
+                    <button className="mr-2" type="submit" onClick={() => editPost()}>
                         Save changes
                     </button>
                 </DialogFooter>

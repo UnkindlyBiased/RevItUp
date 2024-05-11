@@ -12,7 +12,7 @@ function RequireAuth({ children }: ChildProp): React.ReactNode {
 
     useEffect(() => {
         if (!isLoading && !isAuth) {
-            navigate('/me/saved-posts')
+            navigate('/login')
         }
     }, [isLoading, isAuth, navigate])
 

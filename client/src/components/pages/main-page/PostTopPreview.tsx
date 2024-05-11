@@ -8,7 +8,7 @@ function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
     return (
         <div className="flex flex-col space-y-2 w-[65%]">
             <img className="w-[75%] rounded-md" src={post.imageLink} />
-            <CategoryWithLink category={post.category} />
+            <CategoryWithLink category={post.category} isLinkable />
             <Link to={`/news/${post.postLink}`}>
                 <MainTitle className="text-6xl">{post.postTitle}</MainTitle>
             </Link>

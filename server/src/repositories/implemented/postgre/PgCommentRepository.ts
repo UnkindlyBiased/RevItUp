@@ -6,7 +6,7 @@ import { ApiError } from "../../../../utils/errors/ApiError";
 import CommentInputDto from "../../../models/dto/comments/CommentInputDto";
 import CommentModel from "../../../models/domain/Comment";
 import CommentMapper from "../../../models/mappers/CommentMapper";
-import PgUserRepository from "./PgUserRepository";
+import CommentShortDto from "../../../models/dto/comments/CommentShortDto";
 
 class PgCommentRepository implements ICommentRepository {
     private commentRep: Repository<PostCommentEntity>
@@ -42,38 +42,28 @@ class PgCommentRepository implements ICommentRepository {
             throw ApiError.NotFound("No ID was not found")
         }
 
-        const entities = await this.commentRep.find({
-            where: {
-                post: {
-                    id: postId
-                }
-            },
-            order: {
-                creationDate: "ASC"
-            }
+        const entities = await this.commentRep.findBy({
+            post: { id: postId }
         })
 
         return entities.map(entity => CommentMapper.toDataModel(entity))
     }
-    async create(data: CommentInputDto): Promise<CommentModel> {
-        const user = await PgUserRepository.getUserById(data.userId)
+    async create(data: CommentInputDto): Promise<CommentShortDto> {
         const entity = this.commentRep.create({ 
             text: data.text,
-            user: {
-                id: data.userId,
-                username: user.username,
-                country: user.country
-            },
-            repliedTo: {
-                id: data.repliedToId?.valueOf()
-            },
-            post: {
-                id: data.postId
-            }
+            user: { id: data.userId },
+            repliedTo: { id: data.repliedToId?.valueOf() },
+            post: { id: data.postId }
         })
 
         await this.commentRep.insert(entity)
-        return CommentMapper.toDataModel(entity)
+
+        const preloadedEntity = await this.commentRep.preload({ id: entity.id })
+        if (!preloadedEntity) {
+            throw ApiError.NotFound("Comment addition was not successfull")
+        }
+
+        return CommentMapper.toShortDto(preloadedEntity)
     }
 }
 

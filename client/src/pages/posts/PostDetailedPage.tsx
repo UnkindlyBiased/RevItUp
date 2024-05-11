@@ -22,9 +22,7 @@ function PostDetailedPage(): React.ReactNode {
 
     useDocumentTitle(`REVITUP: ${post ? post.postTitle : 'Loading'}`)
 
-    if (isLoading) {
-        return <Loading />
-    }
+    if (isLoading) return <Loading />
 
     if (error || !post) return <p>Error</p>
 
@@ -32,7 +30,7 @@ function PostDetailedPage(): React.ReactNode {
         <div className="flex justify-between">
             <div className="flex flex-col w-[75%]">
                 <div className="flex items-center uppercase mb-2 space-x-4">
-                    <CategoryWithLink category={post.category} / >
+                    <CategoryWithLink category={post.category} isLinkable / >
                     <DateSpan date={post.creationDate} />
                 </div>
                 <MainTitle className="mb-3 text-7xl">{post.postTitle}</MainTitle>

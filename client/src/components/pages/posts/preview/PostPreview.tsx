@@ -12,7 +12,7 @@ function PostPreviewComp({ post }: { post: PostPreview }): React.ReactElement {
                 <img className="w-60 rounded-md" src={post.imageLink} />
             </Suspense>
             <div className="flex flex-col space-y-2">
-                <CategoryWithLink category={post.category} />
+                <CategoryWithLink category={post.category} isLinkable />
                 <Link to={`/news/${post.postLink}`}>
                     <MainTitle className="text-4xl">{post.postTitle}</MainTitle>
                 </Link>

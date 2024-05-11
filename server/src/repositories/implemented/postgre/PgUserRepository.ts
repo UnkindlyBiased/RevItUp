@@ -61,7 +61,10 @@ class PgUserRepository implements IUserRepository {
         if (user) {
             throw ApiError.Conflict("This user's data already exists")
         }
-        const newUser = this.userRep.create(candidate)
+        const newUser = this.userRep.create({ 
+            ...candidate,
+            country: { id: candidate.countryId }
+        })
         
         await this.userRep.insert(newUser)
         return UserMapper.toDataModel(newUser)

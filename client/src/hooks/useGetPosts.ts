@@ -27,6 +27,11 @@ const useGetRandomPost = () => useQuery({
     queryFn: () => PostSerivce.getRandomPost()
 })
 
+const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQuery({
+    queryKey: ['authored-posts', authorId],
+    queryFn: () => PostSerivce.getPostsByAuthorship(authorId, options)
+})
+
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
     queryFn: () => PostSerivce.getSavedPosts()
@@ -100,7 +105,8 @@ export {
     useGetPosts, 
     useGetPostByLink, 
     useGetPostById,
-    useGetRandomPost, 
+    useGetRandomPost,
+    useGetPostsByAuthorship, 
     useGetSavedPosts,
     useEditPost,
     useDeletePost,

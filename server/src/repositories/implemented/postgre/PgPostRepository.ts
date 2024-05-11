@@ -5,9 +5,7 @@ import PostEntity from "../../../models/entity/postgre/PostEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import PostMapper from "../../../models/mappers/PostMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
-import PostInputDto from "../../../models/dto/posts/PostInputDto";
-import PgUserRepository from "./PgUserRepository";
-import UserMapper from "../../../models/mappers/UserMapper";
+import PostInputDto from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
 import PostPreviewDto from "../../../models/dto/posts/PostPreviewDto";
@@ -67,12 +65,15 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
+    async getPostsByAuthorship(authorId: number): Promise<PostModel[]> {
+        const entities = await this.postRep.findBy({ author: { id: authorId } })
+
+        return entities.map(post => PostMapper.toDataModel(post))
+    }
     async getPostsByCategoryCode(code: string, options: PostFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
-                category: {
-                    categoryCode: code
-                }
+                category: { categoryCode: code }
             },
             take: options.take,
             skip: options.skip,
@@ -98,17 +99,9 @@ class PgPostRepository implements IPostRepository {
         }
 
         const entity = this.postRep.create({
-            postTitle: input.postTitle,
-            previewText: input.previewText,
-            text: input.text,
-            imageLink: input.imageLink,
-            postLink: input.postLink,
-            author: UserMapper.mapUserModelToUserShortDto(
-                await PgUserRepository.getUserById(input.authorId)
-            ),
-            category: {
-                id: input.categoryId,
-            }
+            ...input,
+            author: { id: input.authorId },
+            category: { id: input.categoryId }
         })
 
         await this.postRep.insert(entity)
@@ -121,12 +114,13 @@ class PgPostRepository implements IPostRepository {
             previewText: input.previewText,
             text: input.text,
             postLink: input.postLink,
-            imageLink: input.imageLink
+            imageLink: input.imageLink,
+            category: {
+                id: input.categoryId
+            }
         })
 
-        const entity = await this.postRep.preload({
-            id: postId
-        })
+        const entity = await this.postRep.preload({ id: postId })
         if (!entity) {
             throw ApiError.NotFound("No such post exists")
         }

@@ -17,7 +17,7 @@ type CommentFieldProps = {
 
 // TODO: make it more flexible and accessable from threads (in the future)
 function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
-    const [commentText, setCommentText] = useState('')
+    const [ commentText, setCommentText ] = useState('')
     const user = useUserStore(state => state.user)
     const schema = useGetSchema()
 

@@ -23,6 +23,9 @@ class PostService {
     async getRandomPost(): Promise<PostShort> {
         return (await api.get<PostShort>(`${this.ROUTE_PREFIX}/random`)).data
     }
+    async getPostsByAuthorship(authorId: number, options: string) {
+        return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
+    }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
         await api.put(this.ROUTE_PREFIX, { 
             id: postId,
