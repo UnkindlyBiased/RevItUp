@@ -1,5 +1,5 @@
 import CategoryModel from "../../domain/Category";
 
-type CategoryShortDto = Pick<CategoryModel, "categoryName" | "categoryColor" | "categoryLogo" | "categoryCode">
+type CategoryShortDto = Omit<CategoryModel, "biography" | "categoryCreationDate">
 
 export default CategoryShortDto

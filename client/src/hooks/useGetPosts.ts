@@ -1,7 +1,9 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import PostSerivce from "@/services/PostSerivce";
-import { appQueryClient } from "@/App";
+import useUserStore from "@/store/UserStore";
+import PostInput from "@/types/data/posts/PostInput";
+import useThemedToast from "./useThemedToast";
 
 const useGetPosts = (findOptions: string = "") =>  useQuery({
     queryKey: ['posts-all'],
@@ -14,42 +16,119 @@ const useGetPostByLink = (link: string) => useQuery({
     enabled: !!link
 })
 
+const useGetPostById = (postId: string | null) => useQuery({
+    queryKey: ['post-by-id', postId],
+    queryFn: () => PostSerivce.getPostById(postId || ''),
+    enabled: !!postId,
+})
+
 const useGetRandomPost = () => useQuery({
     queryKey: ['random-post'],
     queryFn: () => PostSerivce.getRandomPost()
 })
+
+const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQuery({
+    queryKey: ['authored-posts', authorId],
+    queryFn: () => PostSerivce.getPostsByAuthorship(authorId, options)
+})
+
+const useCreatePost = (inputData: PostInput) => {
+    const user = useUserStore(state => state.user)
+
+    const { toast } = useThemedToast()
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ['create-post'],
+        mutationFn: () => PostSerivce.create(inputData),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0] }),
+        onSuccess: () => toast('Post is successfully created')
+    })
+}
+
+const useEditPost = (postId: string, inputData: PostInput) => {
+    const user = useUserStore(state => state.user)
+    const queryClient = useQueryClient()
+    const { toast } = useThemedToast()
+
+    return useMutation({
+        mutationKey: ['edit-post', postId],
+        mutationFn: () => PostSerivce.update(postId, inputData, user?.id || 0),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['posts-all'] })
+            queryClient.invalidateQueries({ queryKey: ['post-by-id', postId] })
+        },
+        onSuccess: () => toast('Successfully updated', 'text')
+    })
+}
+
+const useDeletePost = (postId: string) => {
+    const queryClient = useQueryClient()
+    const { toast } = useThemedToast()
+    const user = useUserStore(state => state.user)
+    
+    return useMutation({
+        mutationKey: ['delete-post'],
+        mutationFn: () => PostSerivce.delete(postId),
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0] })
+            queryClient.invalidateQueries({ queryKey: ["saved-posts"] })
+        },
+        onSuccess: () => toast('Deletion', 'Post was successfully deleted')
+    })
+}
 
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
     queryFn: () => PostSerivce.getSavedPosts()
 })
 
-const useSavePost = (postId: string) => useMutation({
-    mutationFn: () => PostSerivce.savePost(postId),
-    onSuccess: () => {
-        appQueryClient.invalidateQueries({ queryKey: ['saved-posts'] })
-        appQueryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
-    }
-})
+const useSavePost = (postId: string) => {
+    const queryClient = useQueryClient()
 
-const useRemoveSavedPost = (postId: string) => useMutation({
-    mutationFn: () => PostSerivce.removeSavedPost(postId),
-    onSuccess: () => {
-        appQueryClient.invalidateQueries({ queryKey: ['saved-posts'] })
-        appQueryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
-    }
-})
+    return useMutation({
+        mutationKey: ['save-post', postId],
+        mutationFn: () => PostSerivce.savePost(postId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['saved-posts'] })
+            queryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
+        }
+    })
+}
 
-const useGetSavedCheck = (postId: string) => useQuery({
-    queryKey: ['saved-check', postId],
-    queryFn: () => PostSerivce.checkIfSaved(postId)
-})
+const useRemoveSavedPost = (postId: string) => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ['remove-saved-post', postId],
+        mutationFn: () => PostSerivce.removeSavedPost(postId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['saved-posts'] })
+            queryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
+        }
+    })
+}
+
+const useGetSavedCheck = (postId: string) => {
+    const isAuth = useUserStore(state => state.isAuth)
+
+    return useQuery({
+        queryKey: ['saved-check', postId],
+        queryFn: () => PostSerivce.checkIfSaved(postId),
+        enabled: isAuth
+    })
+}
 
 export { 
     useGetPosts, 
     useGetPostByLink, 
-    useGetRandomPost, 
-    useGetSavedPosts, 
+    useGetPostById,
+    useGetRandomPost,
+    useGetPostsByAuthorship, 
+    useGetSavedPosts,
+    useCreatePost,
+    useEditPost,
+    useDeletePost,
     useSavePost, 
     useRemoveSavedPost, 
     useGetSavedCheck 

@@ -4,6 +4,9 @@ import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import CategoryMapper from "../../../models/mappers/CategoryMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
 import ICategoryRepository from "../../ICategoryRepository";
+import CategoryCreateDto from "../../../models/dto/categories/CategoryCreateDto";
+import CategoryModel from "../../../models/domain/Category";
+import CategoryShortDto from "../../../models/dto/categories/CategoryShortDto";
 
 class PgCategoryRepository implements ICategoryRepository {
     private categoryRep: Repository<CategoryEntity>
@@ -12,24 +15,36 @@ class PgCategoryRepository implements ICategoryRepository {
         this.categoryRep = PgDataSource.getRepository(CategoryEntity)
     }
 
-    async getCategories() {
+    async getCategories(): Promise<CategoryModel[]> {
         const entities = await this.categoryRep.find()
         return entities.map(entity => CategoryMapper.toDataModel(entity))
     }
-    async getByCategoryCode(code: string) {
-        const entity = await this.categoryRep.findOneBy({ 
-            categoryCode: code 
-        })
+    async getByCategoryCode(code: string): Promise<CategoryModel> {
+        const entity = await this.categoryRep.findOneBy({ categoryCode: code })
         if (!entity) {
             throw ApiError.NotFound("Post category was not found by such code")
         }
 
         return CategoryMapper.toDataModel(entity)
     }
-    async deleteByCategoryCode(code: string) {
-        const entity = await this.categoryRep.findOneBy({ 
-            categoryCode: code 
+    async create(input: CategoryCreateDto): Promise<CategoryModel> {
+        const candidate = await this.categoryRep.findOne({
+            where: [
+                { categoryName: input.categoryName },
+                { categoryCode: input.categoryCode }
+            ]
         })
+        if (candidate) {
+            throw ApiError.Conflict("Category with this data already exists")
+        }
+
+        const entity = this.categoryRep.create({ ...input })
+        await this.categoryRep.insert(entity)
+
+        return CategoryMapper.toDataModel(entity)
+    }
+    async deleteByCategoryCode(code: string): Promise<CategoryModel> {
+        const entity = await this.categoryRep.findOneBy({ categoryCode: code })
         if (!entity) {
             throw ApiError.NotFound("Post category was not found by such code")
         }

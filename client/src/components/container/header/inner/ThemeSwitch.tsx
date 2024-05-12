@@ -17,7 +17,7 @@ function ThemeSwitch(): React.ReactElement {
 
     return (
         <div className="flex items-center space-x-4">
-            <span className="font-bold text-lg" children={'Dark theme'} />
+            <span className="hidden md:block md:font-bold md:text-lg" children={'Dark theme'} />
             <Switch 
                 className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
                 checked={checked} 

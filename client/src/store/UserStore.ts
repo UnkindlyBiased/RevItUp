@@ -4,7 +4,10 @@ import UserCreate from "../types/data/users/UserCreate";
 import UserStore from "../types/data/users/UserStore";
 import AuthService from "../services/AuthService";
 
-interface UserState {
+/**
+ * Type with definitons of properties and methods for logined user
+ */
+type UserState = {
     user: UserStore | null
     isAuth: boolean
     isLoading: boolean
@@ -18,6 +21,10 @@ interface UserState {
     checkAuth: () => void
 }
 
+/** 
+ * A store which contains the data about the user, loading states
+ * and methods that are needed for work with user (created with Zustand)
+ */
 const useUserStore = create<UserState>((set) => ({
     user: null,
     isAuth: false,

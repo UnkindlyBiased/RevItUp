@@ -3,6 +3,7 @@ import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
 import SaverService from "../services/SaverService";
+import { RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
 
 class PostController {
     async getPosts(req: Request, res: Response, next: NextFunction) {
@@ -59,14 +60,26 @@ class PostController {
             next(e)
         }
     }
-    async search(req: Request, res: Response, next: NextFunction) {
+    async getPostsByAuthorship(req: Request, res: Response, next: NextFunction) {
         try {
-            const { inputStr } = req.query
-            if (!inputStr) {
+            const { authorId } = req.params
+            const { take, skip } = req.query
+
+            const posts = await PostService.getPostsByAuthorship(Number(authorId), {
+                take: Number(take) | 0,
+                skip: Number(skip) | 0
+            })
+            return res.send(posts)
+        } catch(e) {
+            next(e)
+        }
+    }
+    async search(req: RequestWithQuery<{ inputStr: string }>, res: Response, next: NextFunction) {
+        try {
+            if (!req.query.inputStr) {
                 throw ApiError.MissingParameters("No search parameters were given")
             }
-
-            const searchedPosts = await PostService.search(inputStr.toString())
+            const searchedPosts = await PostService.search(req.query.inputStr)
 
             return res.send(searchedPosts)
         } catch(e) {
@@ -75,14 +88,15 @@ class PostController {
     }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { postTitle, previewText, text, imageLink } = req.body
+            const { postTitle, previewText, text, imageLink, categoryId } = req.body
 
             const post = await PostService.create({
                 postTitle,
                 previewText,
                 text,
                 imageLink,
-                authorId: req.user.id
+                authorId: req.user.id,
+                categoryId: Number(categoryId)
             })
             res.send(post)
         } catch(e) {
@@ -91,7 +105,7 @@ class PostController {
     }
     async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id, postTitle, previewText, text, authorId } = req.body
+            const { id, postTitle, previewText, text, imageLink, postLink, authorId, categoryId } = req.body
             if (req.user.id !== Number(authorId)) {
                 throw ApiError.Forbidden("The update can't be done because you're not the author of this article")
             }
@@ -99,17 +113,21 @@ class PostController {
             const updatedPost = await PostService.update(id, {
                 postTitle,
                 previewText,
-                text
+                text,
+                imageLink,
+                postLink,
+                userId: req.user.id,
+                categoryId: Number(categoryId)
             })
-            res.send(updatedPost)
+            return res.send(updatedPost)
         } catch(e) {
             next(e)
         }
     }
     async delete(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id } = req.body
-            const post = await PostService.delete(id)
+            const { postId } = req.body
+            const post = await PostService.delete(postId)
 
             return res.status(HttpStatusCodes.DELETED).send(post)
         } catch(e) {

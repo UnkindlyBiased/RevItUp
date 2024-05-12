@@ -4,6 +4,9 @@ import { FaUser } from 'react-icons/fa6'
 
 import useUserStore from '@/store/UserStore'
 
+/**
+ * Dropdown menu for the header
+ */
 function UserDropdown(): React.ReactElement {
     const user = useUserStore(state => state.user)
     const logout = useUserStore(state => state.logout)
@@ -34,7 +37,7 @@ function UserDropdown(): React.ReactElement {
                     <DropdownMenuSeparator />
                     { user.role === "writer" || user.role === "admin" && (
                         <>
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate('/me/written-articles')}>
                                 Your articles
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

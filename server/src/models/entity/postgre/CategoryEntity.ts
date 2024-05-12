@@ -1,7 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({
-    name: 'Categories'
+    name: 'Categories',
+    orderBy: {
+        "id": "ASC"
+    }
 })
 export default class CategoryEntity {
     @PrimaryGeneratedColumn()

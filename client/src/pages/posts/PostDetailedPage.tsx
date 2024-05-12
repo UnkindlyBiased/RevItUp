@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useMemo } from "react"
+import { Suspense, useMemo } from "react"
 import { useParams } from "react-router-dom"
 import { useDocumentTitle } from "@uidotdev/usehooks"
 
@@ -15,26 +15,22 @@ import { RemoveSavedButton, SaveButton } from "@/components/pages/posts/saved/Sa
 
 function PostDetailedPage(): React.ReactNode {
     const { articleLink } = useParams()
-    const { data: post, isLoading } = useGetPostByLink(articleLink || '')
-    const { data: isSaved } = useGetSavedCheck('9ac3d4f2-773d-4056-9bbb-b6ff83c816ae')
+    const { data: post, isLoading, error } = useGetPostByLink(articleLink || '')
+    const { data: isSaved } = useGetSavedCheck(post?.id || '')
 
     const memoizedCommentUpload = useMemo(() => post && <CommentUpload readableId={post.id} />, [post])
 
-    useEffect(() => {
-        console.log(isSaved)
-    }, [isSaved])
-
     useDocumentTitle(`REVITUP: ${post ? post.postTitle : 'Loading'}`)
 
-    if (isLoading || !post) {
-        return <Loading />
-    }
+    if (isLoading) return <Loading />
+
+    if (error || !post) return <p>Error</p>
 
     return (
         <div className="flex justify-between">
             <div className="flex flex-col w-[75%]">
                 <div className="flex items-center uppercase mb-2 space-x-4">
-                    <CategoryWithLink category={post.category} / >
+                    <CategoryWithLink category={post.category} isLinkable / >
                     <DateSpan date={post.creationDate} />
                 </div>
                 <MainTitle className="mb-3 text-7xl">{post.postTitle}</MainTitle>

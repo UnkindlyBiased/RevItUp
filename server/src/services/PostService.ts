@@ -18,9 +18,8 @@ class PostService {
         const posts = await this.repository.getPosts(options)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
-    async getPostById(id: string): Promise<PostModel> {
-        const post = await this.repository.getPostById(id)
-        return post
+    async getPostById(id: string): Promise<PostLightModel> {
+        return this.repository.getPostById(id)
     }
     async getPostByLink(link: string): Promise<PostModel> {
         const cachedPostString = await cacheClient.get(`post-${link}`)
@@ -41,24 +40,29 @@ class PostService {
         const posts = await this.repository.getPostsByCategoryCode(code, options)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
+    async getPostsByAuthorship(authorId: number, options: PostFindOptions): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.getPostsByAuthorship(authorId, options)
+
+        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+    }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
         const posts = await this.repository.search(inputStr)
-        return posts
+        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     async create(candidate: PostInputDto): Promise<PostModel> {
         candidate.postLink = PostHelper.putDashes(candidate.postTitle)
-
-        return await this.repository.create(candidate)
+        return this.repository.create(candidate)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
+        await cacheClient.del(`post-${input.postLink}`)
+        
+        input.postLink = PostHelper.putDashes(input.postTitle)
         PostHelper.trimPostData(input)
 
-        const updatedPost = await this.repository.update(postId, input)
-        return updatedPost
+        return this.repository.update(postId, input)
     }
     async delete(id: string): Promise<PostModel> {
-        const post = await this.repository.delete(id)
-        return post
+        return this.repository.delete(id)
     }
 }
 

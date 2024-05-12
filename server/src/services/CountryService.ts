@@ -6,12 +6,13 @@ class CountryService {
     constructor(private repository: ICountryRepository) {  }
 
     async getCountries(): Promise<CountryModel[]> {
-        const countries = await this.repository.getCountries()
-        return countries
+        return this.repository.getCountries()
+    }
+    async getCountryById(id: number): Promise<CountryModel> {
+        return this.repository.getById(id)
     }
     async getCountryByCode(code: string): Promise<CountryModel> {
-        const country = await this.repository.getByCode(code)
-        return country
+        return this.repository.getByCode(code)
     }
 }
 

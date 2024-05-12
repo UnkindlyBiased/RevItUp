@@ -18,15 +18,15 @@ class PgCountryRepository implements ICountryRepository {
         return countries.map(country => CountryMapper.toDataModel(country))
     }
     async getById(id: number): Promise<CountryModel> {
-        throw new Error("Method not implemented.");
+        const entity = await this.countryRep.findOneBy({ id })
+        if (!entity) {
+            throw ApiError.NotFound('Such country was not found')
+        }
+
+        return CountryMapper.toDataModel(entity)
     }
     async getByCode(code: string): Promise<CountryModel> {
-        const country = await this.countryRep.findOne({
-            where: {
-                countryCode: code
-            },
-            relations: ['users']
-        })
+        const country = await this.countryRep.findOneBy({ countryCode: code })
         if (!country) {
             throw ApiError.NotFound("Country with this code was not found")
         }

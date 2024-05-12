@@ -10,13 +10,13 @@ import ErrorPage from "./pages/ErrorPage"
 const MainPage = lazy(() => import("./pages/MainPage"))
 const LoginPage = lazy(() => import("./pages/LoginPage"))
 const PostsPage = lazy(() => import("./pages/posts/PostsPage"))
-const PostDetailedPage = lazy(() => import("./pages/posts/PostOpenedPage"))
+const PostDetailedPage = lazy(() => import("./pages/posts/PostDetailedPage"))
 const LoggedUserPage = lazy(() => import("./pages/users/defined/LoggedUserPage"))
 const UserSavedPostsPage = lazy(() => import("./pages/users/UserSavedPosts"))
-
-const appQueryClient = new QueryClient()
+const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPage"))
 
 function App() {
+    const queryClient = new QueryClient()
     const checkAuth = useUserStore(state => state.checkAuth)
 
     useEffect(() => {
@@ -52,17 +52,21 @@ function App() {
             {
                 path: '/me/saved-posts',
                 element: <Suspense children={<UserSavedPostsPage />} />
+            },
+            {
+                path: '/me/written-articles',
+                element: <Suspense children={<UserWrittenPostsPage />} />
             }
         ]
     }])
 
     return (
         <ColorModeProvider>
-            <QueryClientProvider client={appQueryClient}>
+            <QueryClientProvider client={queryClient}>
                 <RouterProvider router={browserRouter} />
             </QueryClientProvider>
         </ColorModeProvider>
     )
 }
 
-export { App, appQueryClient }
+export default App

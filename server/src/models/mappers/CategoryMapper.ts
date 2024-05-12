@@ -10,6 +10,7 @@ class CategoryMapper implements IDataMapper<CategoryModel, CategoryEntity> {
 
     mapModelToCategoryShortDto(model: CategoryModel): CategoryShortDto {
         return {
+            id: model.id,
             categoryName: model.categoryName,
             categoryColor: model.categoryColor,
             categoryLogo: model.categoryLogo,

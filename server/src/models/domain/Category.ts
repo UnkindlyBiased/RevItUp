@@ -4,4 +4,6 @@ export default interface CategoryModel {
     categoryColor: string
     categoryLogo: string
     categoryCode: string
+    biography: string
+    categoryCreationDate: number
 }

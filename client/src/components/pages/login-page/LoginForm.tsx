@@ -7,10 +7,11 @@ import UserLogin from "@/types/data/users/UserLogin";
 import GenericButton from "@/components/generic/GenericButton";
 
 function LoginForm(): React.ReactElement {
-    const { register, handleSubmit } = useForm<UserLogin>()
+    const { register, handleSubmit, formState: { isValid } } = useForm<UserLogin>()
     const login = useUserStore(state => state.login)
     const navigate = useNavigate()
     
+    // TODO: redo this crap (login)
     const onSubmit: SubmitHandler<UserLogin> = (data) => {
         try {
             login(data.username, data.password)
@@ -25,9 +26,9 @@ function LoginForm(): React.ReactElement {
             <span className="font-medium text-2xl">Login</span>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col space-y-5 items-center">
-                    <CustomInput placeholder="Username" {...register("username")} />
-                    <CustomInput placeholder="Password" type="password" {...register("password")} />
-                    <GenericButton type="submit">Login</GenericButton>
+                    <CustomInput placeholder="Username" {...register("username", { required: true })} />
+                    <CustomInput placeholder="Password" type="password" {...register("password", { required: true })} />
+                    <GenericButton disabled={!isValid} type="submit">Login</GenericButton>
                 </div>
             </form>
         </div>

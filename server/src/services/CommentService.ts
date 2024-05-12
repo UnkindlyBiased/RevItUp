@@ -1,6 +1,6 @@
-import { cacheClient } from "../../utils/data/RedisCacheClient";
 import CommentModel from "../models/domain/Comment";
 import CommentInputDto from "../models/dto/comments/CommentInputDto";
+import CommentShortDto from "../models/dto/comments/CommentShortDto";
 import ICommentRepository from "../repositories/ICommentRepository";
 import PgCommentRepository from "../repositories/implemented/postgre/PgCommentRepository";
 
@@ -8,18 +8,15 @@ class CommentService {
     constructor(private repository: ICommentRepository) {}
 
     async getComments(): Promise<CommentModel[]> {
-        const comments = await this.repository.getComments();
-        await cacheClient.set('comments-test', JSON.stringify(comments), { EX: 60 * 5 })
-
-        return comments
+        return this.repository.getComments();
     }
+    // TODO: add comments' retrieval from cache
     async getCommentsForPost(postId: string): Promise<CommentModel[]> {
-        const postComments = await this.repository.getCommentsForPost(postId)
-        return postComments
+        return this.repository.getCommentsForPost(postId)
     }
-    async create(data: CommentInputDto): Promise<CommentModel> {
-        const comment = await this.repository.create(data)
-        return comment
+    // TODO: add removal of cached comments
+    async create(data: CommentInputDto): Promise<CommentShortDto> {
+        return this.repository.create(data)
     }
 }
 

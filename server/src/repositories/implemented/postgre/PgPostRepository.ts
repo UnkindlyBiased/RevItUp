@@ -5,12 +5,9 @@ import PostEntity from "../../../models/entity/postgre/PostEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import PostMapper from "../../../models/mappers/PostMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
-import PostInputDto from "../../../models/dto/posts/PostInputDto";
-import PgUserRepository from "./PgUserRepository";
-import UserMapper from "../../../models/mappers/UserMapper";
+import PostInputDto from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
-import PostPreviewDto from "../../../models/dto/posts/PostPreviewDto";
 import PostFindOptions from "../../../../utils/types/PostFindOptions";
 
 class PgPostRepository implements IPostRepository {
@@ -31,7 +28,8 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
-    async getPostById(id: string): Promise<PostModel> {
+    // ! For editing purposes
+    async getPostById(id: string): Promise<PostLightModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
@@ -41,9 +39,9 @@ class PgPostRepository implements IPostRepository {
             throw ApiError.NotFound("Such post doesn't exist")
         }
 
-        return PostMapper.toDataModel(entity)
+        return PostMapper.toLightDataModel(entity)
     }
-    async getPostByLink(link: string) {
+    async getPostByLink(link: string): Promise<PostModel> {
         if (!link) {
             throw ApiError.MissingParameters("No link was given")
         }
@@ -67,12 +65,23 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
+    async getPostsByAuthorship(authorId: number, options: PostFindOptions): Promise<PostModel[]> {
+        const entities = await this.postRep.find({
+            where: {
+                author: {
+                    id: authorId
+                }
+            },
+            take: options.take,
+            skip: options.skip
+        })
+
+        return entities.map(post => PostMapper.toDataModel(post))
+    }
     async getPostsByCategoryCode(code: string, options: PostFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
-                category: {
-                    categoryCode: code
-                }
+                category: { categoryCode: code }
             },
             take: options.take,
             skip: options.skip,
@@ -80,14 +89,14 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
-    async search(searchStr: string): Promise<PostPreviewDto[]> {
+    async search(searchStr: string): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
                 postTitle: ILike(`%${searchStr}%`)
             }
         })
 
-        return entities.map(entity => PostMapper.mapPostToPostPreviewDto(entity))
+        return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async create(input: PostInputDto): Promise<PostModel> {
         const candidate = await this.postRep.findOneBy({
@@ -98,36 +107,28 @@ class PgPostRepository implements IPostRepository {
         }
 
         const entity = this.postRep.create({
-            postTitle: input.postTitle,
-            previewText: input.previewText,
-            text: input.text,
-            imageLink: input.imageLink,
-            postLink: input.postLink,
-            author: UserMapper.mapUserModelToUserShortDto(
-                await PgUserRepository.getUserById(input.authorId)
-            )
+            ...input,
+            author: { id: input.authorId },
+            category: { id: input.categoryId }
         })
 
         await this.postRep.insert(entity)
+
         return PostMapper.toDataModel(entity)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
-        const candidate = await this.postRep.findOneBy({ 
-            postTitle: input.postTitle
-        })
-        if (candidate) {
-            throw ApiError.Conflict("Post with this title already exists")
-        }
-
         await this.postRep.update(postId, {
             postTitle: input.postTitle,
-            previewText: input.postTitle,
+            previewText: input.previewText,
             text: input.text,
+            postLink: input.postLink,
+            imageLink: input.imageLink,
+            category: {
+                id: input.categoryId
+            }
         })
 
-        const entity = await this.postRep.preload({
-            id: postId
-        })
+        const entity = await this.postRep.preload({ id: postId })
         if (!entity) {
             throw ApiError.NotFound("No such post exists")
         }

@@ -44,12 +44,12 @@ class UserController {
                 })
             }
 
-            const { username, password, emailAddress, country } = req.body
+            const { username, password, emailAddress, countryId } = req.body
             const user = await UserService.create({
                 username,
                 password,
                 emailAddress,
-                country
+                countryId: Number(countryId)
             })
 
             TokenHelper.putCookie(user.tokens.refreshToken, res)
