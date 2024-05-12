@@ -8,7 +8,6 @@ import { ApiError } from "../../../../utils/errors/ApiError";
 import PostInputDto from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
-import PostPreviewDto from "../../../models/dto/posts/PostPreviewDto";
 import PostFindOptions from "../../../../utils/types/PostFindOptions";
 
 class PgPostRepository implements IPostRepository {

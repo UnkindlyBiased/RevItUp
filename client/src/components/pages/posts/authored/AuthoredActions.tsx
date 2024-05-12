@@ -6,13 +6,16 @@ import { useForm } from "react-hook-form"
 import { Textarea } from "@/components/ui/textarea"
 
 import { useGetSchema } from "@/hooks/useColorMode"
-import { useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
+import { useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
 import PostInput from "@/types/data/posts/PostInput"
 import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
+    const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
+    const { mutateAsync: createPost } = useCreatePost(watch())
+
     return (
-        <Dialog>
+        <Dialog onOpenChange={() => reset()}>
             <DialogTrigger className="text-white bg-light-theme-header h-fit px-4 py-3 rounded-lg flex space-x-2 items-center">
                 <MdAddCircle size={20} />
                 <span className="font-medium">Add a post</span>
@@ -21,17 +24,35 @@ function AddNewPost(): React.ReactElement {
                 <DialogHeader className="text-xl font-medium">
                     Add new post
                 </DialogHeader>
-                <DialogDescription>
+                <DialogDescription className="space-y-2">
                     <span>Remember that article's title should be unique</span>
+                    <Textarea
+                        {...register('postTitle', { required: true, minLength: 15 })}
+                        placeholder="Article's title" />
+                    <Textarea
+                        {...register('previewText', { required: true })}
+                        placeholder="Article's placeholder text. Should be short and engaging" />
+                    <Textarea
+                        {...register('text', { required: true })}
+                        placeholder="Article's text" />
+                    <Textarea
+                        {...register('imageLink', { required: true })}
+                        placeholder="Article's main image link. Placeholder for Firebase implementation" />
+                    <CategorySelect
+                        onValueChange={(value) => setValue('categoryId', value)} />
                 </DialogDescription>
-                <DialogFooter></DialogFooter>
+                <DialogFooter>
+                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId)}>
+                        Add post
+                    </button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )
 }
 
 function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
-    const { register, setValue, watch, reset } = useForm<PostInput>()
+    const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
 
     const { data: postToEdit, refetch } = useGetPostById(postId)
     const { mutateAsync: editPost, isPending: isMutating } = useEditPost(postId, watch())
@@ -58,13 +79,12 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
                         {...register('imageLink', { required: true })} 
                         defaultValue={postToEdit.imageLink} />
                     <CategorySelect
-                        {...register('categoryId', { required: true })}
                         defaultValue={`${postToEdit.category.id}`}
                         onValueChange={(value) => setValue("categoryId", value) } />
                 </DialogDescription>
                 <DialogFooter>
                     { isMutating && <span className="opacity-50">Editing</span> }
-                    <button className="mr-2" onClick={() => editPost()}>
+                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => editPost()} disabled={!(isValid && watch().categoryId)}>
                         Save changes
                     </button>
                 </DialogFooter>

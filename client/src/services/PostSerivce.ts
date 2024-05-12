@@ -26,6 +26,9 @@ class PostService {
     async getPostsByAuthorship(authorId: number, options: string) {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
     }
+    async create(inputData: PostInput): Promise<void> {
+        await api.post(this.ROUTE_PREFIX, inputData)
+    }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
         console.log(inputData)
         await api.put(this.ROUTE_PREFIX, { 
@@ -34,7 +37,7 @@ class PostService {
             authorId: userId
         })
     }
-    async delete(postId: string) {
+    async delete(postId: string): Promise<void> {
         await api.delete(this.ROUTE_PREFIX, { data: { postId } })
     }
 

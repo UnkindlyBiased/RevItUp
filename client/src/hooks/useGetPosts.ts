@@ -32,10 +32,19 @@ const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQ
     queryFn: () => PostSerivce.getPostsByAuthorship(authorId, options)
 })
 
-const useGetSavedPosts = () => useQuery({
-    queryKey: ['saved-posts'],
-    queryFn: () => PostSerivce.getSavedPosts()
-})
+const useCreatePost = (inputData: PostInput) => {
+    const user = useUserStore(state => state.user)
+
+    const { toast } = useThemedToast()
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationKey: ['create-post'],
+        mutationFn: () => PostSerivce.create(inputData),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0] }),
+        onSuccess: () => toast('Post is successfully created')
+    })
+}
 
 const useEditPost = (postId: string, inputData: PostInput) => {
     const user = useUserStore(state => state.user)
@@ -49,28 +58,30 @@ const useEditPost = (postId: string, inputData: PostInput) => {
             queryClient.invalidateQueries({ queryKey: ['posts-all'] })
             queryClient.invalidateQueries({ queryKey: ['post-by-id', postId] })
         },
-        onSuccess: () => {
-            toast('Successfully updated', 'text')
-        }
+        onSuccess: () => toast('Successfully updated', 'text')
     })
 }
 
 const useDeletePost = (postId: string) => {
     const queryClient = useQueryClient()
     const { toast } = useThemedToast()
+    const user = useUserStore(state => state.user)
     
     return useMutation({
         mutationKey: ['delete-post'],
         mutationFn: () => PostSerivce.delete(postId),
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ['posts-all'] })
+            queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0] })
             queryClient.invalidateQueries({ queryKey: ["saved-posts"] })
         },
-        onSuccess: () => {
-            toast('Deletion', 'Post was successfully deleted')
-        }
+        onSuccess: () => toast('Deletion', 'Post was successfully deleted')
     })
 }
+
+const useGetSavedPosts = () => useQuery({
+    queryKey: ['saved-posts'],
+    queryFn: () => PostSerivce.getSavedPosts()
+})
 
 const useSavePost = (postId: string) => {
     const queryClient = useQueryClient()
@@ -115,6 +126,7 @@ export {
     useGetRandomPost,
     useGetPostsByAuthorship, 
     useGetSavedPosts,
+    useCreatePost,
     useEditPost,
     useDeletePost,
     useSavePost, 

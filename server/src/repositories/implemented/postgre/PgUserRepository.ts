@@ -16,9 +16,7 @@ class PgUserRepository implements IUserRepository {
     }
     
     async getUsers(): Promise<UserModel[]> {
-        const users = await this.userRep.find({
-            relations: ['country']
-        })
+        const users = await this.userRep.find()
 
         return users.map(user => UserMapper.toDataModel(user))
     }
@@ -31,10 +29,7 @@ class PgUserRepository implements IUserRepository {
         return UserMapper.toDataModel(user)
     }
     async getUserByName(username: string): Promise<UserModel> {
-        const user = await this.userRep.findOne({
-            where: { username },
-            relations: ['country']
-        })
+        const user = await this.userRep.findOneBy({ username })
         if (!user) {
             throw ApiError.NotFound("User with this name doesn't exist")
         }
@@ -54,8 +49,7 @@ class PgUserRepository implements IUserRepository {
             where: [
                 { username: candidate.username },
                 { emailAddress: candidate.emailAddress }
-            ],
-            relations: ['country']
+            ]
         })
 
         if (user) {
