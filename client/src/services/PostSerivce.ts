@@ -17,8 +17,8 @@ class PostService {
     async getPostByLink(link: string): Promise<PostDetailed> {
         return (await api.get<PostDetailed>(`${this.ROUTE_PREFIX}/${link}`)).data
     }
-    async getPostById(postId: string): Promise<PostInput> {
-        return (await api.get<PostInput>(this.ROUTE_PREFIX + `/by-id/${postId}`)).data
+    async getPostById(postId: string): Promise<PostDetailed> {
+        return (await api.get<PostDetailed>(this.ROUTE_PREFIX + `/by-id/${postId}`)).data
     }
     async getRandomPost(): Promise<PostShort> {
         return (await api.get<PostShort>(`${this.ROUTE_PREFIX}/random`)).data
@@ -27,6 +27,7 @@ class PostService {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
     }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
+        console.log(inputData)
         await api.put(this.ROUTE_PREFIX, { 
             id: postId,
             ...inputData,

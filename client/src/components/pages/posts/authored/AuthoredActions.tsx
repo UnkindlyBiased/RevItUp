@@ -31,18 +31,13 @@ function AddNewPost(): React.ReactElement {
 }
 
 function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
-    const { register, setValue, watch } = useForm<PostInput>()
-    const { data: postToEdit, refetch } = useGetPostById(postId)
-    const { mutateAsync: editPost, isPending: isMutating, isSuccess } = useEditPost(postId, watch())
+    const { register, setValue, watch, reset } = useForm<PostInput>()
 
-    const handleOpenChange = () => {
-        for (const key in postToEdit) {
-            setValue(key as keyof PostInput, postToEdit[key as keyof PostInput])
-        }
-    }
+    const { data: postToEdit, refetch } = useGetPostById(postId)
+    const { mutateAsync: editPost, isPending: isMutating } = useEditPost(postId, watch())
 
     return (
-        <Dialog onOpenChange={handleOpenChange}>
+        <Dialog onOpenChange={() => reset()}>
             <DialogTrigger className="cursor-pointer" onClick={() => refetch()}>
                 <MdEdit size={24} />
             </DialogTrigger>
@@ -52,25 +47,24 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
                     <span>Post ID: {postId}</span>
                     <Textarea
                         {...register('postTitle', { required: true, minLength: 10 })}
-                        className="text-black h-2"  
                         defaultValue={postToEdit.postTitle} />
                     <Textarea
                         {...register('previewText', { required: true })} 
-                        className="text-black"
                         defaultValue={postToEdit.previewText} />
                     <Textarea
                         {...register('text', { required: true })}
-                        className="text-black h-44"
                         defaultValue={postToEdit.text} />
                     <Textarea 
                         {...register('imageLink', { required: true })} 
                         defaultValue={postToEdit.imageLink} />
-                    <CategorySelect onValueChange={(value) => setValue("categoryId", value) } />
+                    <CategorySelect
+                        {...register('categoryId', { required: true })}
+                        defaultValue={`${postToEdit.category.id}`}
+                        onValueChange={(value) => setValue("categoryId", value) } />
                 </DialogDescription>
                 <DialogFooter>
                     { isMutating && <span className="opacity-50">Editing</span> }
-                    { isSuccess && <span className="opacity-50">Successfully edited</span> }
-                    <button className="mr-2" type="submit" onClick={() => editPost()}>
+                    <button className="mr-2" onClick={() => editPost()}>
                         Save changes
                     </button>
                 </DialogFooter>

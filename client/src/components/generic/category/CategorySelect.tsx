@@ -1,26 +1,23 @@
 import { Select, SelectContent, SelectGroup, SelectTrigger, SelectValue, SelectItem } from "@/components/ui/select"
+import { SelectProps } from "@radix-ui/react-select"
 
 import { useGetCategories } from "@/hooks/useCategories"
 import CategoryWithLink from "./CategoryLink"
 
-type CategorySelectProps = {
-    onValueChange: (value: string) => void
-}
-
-function CategorySelect({ onValueChange }: CategorySelectProps): React.ReactNode {
+function CategorySelect({ onValueChange, defaultValue }: SelectProps): React.ReactNode {
     const { data: categories } = useGetCategories()
 
     if (!categories) return <span>Loading</span>
 
     return (
-        <Select onValueChange={onValueChange}>
+        <Select onValueChange={onValueChange} defaultValue={defaultValue}>
             <SelectTrigger>
                 <SelectValue className="text-black" placeholder='Choose a category' />
             </SelectTrigger>
-            <SelectContent className="">
+            <SelectContent>
                 <SelectGroup>
-                    {categories.map((category, i) => (
-                        <SelectItem className="text-black" key={i} value={category.id.toString()}>
+                    {categories.map(category => (
+                        <SelectItem key={category.id} value={`${category.id}`}>
                             <CategoryWithLink category={category} />
                         </SelectItem>
                     ))}

@@ -11,7 +11,6 @@ class CountryMapper implements IDataMapper<CountryModel, CountryEntity> {
     }
     
     mapCountryToDto(model: CountryModel): CountryDto {
-        console.log(model)
         return {
             name: model.name,
             flagImgLink: model.flagImgLink

@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import PostSerivce from "@/services/PostSerivce";
 import useUserStore from "@/store/UserStore";
 import PostInput from "@/types/data/posts/PostInput";
+import useThemedToast from "./useThemedToast";
 
 const useGetPosts = (findOptions: string = "") =>  useQuery({
     queryKey: ['posts-all'],
@@ -12,8 +13,7 @@ const useGetPosts = (findOptions: string = "") =>  useQuery({
 const useGetPostByLink = (link: string) => useQuery({
     queryKey: ['post-detailed', link],
     queryFn: () => PostSerivce.getPostByLink(link),
-    enabled: !!link,
-    retry: 1
+    enabled: !!link
 })
 
 const useGetPostById = (postId: string | null) => useQuery({
@@ -40,27 +40,34 @@ const useGetSavedPosts = () => useQuery({
 const useEditPost = (postId: string, inputData: PostInput) => {
     const user = useUserStore(state => state.user)
     const queryClient = useQueryClient()
+    const { toast } = useThemedToast()
 
     return useMutation({
         mutationKey: ['edit-post', postId],
         mutationFn: () => PostSerivce.update(postId, inputData, user?.id || 0),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['posts-all'] })
             queryClient.invalidateQueries({ queryKey: ['post-by-id', postId] })
-            queryClient.invalidateQueries({ queryKey: ["saved-posts"] })
+        },
+        onSuccess: () => {
+            toast('Successfully updated', 'text')
         }
     })
 }
 
 const useDeletePost = (postId: string) => {
     const queryClient = useQueryClient()
+    const { toast } = useThemedToast()
     
     return useMutation({
         mutationKey: ['delete-post'],
         mutationFn: () => PostSerivce.delete(postId),
-        onSuccess: () => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['posts-all'] })
             queryClient.invalidateQueries({ queryKey: ["saved-posts"] })
+        },
+        onSuccess: () => {
+            toast('Deletion', 'Post was successfully deleted')
         }
     })
 }

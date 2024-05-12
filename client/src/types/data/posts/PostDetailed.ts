@@ -6,8 +6,9 @@ type PostDetailed = {
     postTitle: string
     previewText: string
     text: string
+    postLink: string
     imageLink: string
-    creationDate: Date,
+    creationDate: Date
     author: UserShort
     category: CategoryShort
 }

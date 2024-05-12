@@ -29,11 +29,11 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             text: entity.text,
             imageLink: entity.imageLink,
             postLink: entity.postLink,
-            creationDate: entity.creationDate,
+            category: entity.category
         }
     }
 
-    mapPostToPostPreviewDto(model: PostModel): PostPreviewDto {
+    mapPostToPostPreviewDto(model: PostModel | PostLightModel): PostPreviewDto {
         return {
             id: model.id,
             postTitle: model.postTitle,

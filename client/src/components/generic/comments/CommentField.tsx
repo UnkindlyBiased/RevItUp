@@ -1,8 +1,9 @@
 
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useToast } from "@/components/ui/use-toast";
 
 import GenericButton from "@/components/generic/GenericButton";
 import { useGetSchema } from "@/hooks/useColorMode";
@@ -20,6 +21,7 @@ function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
     const [ commentText, setCommentText ] = useState('')
     const user = useUserStore(state => state.user)
     const schema = useGetSchema()
+    const { toast } = useToast()
 
     const inputData: CommentInput = {
         text: commentText,
@@ -27,7 +29,7 @@ function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
         userId: user ? user.id : 0,
         postId: readableId
     }
-    const { mutateAsync: uploadComment } = useCreateComment(inputData, "post-comments")
+    const { mutateAsync: uploadComment, isSuccess, isError } = useCreateComment(inputData, "post-comments")
     const action = async () => {
         try {
             await uploadComment()
@@ -36,6 +38,15 @@ function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
             console.log(e)
         }
     }
+
+    useEffect(() => {
+        if (isSuccess && !isError) {
+            toast({
+                title: 'Test title',
+                description: 'Test description'
+            })
+        }
+    }, [isError, isSuccess, toast])
 
     if (!user) return (
         <span className="text-xl">

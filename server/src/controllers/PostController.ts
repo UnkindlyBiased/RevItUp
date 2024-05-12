@@ -3,6 +3,7 @@ import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
 import SaverService from "../services/SaverService";
+import { RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
 
 class PostController {
     async getPosts(req: Request, res: Response, next: NextFunction) {
@@ -62,21 +63,23 @@ class PostController {
     async getPostsByAuthorship(req: Request, res: Response, next: NextFunction) {
         try {
             const { authorId } = req.params
+            const { take, skip } = req.query
 
-            const posts = await PostService.getPostsByAuthorship(Number(authorId))
+            const posts = await PostService.getPostsByAuthorship(Number(authorId), {
+                take: Number(take) | 0,
+                skip: Number(skip) | 0
+            })
             return res.send(posts)
         } catch(e) {
             next(e)
         }
     }
-    async search(req: Request, res: Response, next: NextFunction) {
+    async search(req: RequestWithQuery<{ inputStr: string }>, res: Response, next: NextFunction) {
         try {
-            const { inputStr } = req.query
-            if (!inputStr) {
+            if (!req.query.inputStr) {
                 throw ApiError.MissingParameters("No search parameters were given")
             }
-
-            const searchedPosts = await PostService.search(inputStr.toString())
+            const searchedPosts = await PostService.search(req.query.inputStr)
 
             return res.send(searchedPosts)
         } catch(e) {
@@ -113,7 +116,7 @@ class PostController {
                 text,
                 imageLink,
                 postLink,
-                userId: Number(authorId),
+                userId: req.user.id,
                 categoryId: Number(categoryId)
             })
             return res.send(updatedPost)

@@ -29,7 +29,8 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
-    async getPostById(id: string): Promise<PostModel> {
+    // ! For editing purposes
+    async getPostById(id: string): Promise<PostLightModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
@@ -39,9 +40,9 @@ class PgPostRepository implements IPostRepository {
             throw ApiError.NotFound("Such post doesn't exist")
         }
 
-        return PostMapper.toDataModel(entity)
+        return PostMapper.toLightDataModel(entity)
     }
-    async getPostByLink(link: string) {
+    async getPostByLink(link: string): Promise<PostModel> {
         if (!link) {
             throw ApiError.MissingParameters("No link was given")
         }
@@ -65,8 +66,16 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
-    async getPostsByAuthorship(authorId: number): Promise<PostModel[]> {
-        const entities = await this.postRep.findBy({ author: { id: authorId } })
+    async getPostsByAuthorship(authorId: number, options: PostFindOptions): Promise<PostModel[]> {
+        const entities = await this.postRep.find({
+            where: {
+                author: {
+                    id: authorId
+                }
+            },
+            take: options.take,
+            skip: options.skip
+        })
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
@@ -81,14 +90,14 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
-    async search(searchStr: string): Promise<PostPreviewDto[]> {
+    async search(searchStr: string): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
                 postTitle: ILike(`%${searchStr}%`)
             }
         })
 
-        return entities.map(entity => PostMapper.mapPostToPostPreviewDto(entity))
+        return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async create(input: PostInputDto): Promise<PostModel> {
         const candidate = await this.postRep.findOneBy({
