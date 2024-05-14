@@ -8,7 +8,7 @@ import { ApiError } from "../../../../utils/errors/ApiError";
 import PostInputDto from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
-import PostFindOptions from "../../../../utils/types/PostFindOptions";
+import DataFindOptions from "../../../../utils/types/DataFindOptions";
 
 class PgPostRepository implements IPostRepository {
     private postRep: Repository<PostEntity>
@@ -17,8 +17,12 @@ class PgPostRepository implements IPostRepository {
         this.postRep = PgDataSource.getRepository(PostEntity)
     }
 
-    async getPosts(options: PostFindOptions): Promise<PostModel[]> {
+    async getPosts(options: DataFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
+            relations: ['author', 'author.country', 'category'],
+            order: {
+                creationDate: 'DESC'
+            },
             take: options.take,
             skip: options.skip
         })
@@ -28,13 +32,15 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
-    // ! For editing purposes
     async getPostById(id: string): Promise<PostLightModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
 
-        const entity = await this.postRep.findOneBy({ id })
+        const entity = await this.postRep.findOne({
+            where: { id },
+            relations: ['author', 'author.country', 'category']
+        })
         if (!entity) {
             throw ApiError.NotFound("Such post doesn't exist")
         }
@@ -46,7 +52,12 @@ class PgPostRepository implements IPostRepository {
             throw ApiError.MissingParameters("No link was given")
         }
 
-        const entity = await this.postRep.findOneBy({ postLink: link })
+        const entity = await this.postRep.findOne({
+            where: {
+                postLink: link
+            },
+            relations: ['author', 'author.country', 'category']
+        })
         if (!entity) {
             throw ApiError.NotFound("Such post doesn't exist")
         }
@@ -65,24 +76,26 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
-    async getPostsByAuthorship(authorId: number, options: PostFindOptions): Promise<PostModel[]> {
+    async getPostsByAuthorship(authorId: number, options: DataFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
                 author: {
                     id: authorId
                 }
             },
+            relations: ['author', 'author.country', 'category'],
             take: options.take,
             skip: options.skip
         })
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
-    async getPostsByCategoryCode(code: string, options: PostFindOptions): Promise<PostModel[]> {
+    async getPostsByCategoryCode(code: string, options: DataFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
                 category: { categoryCode: code }
             },
+            relations: ['author', 'author.country', 'category'],
             take: options.take,
             skip: options.skip,
         })
@@ -93,7 +106,8 @@ class PgPostRepository implements IPostRepository {
         const entities = await this.postRep.find({
             where: {
                 postTitle: ILike(`%${searchStr}%`)
-            }
+            },
+            relations: ['author', 'author.country', 'category']
         })
 
         return entities.map(entity => PostMapper.toDataModel(entity))

@@ -21,6 +21,14 @@ class CategoryController {
             next(e)
         }
     }
+    async getCategoriesByPostsLengthSorted(req: Request, res: Response, next: NextFunction) {
+        try {
+            const categories = await CategoryService.getCategoriesByPostsLengthSorted()
+            return res.send(categories)
+        } catch(e) {
+            next(e)
+        }
+    }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
             const { name, color, logo, code, biography, creationDate } = req.body

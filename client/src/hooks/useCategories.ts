@@ -6,6 +6,12 @@ const useGetCategories = () => useQuery({
     queryFn: () => CategoryService.getCategories()
 })
 
+const useGetCategoriesByPostsAmount = () => useQuery({
+    queryKey: ['categories-by-posts'],
+    queryFn: () => CategoryService.getCategoriesByPostsAmount()
+})
+
 export {
-    useGetCategories
+    useGetCategories,
+    useGetCategoriesByPostsAmount
 }

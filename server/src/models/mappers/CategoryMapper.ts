@@ -5,7 +5,15 @@ import IDataMapper from "../misc/IDataMapper";
 
 class CategoryMapper implements IDataMapper<CategoryModel, CategoryEntity> {
     toDataModel(entity: CategoryEntity): CategoryModel {
-        return { ...entity }
+        return {
+            id: entity.id,
+            categoryName: entity.categoryName,
+            categoryCode: entity.categoryCode,
+            categoryLogo: entity.categoryLogo,
+            categoryColor: entity.categoryColor,
+            biography: entity.biography,
+            categoryCreationDate: entity.categoryCreationDate,
+        }
     }
 
     mapModelToCategoryShortDto(model: CategoryModel): CategoryShortDto {

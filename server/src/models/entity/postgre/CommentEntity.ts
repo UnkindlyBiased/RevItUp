@@ -1,13 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./UserEntity";
 import PostEntity from "./PostEntity";
 
-@Entity({ 
-    name: "Comments",
-    orderBy: {
-        "creationDate": "ASC"
-    }
-})
+@Entity({ name: "Comments" })
 export default class CommentEntity {
     @PrimaryGeneratedColumn()
     id: number

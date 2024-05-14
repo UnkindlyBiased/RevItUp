@@ -1,13 +1,8 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { UserEntity } from "./UserEntity";
 import CategoryEntity from "./CategoryEntity";
 
-@Entity({ 
-    name: "Posts",
-    orderBy: {
-        'creationDate': 'DESC'
-    }
- })
+@Entity({ name: "Posts" })
 export default class PostEntity {
     @PrimaryGeneratedColumn("uuid")
     id: string
@@ -37,10 +32,9 @@ export default class PostEntity {
     @JoinColumn()
     author: UserEntity
 
-    @ManyToOne(() => CategoryEntity, {
+    @ManyToOne(() => CategoryEntity, category => category.posts, {
         cascade: true,
-        onDelete: 'CASCADE',
-        eager: true
+        onDelete: 'CASCADE'
     })
     @JoinColumn()
     category: CategoryEntity

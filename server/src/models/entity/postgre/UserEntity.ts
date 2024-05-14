@@ -4,12 +4,7 @@ import { TokenEntity } from "./TokenEntity";
 import UserRoles from "../../../../utils/enums/UserRoles";
 import PostCommentEntity from "./CommentEntity";
 
-@Entity({ 
-    name: 'Users',
-    orderBy: {
-        "registrationDate": "DESC"
-    }
- })
+@Entity({ name: 'Users' })
 export class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
@@ -38,9 +33,7 @@ export class UserEntity {
     @Column({ type: 'enum', enum: UserRoles, default: UserRoles.DEFAULT })
     role: UserRoles
 
-    @ManyToOne(() => CountryEntity, country => country.users, {
-        eager: true
-    })
+    @ManyToOne(() => CountryEntity)
     @JoinColumn()
     country: CountryEntity
 
