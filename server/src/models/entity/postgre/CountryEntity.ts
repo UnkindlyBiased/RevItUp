@@ -1,12 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./UserEntity";
 
-@Entity({ 
-    name: 'Countries',
-    orderBy: {
-        "name": "ASC"
-    }
- })
+@Entity({ name: 'Countries' })
 export class CountryEntity {
     @PrimaryGeneratedColumn()
     id: number
@@ -19,7 +13,4 @@ export class CountryEntity {
 
     @Column()
     flagImgLink: string
-
-    @OneToMany(() => UserEntity, user => user.country)
-    users: UserEntity[]
 }

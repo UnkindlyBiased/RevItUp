@@ -19,6 +19,9 @@ class PgCommentRepository implements ICommentRepository {
     async getComments(): Promise<CommentModel[]> {
         const entities = await this.commentRep.find({
             relations: ['user', 'user.country', 'repliedTo'],
+            order: {
+                creationDate: 'ASC'
+            },
             select: {
                 user: {
                     id: true,
@@ -39,11 +42,13 @@ class PgCommentRepository implements ICommentRepository {
     }
     async getCommentsForPost(postId: string) {
         if (!postId) {
-            throw ApiError.NotFound("No ID was not found")
+            throw ApiError.NotFound("No ID was not provided")
         }
 
-        const entities = await this.commentRep.findBy({
-            post: { id: postId }
+        const entities = await this.commentRep.find({
+            where: { post: { id: postId } },
+            relations: ['user', 'user.country', 'repliedTo'],
+            order: { creationDate: 'ASC' }
         })
 
         return entities.map(entity => CommentMapper.toDataModel(entity))

@@ -13,8 +13,11 @@ class CategoryService {
         return categories.map(category => CategoryMapper.mapModelToCategoryShortDto(category));
     }
     async getByCategoryCode(code: string): Promise<CategoryModel> {
-        const category = await this.repository.getByCategoryCode(code)
-        return category
+        return this.repository.getByCategoryCode(code)
+    }
+    async getCategoriesByPostsLengthSorted(): Promise<CategoryShortDto[]> {
+        const categories = await this.repository.getCategoriesByPostsLengthSorted()
+        return categories.map(category => CategoryMapper.mapModelToCategoryShortDto(category))
     }
     async create(inputData: CategoryCreateDto): Promise<CategoryModel> {
         return this.repository.create(inputData)

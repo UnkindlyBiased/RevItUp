@@ -1,5 +1,4 @@
 import TokenModel from "../models/domain/Token";
-import UserTokenDto from "../models/dto/users/UserTokenDto";
 
 export default interface ITokenRepository {
     getTokens: () => Promise<TokenModel[]>

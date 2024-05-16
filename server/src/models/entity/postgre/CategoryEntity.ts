@@ -1,11 +1,7 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import PostEntity from "./PostEntity";
 
-@Entity({
-    name: 'Categories',
-    orderBy: {
-        "id": "ASC"
-    }
-})
+@Entity({ name: 'Categories' })
 export default class CategoryEntity {
     @PrimaryGeneratedColumn()
     id: number
@@ -27,4 +23,9 @@ export default class CategoryEntity {
 
     @Column({ default: 2000 })
     categoryCreationDate: number
+
+    @OneToMany(() => PostEntity, post => post.category, {
+        eager: true
+    })
+    posts: PostEntity[]
 }

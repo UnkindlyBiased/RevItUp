@@ -33,7 +33,7 @@ function PostDetailedPage(): React.ReactNode {
                     <CategoryWithLink category={post.category} isLinkable / >
                     <DateSpan date={post.creationDate} />
                 </div>
-                <MainTitle className="mb-3 text-7xl">{post.postTitle}</MainTitle>
+                <MainTitle className="mb-3 text-7xl w-[90%]">{post.postTitle}</MainTitle>
                 <span className="text-2xl font-medium mb-5">{post.previewText}</span>
                 <Suspense fallback={<span>{post.postTitle}</span>}>
                     <img className="w-[65%] rounded-lg mb-5 shadow-md" src={post.imageLink} />
@@ -46,7 +46,7 @@ function PostDetailedPage(): React.ReactNode {
                 </div>
                 {memoizedCommentUpload}
             </div>
-            <div className="flex h-fit items-center space-x-3 mt-10">
+            <div className="flex size-fit items-center space-x-3 mt-10">
                 { !isSaved ? <SaveButton postId={post.id} /> : <RemoveSavedButton postId={post.id} /> }
                 <AuthorBox author={post.author} />
             </div>

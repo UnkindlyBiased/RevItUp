@@ -26,6 +26,9 @@ class PostService {
     async getPostsByAuthorship(authorId: number, options: string) {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
     }
+    async search(query: string) {
+        return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/search?inputStr=${query}`)).data
+    }
     async create(inputData: PostInput): Promise<void> {
         await api.post(this.ROUTE_PREFIX, inputData)
     }

@@ -48,7 +48,7 @@ class MongoSavedPostsRepository implements ISavedPostsRepository {
         }
 
         userPosts.posts = userPosts.posts.filter(id => id !== postId)
-        this.savedRep.update(userPosts._id,userPosts)
+        this.savedRep.update(userPosts._id, userPosts)
 
         return userPosts
     }

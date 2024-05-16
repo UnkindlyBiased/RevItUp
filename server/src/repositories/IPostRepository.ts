@@ -1,16 +1,16 @@
-import PostFindOptions from "../../utils/types/PostFindOptions";
+import DataFindOptions from "../../utils/types/DataFindOptions";
 import PostModel from "../models/domain/Post";
 import PostInputDto from "../models/dto/posts/PostInputDto";
 import PostLightModel from "../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 
 export default interface IPostRepository {
-    getPosts: (options: PostFindOptions) => Promise<PostModel[]>
+    getPosts: (options: DataFindOptions) => Promise<PostModel[]>
     getPostById: (id: string) => Promise<PostLightModel>
     getPostByLink: (link: string) => Promise<PostModel>
     getRandomPost(): Promise<PostLightModel>
-    getPostsByCategoryCode: (code: string, options: PostFindOptions) => Promise<PostModel[]>
-    getPostsByAuthorship: (authorId: number, options: PostFindOptions) => Promise<PostModel[]>
+    getPostsByCategoryCode: (code: string, options: DataFindOptions) => Promise<PostModel[]>
+    getPostsByAuthorship: (authorId: number, options: DataFindOptions) => Promise<PostModel[]>
     search: (inputStr: string) => Promise<PostModel[]>
     create: (input: PostInputDto) => Promise<PostModel>
     update: (postId: string, input: PostUpdateDto) => Promise<PostLightModel>

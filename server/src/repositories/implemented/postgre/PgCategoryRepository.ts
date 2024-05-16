@@ -6,7 +6,6 @@ import { ApiError } from "../../../../utils/errors/ApiError";
 import ICategoryRepository from "../../ICategoryRepository";
 import CategoryCreateDto from "../../../models/dto/categories/CategoryCreateDto";
 import CategoryModel from "../../../models/domain/Category";
-import CategoryShortDto from "../../../models/dto/categories/CategoryShortDto";
 
 class PgCategoryRepository implements ICategoryRepository {
     private categoryRep: Repository<CategoryEntity>
@@ -16,7 +15,11 @@ class PgCategoryRepository implements ICategoryRepository {
     }
 
     async getCategories(): Promise<CategoryModel[]> {
-        const entities = await this.categoryRep.find()
+        const entities = await this.categoryRep.find({
+            order: {
+                id: 'ASC'
+            }
+        })
         return entities.map(entity => CategoryMapper.toDataModel(entity))
     }
     async getByCategoryCode(code: string): Promise<CategoryModel> {
@@ -26,6 +29,14 @@ class PgCategoryRepository implements ICategoryRepository {
         }
 
         return CategoryMapper.toDataModel(entity)
+    }
+    async getCategoriesByPostsLengthSorted(): Promise<CategoryModel[]> {
+        const entities = await this.categoryRep.find({
+            relations: ['posts'],
+            take: 3
+        }).then(categories => categories.sort((a, b) => a.posts.length < b.posts.length ? 1 : -1) )
+
+        return entities.map(category => CategoryMapper.toDataModel(category))
     }
     async create(input: CategoryCreateDto): Promise<CategoryModel> {
         const candidate = await this.categoryRep.findOne({

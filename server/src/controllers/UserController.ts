@@ -3,7 +3,6 @@ import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import { validationResult } from "express-validator"
-import SaverService from "../services/SaverService"
 
 class UserController {
     async getUsers(_req: Request, res: Response, next: NextFunction) {

@@ -14,7 +14,11 @@ class PgCountryRepository implements ICountryRepository {
     }
 
     async getCountries(): Promise<CountryModel[]> {
-        const countries = await this.countryRep.find()
+        const countries = await this.countryRep.find({
+            order: {
+                name: 'ASC'
+            }
+        })
         return countries.map(country => CountryMapper.toDataModel(country))
     }
     async getById(id: number): Promise<CountryModel> {
