@@ -11,6 +11,7 @@ const MainPage = lazy(() => import("./pages/MainPage"))
 const LoginPage = lazy(() => import("./pages/LoginPage"))
 const PostsPage = lazy(() => import("./pages/posts/PostsPage"))
 const PostDetailedPage = lazy(() => import("./pages/posts/PostDetailedPage"))
+const PostSearchPage = lazy(() => import("./pages/posts/PostSearchPage"))
 const LoggedUserPage = lazy(() => import("./pages/users/defined/LoggedUserPage"))
 const UserSavedPostsPage = lazy(() => import("./pages/users/UserSavedPosts"))
 const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPage"))
@@ -40,6 +41,10 @@ function App() {
             {
                 path: '/news',
                 element: <Suspense children={<PostsPage />} />
+            },
+            {
+                path: '/news/search',
+                element: <Suspense children={<PostSearchPage />} />
             },
             {
                 path: '/news/:articleLink',

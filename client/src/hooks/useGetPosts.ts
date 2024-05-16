@@ -32,6 +32,11 @@ const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQ
     queryFn: () => PostSerivce.getPostsByAuthorship(authorId, options)
 })
 
+const useSearchPosts = (inputQuery: string) => useQuery({
+    queryKey: ['search-posts', inputQuery],
+    queryFn: () => PostSerivce.search(inputQuery)
+})
+
 const useCreatePost = (inputData: PostInput) => {
     const user = useUserStore(state => state.user)
 
@@ -126,6 +131,7 @@ export {
     useGetRandomPost,
     useGetPostsByAuthorship, 
     useGetSavedPosts,
+    useSearchPosts,
     useCreatePost,
     useEditPost,
     useDeletePost,

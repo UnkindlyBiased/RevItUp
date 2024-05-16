@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 const CustomInput = forwardRef<HTMLInputElement, ComponentPropsWithRef<'input'>>(
     ({ className, type, placeholder, ...props }, ref) => {
         return <Input className={cn(
-"w-60 font-medium text-black",className
+"w-60 font-medium text-black border-opacity-50",className
         )} placeholder={placeholder} ref={ref} type={type} {...props} />
     }
 )
