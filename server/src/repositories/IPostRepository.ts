@@ -1,6 +1,6 @@
 import DataFindOptions from "../../utils/types/DataFindOptions";
 import PostModel from "../models/domain/Post";
-import PostInputDto from "../models/dto/posts/PostInputDto";
+import { PostInputDto } from "../models/dto/posts/PostInputDto";
 import PostLightModel from "../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 
@@ -12,7 +12,7 @@ export default interface IPostRepository {
     getPostsByCategoryCode: (code: string, options: DataFindOptions) => Promise<PostModel[]>
     getPostsByAuthorship: (authorId: number, options: DataFindOptions) => Promise<PostModel[]>
     search: (inputStr: string) => Promise<PostModel[]>
-    create: (input: PostInputDto) => Promise<PostModel>
+    create: (input: PostInputDto) => Promise<PostLightModel>
     update: (postId: string, input: PostUpdateDto) => Promise<PostLightModel>
-    delete: (id: string) => Promise<PostModel>
+    delete: (id: string) => Promise<PostLightModel>
 }

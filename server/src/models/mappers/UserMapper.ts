@@ -36,7 +36,9 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             username: model.username,
             password: model.password,
             biography: model.biography,
-            emailAddress: model.emailAddress
+            emailAddress: model.emailAddress,
+            isActivated: model.isActivated,
+            activationLink: model.activationLink
         }
     }
     mapUserModelToUserDetailedDto(model: UserModel): UserDetailedDto {

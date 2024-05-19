@@ -1,8 +1,9 @@
 import { cacheClient } from "../../utils/data/RedisCacheClient";
+import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints";
 import PostHelper from "../../utils/helpers/PostHelper";
 import DataFindOptions from "../../utils/types/DataFindOptions";
 import PostModel from "../models/domain/Post";
-import PostInputDto from "../models/dto/posts/PostInputDto";
+import { PostInputWithImageDto }  from "../models/dto/posts/PostInputDto";
 import PostLightModel from "../models/dto/posts/PostLightModel";
 import PostPreviewDto from "../models/dto/posts/PostPreviewDto";
 import PostShortDto from "../models/dto/posts/PostShortDto";
@@ -10,6 +11,7 @@ import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 import PostMapper from "../models/mappers/PostMapper";
 import PgPostRepository from "../repositories/implemented/postgre/PgPostRepository";
 import IPostRepository from "../repositories/IPostRepository";
+import FirebaseService from "./FirebaseService";
 
 class PostService {
     constructor(private repository: IPostRepository) {}
@@ -49,9 +51,17 @@ class PostService {
         const posts = await this.repository.search(inputStr)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
-    async create(candidate: PostInputDto): Promise<PostModel> {
+    async create(candidate: PostInputWithImageDto): Promise<PostLightModel> {
         candidate.postLink = PostHelper.putDashes(candidate.postTitle)
-        return this.repository.create(candidate)
+
+        const imageRef = await FirebaseService.uploadImage({
+            image: candidate.image,
+            imageName: candidate.postLink + '-' + Math.floor(Math.random() * 100000000),
+            endpoint: FirebaseRefEndponts.POSTS
+        })
+        const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+
+        return this.repository.create({ ...candidate, imageLink })
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
         await cacheClient.del(`post-${input.postLink}`)
@@ -61,7 +71,7 @@ class PostService {
 
         return this.repository.update(postId, input)
     }
-    async delete(id: string): Promise<PostModel> {
+    async delete(id: string): Promise<PostLightModel> {
         return this.repository.delete(id)
     }
 }

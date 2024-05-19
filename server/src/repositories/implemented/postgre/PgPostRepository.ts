@@ -5,7 +5,7 @@ import PostEntity from "../../../models/entity/postgre/PostEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import PostMapper from "../../../models/mappers/PostMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
-import PostInputDto from "../../../models/dto/posts/PostInputDto"
+import { PostInputDto } from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
 import DataFindOptions from "../../../../utils/types/DataFindOptions";
@@ -112,7 +112,7 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
-    async create(input: PostInputDto): Promise<PostModel> {
+    async create(input: PostInputDto): Promise<PostLightModel> {
         const candidate = await this.postRep.findOneBy({
             postTitle: input.postTitle
         })
@@ -128,7 +128,9 @@ class PgPostRepository implements IPostRepository {
 
         await this.postRep.insert(entity)
 
-        return PostMapper.toDataModel(entity)
+        console.log(entity)
+
+        return PostMapper.toLightDataModel(entity)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
         await this.postRep.update(postId, {
@@ -149,7 +151,7 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(entity)
     }
-    async delete(id: string): Promise<PostModel> {
+    async delete(id: string): Promise<PostLightModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
@@ -160,7 +162,7 @@ class PgPostRepository implements IPostRepository {
         }
 
         await this.postRep.remove(entity)
-        return PostMapper.toDataModel(entity)
+        return PostMapper.toLightDataModel(entity)
     }
 }
 

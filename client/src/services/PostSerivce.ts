@@ -30,13 +30,32 @@ class PostService {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/search?inputStr=${query}`)).data
     }
     async create(inputData: PostInput): Promise<void> {
-        await api.post(this.ROUTE_PREFIX, inputData)
+        const data = new FormData()
+
+        Object.keys(inputData).forEach(key => {
+            if (key === 'postImage') {
+                data.append(key, inputData[key][0])
+                return
+            }
+            data.append(key, inputData[key as keyof PostInput].toString())
+        })
+
+        await api.post(this.ROUTE_PREFIX, data)
     }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
-        console.log(inputData)
+        const data = new FormData()
+
+        Object.keys(inputData).forEach(key => {
+            if (key === 'postImage') {
+                data.append(key, inputData[key][0])
+                return
+            }
+            data.append(key, inputData[key as keyof PostInput].toString())
+        })
+
         await api.put(this.ROUTE_PREFIX, { 
             id: postId,
-            ...inputData,
+            ...data,
             authorId: userId
         })
     }

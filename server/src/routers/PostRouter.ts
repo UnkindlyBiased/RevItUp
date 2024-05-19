@@ -3,6 +3,7 @@ import PostController from '../controllers/PostController'
 import { cacheMiddleware } from '../../utils/middlewares/cache/TestCommentsCache'
 import authMiddleware from '../../utils/middlewares/misc/AuthMiddleware'
 import writerMiddleware from '../../utils/middlewares/misc/WriterMiddleware'
+import imageUploadMiddleware from '../../utils/middlewares/misc/ImageUploadMiddleware'
 
 const PostRouter = Router()
 
@@ -14,7 +15,7 @@ PostRouter.get('/:link', PostController.getPostByLink)
 PostRouter.get('/by-id/:id', PostController.getPostById)
 PostRouter.get("/by-category/:code", PostController.getPostsByCategoryCode)
 PostRouter.get('/by-auth/:authorId', PostController.getPostsByAuthorship)
-PostRouter.post('/', authMiddleware, writerMiddleware, PostController.create)
+PostRouter.post('/', authMiddleware, writerMiddleware, imageUploadMiddleware.single('postImage'), PostController.create)
 PostRouter.put('/', authMiddleware,  PostController.update)
 PostRouter.delete('/', authMiddleware, PostController.delete)
 

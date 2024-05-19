@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { MdAddCircle, MdDelete, MdEdit, } from "react-icons/md"
 import { useForm } from "react-hook-form"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 
 import { useGetSchema } from "@/hooks/useColorMode"
 import { useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
@@ -12,7 +13,7 @@ import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
-    const { mutateAsync: createPost } = useCreatePost(watch())
+    const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
 
     return (
         <Dialog onOpenChange={() => reset()}>
@@ -35,13 +36,13 @@ function AddNewPost(): React.ReactElement {
                     <Textarea
                         {...register('text', { required: true })}
                         placeholder="Article's text" />
-                    <Textarea
-                        {...register('imageLink', { required: true })}
-                        placeholder="Article's main image link. Placeholder for Firebase implementation" />
+                    <Input type="file"
+                        {...register('postImage', { required: true })} />
                     <CategorySelect
                         onValueChange={(value) => setValue('categoryId', value)} />
                 </DialogDescription>
                 <DialogFooter>
+                    { isMutating && <span className="opacity-50">Adding</span> }
                     <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId)}>
                         Add post
                     </button>
@@ -75,9 +76,8 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
                     <Textarea
                         {...register('text', { required: true })}
                         defaultValue={postToEdit.text} />
-                    <Textarea 
-                        {...register('imageLink', { required: true })} 
-                        defaultValue={postToEdit.imageLink} />
+                    <Input type="file"
+                        {...register('postImage', { required: true })} />
                     <CategorySelect
                         defaultValue={`${postToEdit.category.id}`}
                         onValueChange={(value) => setValue("categoryId", value) } />

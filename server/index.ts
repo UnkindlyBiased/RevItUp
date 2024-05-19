@@ -37,7 +37,7 @@ app.use('/categories', CategoryRouter)
 app.use(errorMiddleware)
 
 async function startApp() {
-    const port = Number(process.env.APP_PORT) || 6006
+    const PORT = Number(process.env.APP_PORT) || 6006
     try {
         // * Connections to databases
         await PgDataSource.initialize()
@@ -48,8 +48,8 @@ async function startApp() {
         await MongoDataSource.initialize()
         await MongoDataSource.synchronize()
         
-        app.listen(port, () => {
-            console.log(`App is started on port ${port}`)
+        app.listen(PORT, () => {
+            console.log(`App is started on port ${PORT}`)
         })
     } catch(e) {
         console.log(e)

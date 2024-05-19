@@ -88,13 +88,18 @@ class PostController {
     }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { postTitle, previewText, text, imageLink, categoryId } = req.body
+            const { postTitle, previewText, text, categoryId } = req.body
+
+            const inputImage = req.file
+            if (!inputImage) {
+                throw ApiError.MissingParameters("Image file was not given")
+            }
 
             const post = await PostService.create({
                 postTitle,
                 previewText,
                 text,
-                imageLink,
+                image: inputImage,
                 authorId: req.user.id,
                 categoryId: Number(categoryId)
             })

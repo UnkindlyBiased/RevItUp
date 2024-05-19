@@ -6,4 +6,8 @@ type PostInputDto = Pick<PostModel, "postTitle" | "previewText" | "text" | "imag
     categoryId: number
 }
 
-export default PostInputDto
+type PostInputWithImageDto = Omit<PostInputDto, | "imageLink"> & {
+    image: Express.Multer.File
+}
+
+export { PostInputDto, PostInputWithImageDto }
