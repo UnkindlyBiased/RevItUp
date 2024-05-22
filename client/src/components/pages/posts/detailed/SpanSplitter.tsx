@@ -1,6 +1,6 @@
 function SpanSplitter({ text }: { text: string }) {
-    return text.split('\n\n').map(line => (
-        <span key={text.split('\n\n').indexOf(line)}>{line}</span>
+    return text.split('\n\n').map((line, i) => (
+        <span key={i}>{line}</span>
     ))
 }
 

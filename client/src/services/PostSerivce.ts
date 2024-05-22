@@ -40,10 +40,15 @@ class PostService {
             data.append(key, inputData[key as keyof PostInput].toString())
         })
 
+        console.log(data)
+
         await api.post(this.ROUTE_PREFIX, data)
     }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
         const data = new FormData()
+
+        data.append('id', postId)
+        data.append('authorId', userId.toString())
 
         Object.keys(inputData).forEach(key => {
             if (key === 'postImage') {
@@ -53,10 +58,12 @@ class PostService {
             data.append(key, inputData[key as keyof PostInput].toString())
         })
 
-        await api.put(this.ROUTE_PREFIX, { 
-            id: postId,
-            ...data,
-            authorId: userId
+        console.log(data)
+
+        await api.put(this.ROUTE_PREFIX, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
         })
     }
     async delete(postId: string): Promise<void> {

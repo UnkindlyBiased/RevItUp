@@ -110,6 +110,7 @@ class PostController {
     }
     async update(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log(req.body)
             const { id, postTitle, previewText, text, imageLink, postLink, authorId, categoryId } = req.body
             if (req.user.id !== Number(authorId)) {
                 throw ApiError.Forbidden("The update can't be done because you're not the author of this article")

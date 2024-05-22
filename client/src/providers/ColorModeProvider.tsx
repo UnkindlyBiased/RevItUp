@@ -4,6 +4,9 @@ import { useColorModeStore } from "@/store/ColorModeStore"
 import ChildProp from "@/types/page/ChildProp"
 import ColorMode from "@/types/page/style/ColorMode"
 
+/**
+ * Gets the latest color theme if available, otherwise - sets it to White
+ */
 function ColorModeProvider({ children }: ChildProp): React.ReactNode {
     const setMode = useColorModeStore(state => state.setColorMode)
 

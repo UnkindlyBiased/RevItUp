@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from "react-hook-form"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import CustomInput from "@/components/generic/CustomInput";
 import useUserStore from "@/store/UserStore";
@@ -22,15 +22,19 @@ function LoginForm(): React.ReactElement {
     }
 
     return (
-        <div className="flex justify-center items-center flex-col space-y-2 mt-4">
+        <div className="flex justify-center items-center flex-col space-y-3 mt-4">
             <span className="font-medium text-2xl">Login</span>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col space-y-5 items-center">
                     <CustomInput placeholder="Username" {...register("username", { required: true })} />
-                    <CustomInput placeholder="Password" type="password" {...register("password", { required: true })} />
+                    <CustomInput placeholder="Password" type="password" {...register("password", { required: true, minLength: 8 })} />
                     <GenericButton disabled={!isValid} type="submit">Login</GenericButton>
                 </div>
             </form>
+            <div className="space-x-1">
+                <span>First time here?</span>
+                <Link className="font-bold hover:underline" to={'/register'}>Why not registrating?</Link>
+            </div>
         </div>
     )
 }

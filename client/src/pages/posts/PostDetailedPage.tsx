@@ -36,7 +36,7 @@ function PostDetailedPage(): React.ReactNode {
                 <MainTitle className="mb-3 text-7xl w-[90%]">{post.postTitle}</MainTitle>
                 <span className="text-2xl font-medium mb-5">{post.previewText}</span>
                 <Suspense fallback={<span>{post.postTitle}</span>}>
-                    <img className="w-[65%] rounded-lg mb-5 shadow-md" src={post.imageLink} />
+                    <img className="w-[75%] rounded-lg mb-5 shadow-md" src={post.imageLink} />
                 </Suspense>
                 <div className="flex flex-col space-y-4 text-lg w-[75%] mb-3">
                     <SpanSplitter text={post.text} />

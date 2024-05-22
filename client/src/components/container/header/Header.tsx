@@ -20,8 +20,8 @@ function Header(): React.ReactElement {
                     <HeaderNavLink link='/sdfsdf'>Events</HeaderNavLink>
                     <HeaderNavLink link='/asdasd'>Threads</HeaderNavLink>
                     <HeaderNavLink link='/sdasd'>Drivers</HeaderNavLink>
-                    <HeaderNavLink link='/asdasd'>Categories</HeaderNavLink>
-                    { user?.role == 'admin' && <HeaderNavLink link='/asdasda'>Admin panel</HeaderNavLink> }
+                    <HeaderNavLink link='/categories'>Categories</HeaderNavLink>
+                    { user?.role == 'admin' && <HeaderNavLink link='/admin'>Admin panel</HeaderNavLink> }
                 </div>
             </div>
             <div className="flex items-center space-x-5">

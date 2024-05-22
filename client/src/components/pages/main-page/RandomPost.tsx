@@ -1,16 +1,16 @@
-import { useGetSchema } from "@/hooks/useColorMode"
-import { useGetRandomPost } from "@/hooks/useGetPosts"
 import { cn } from "@/lib/utils"
 import { Suspense } from "react"
 import { Link } from "react-router-dom"
 
+import { useGetSchema } from "@/hooks/useColorMode"
+import { useGetRandomPost } from "@/hooks/useGetPosts"
+import Error from "@/components/generic/boundaries/Error"
+
 function RandomPost(): React.ReactNode {
     const { data: randomPost } = useGetRandomPost()
     const schema = useGetSchema()
-
-    if (!randomPost) return (
-        <span>Idk what to return</span>
-    )
+    
+    if (!randomPost) return <Error />
 
     return (
         <div className={cn('px-8 py-7 flex items-center justify-between space-x-3 rounded-xl bg-gradient-to-r', schema.randomPostBgGradient)}>

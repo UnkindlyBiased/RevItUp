@@ -14,9 +14,9 @@ function TopCategories(): React.ReactElement {
             <div className="flex flex-col items-center space-y-4">
                 <span className="font-bold text-3xl">Hottest categories 🔥🔥🔥</span>
                 <div className="space-x-3 flex">
-                     {topCategories?.map(category => (
+                    {topCategories?.map(category => (
                         <TopCategoryLink key={category.id} category={category} />
-                     ))}
+                    ))}
                 </div>
             </div>
             <div className="flex w-0 jusitfy-center group-hover:px-4 opacity-0 group-hover:block group-hover:opacity-100 transition-all">
