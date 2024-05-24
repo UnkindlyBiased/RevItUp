@@ -24,7 +24,8 @@ const useGetPostById = (postId: string | null) => useQuery({
 
 const useGetRandomPost = () => useQuery({
     queryKey: ['random-post'],
-    queryFn: () => PostSerivce.getRandomPost()
+    queryFn: () => PostSerivce.getRandomPost(),
+    refetchOnWindowFocus: false
 })
 
 const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQuery({

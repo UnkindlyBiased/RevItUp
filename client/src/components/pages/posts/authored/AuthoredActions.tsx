@@ -2,15 +2,18 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { MdAddCircle, MdDelete, MdEdit, } from "react-icons/md"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import { useGetSchema } from "@/hooks/useColorMode"
 import { useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
 import PostInput from "@/types/data/posts/PostInput"
 import CategorySelect from "@/components/generic/category/CategorySelect"
 
+// TODO: rewrite
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
     const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
@@ -53,20 +56,24 @@ function AddNewPost(): React.ReactElement {
 }
 
 function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
-    const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
+    const { register, setValue, watch, reset, formState: { isValid }, control } = useForm<PostInput>()
 
     const { data: postToEdit, refetch } = useGetPostById(postId)
     const { mutateAsync: editPost, isPending: isMutating } = useEditPost(postId, watch())
 
+    const [isNewPhoto, setIsNewPhoto] = useState(false)
+
     return (
-        <Dialog onOpenChange={() => reset()}>
+        <Dialog onOpenChange={() => { reset(); setIsNewPhoto(false) }}>
             <DialogTrigger className="cursor-pointer" onClick={() => refetch()}>
                 <MdEdit size={24} />
             </DialogTrigger>
             { postToEdit && <DialogContent className="max-h-[90%] overflow-y-scroll">
-                <DialogHeader className="font-medium text-xl">Edit the post</DialogHeader>
-                <DialogDescription className="flex flex-col space-y-2">
-                    <span>Post ID: {postId}</span>
+                <DialogHeader className="font-medium text-xl">
+                    Edit the Post
+                    <DialogDescription>Post ID: {postId}</DialogDescription>
+                </DialogHeader>
+                <div className="flex flex-col space-y-2">
                     <Textarea
                         {...register('postTitle', { required: true, minLength: 10 })}
                         defaultValue={postToEdit.postTitle} />
@@ -76,15 +83,28 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
                     <Textarea
                         {...register('text', { required: true })}
                         defaultValue={postToEdit.text} />
-                    <Input type="file"
-                        {...register('postImage', { required: true })} />
-                    <CategorySelect
-                        defaultValue={`${postToEdit.category.id}`}
-                        onValueChange={(value) => setValue("categoryId", value) } />
-                </DialogDescription>
-                <DialogFooter>
+                    <div className="flex space-x-2 items-center">
+                        <Checkbox className="transition-all" checked={isNewPhoto} onCheckedChange={() => setIsNewPhoto(!isNewPhoto)} />
+                        <Input type="file"
+                            accept=".png, .jpg, .jpeg, .webp"
+                            disabled={!isNewPhoto}
+                            className="transition-all"
+                            {...register('postImage', { required: isNewPhoto })} />
+                    </div>
+                    <Controller
+                        control={control}
+                        name="categoryId"
+                        defaultValue={postToEdit.category.id.toString()}
+                        render={(({ ...field }) => (
+                            <CategorySelect
+                                {...field}
+                                defaultValue={postToEdit.category.id.toString()}
+                                onValueChange={(value) => setValue("categoryId", value)} />
+                        ))}/>
+                </div>
+                <DialogFooter className="flex items-center">
                     { isMutating && <span className="opacity-50">Editing</span> }
-                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => editPost()} disabled={!(isValid && watch().categoryId)}>
+                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => editPost()} disabled={!isValid || (isNewPhoto && !watch().postImage)}>
                         Save changes
                     </button>
                 </DialogFooter>

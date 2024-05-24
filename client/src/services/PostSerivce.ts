@@ -33,11 +33,11 @@ class PostService {
         const data = new FormData()
 
         Object.keys(inputData).forEach(key => {
-            if (key === 'postImage') {
-                data.append(key, inputData[key][0])
+            if (key === 'postImage' && inputData.postImage) {
+                data.append(key, inputData[key]![0])
                 return
             }
-            data.append(key, inputData[key as keyof PostInput].toString())
+            data.append(key, inputData[key as keyof Omit<PostInput, 'postImage'>])
         })
 
         console.log(data)
@@ -51,14 +51,12 @@ class PostService {
         data.append('authorId', userId.toString())
 
         Object.keys(inputData).forEach(key => {
-            if (key === 'postImage') {
-                data.append(key, inputData[key][0])
+            if (key === 'postImage' && inputData.postImage) {
+                data.append(key, inputData[key]![0])
                 return
             }
-            data.append(key, inputData[key as keyof PostInput].toString())
+            data.append(key, inputData[key as keyof Omit<PostInput, 'postImage'>])
         })
-
-        console.log(data)
 
         await api.put(this.ROUTE_PREFIX, data, {
             headers: {

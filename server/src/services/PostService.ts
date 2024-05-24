@@ -67,6 +67,16 @@ class PostService {
         await cacheClient.del(`post-${input.postLink}`)
         
         input.postLink = PostHelper.putDashes(input.postTitle)
+        if (input.image) {
+            const imageRef = await FirebaseService.uploadImage({
+                image: input.image,
+                imageName: input.postLink + '-' + Math.floor(Math.random() * 100000000),
+                endpoint: FirebaseRefEndponts.POSTS
+            })
+            const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+            input.imageLink = imageLink
+        }
+
         PostHelper.trimPostData(input)
 
         return this.repository.update(postId, input)
