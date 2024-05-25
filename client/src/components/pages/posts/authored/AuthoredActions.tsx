@@ -13,7 +13,6 @@ import { useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hoo
 import PostInput from "@/types/data/posts/PostInput"
 import CategorySelect from "@/components/generic/category/CategorySelect"
 
-// TODO: rewrite
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
     const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
@@ -27,9 +26,9 @@ function AddNewPost(): React.ReactElement {
             <DialogContent>
                 <DialogHeader className="text-xl font-medium">
                     Add new post
+                    <DialogDescription>Remember that article's title should be unique</DialogDescription>
                 </DialogHeader>
-                <DialogDescription className="space-y-2">
-                    <span>Remember that article's title should be unique</span>
+                <div className="space-y-2">
                     <Textarea
                         {...register('postTitle', { required: true, minLength: 15 })}
                         placeholder="Article's title" />
@@ -43,9 +42,9 @@ function AddNewPost(): React.ReactElement {
                         {...register('postImage', { required: true })} />
                     <CategorySelect
                         onValueChange={(value) => setValue('categoryId', value)} />
-                </DialogDescription>
-                <DialogFooter>
-                    { isMutating && <span className="opacity-50">Adding</span> }
+                </div>
+                <DialogFooter className="flex items-center">
+                    { !isMutating && <span className="opacity-50">Adding</span> }
                     <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId)}>
                         Add post
                     </button>
@@ -68,7 +67,7 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
             <DialogTrigger className="cursor-pointer" onClick={() => refetch()}>
                 <MdEdit size={24} />
             </DialogTrigger>
-            { postToEdit && <DialogContent className="max-h-[90%] overflow-y-scroll">
+            { postToEdit && <DialogContent className="max-h-[90%]">
                 <DialogHeader className="font-medium text-xl">
                     Edit the Post
                     <DialogDescription>Post ID: {postId}</DialogDescription>

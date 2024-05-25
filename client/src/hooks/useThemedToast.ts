@@ -1,4 +1,6 @@
 import { useToast } from "@/components/ui/use-toast"
+import { cn } from "@/lib/utils";
+
 import { useGetSchema } from "./useColorMode";
 
 const useThemedToast = () => {
@@ -7,13 +9,17 @@ const useThemedToast = () => {
 
     const toast = (title?: string, description?: string) => {
         return baseToast({
-            title, 
+            title,
             description,
-            className: 'bg-red-200'
+            className: cn(
+                schema.secondaryBgColor, 
+                schema.defaultFontColor, 
+                schema.border
+            )
         })
     }
 
-    return { toast };
-};
+    return { toast }
+}
 
 export default useThemedToast

@@ -19,7 +19,7 @@ function CategorySelect({ onValueChange, defaultValue, ...props }: SelectProps):
             <SelectContent>
                 <SelectGroup>
                     {categories.map(category => (
-                        <SelectItem key={category.id} value={`${category.id}`}>
+                        <SelectItem key={category.id} value={category.id.toString()}>
                             <CategoryWithLink category={category} />
                         </SelectItem>
                     ))}

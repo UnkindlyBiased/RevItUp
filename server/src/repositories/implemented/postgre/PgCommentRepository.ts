@@ -53,7 +53,7 @@ class PgCommentRepository implements ICommentRepository {
 
         return entities.map(entity => CommentMapper.toDataModel(entity))
     }
-    async create(data: CommentInputDto): Promise<CommentShortDto> {
+    async createPostComment(data: CommentInputDto): Promise<CommentShortDto> {
         const entity = this.commentRep.create({ 
             text: data.text,
             user: { id: data.userId },

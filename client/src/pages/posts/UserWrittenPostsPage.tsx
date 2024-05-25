@@ -8,6 +8,7 @@ import RequireAuth from "@/hoc/RequireAuth"
 import { useGetPostById, useGetPostsByAuthorship } from "@/hooks/useGetPosts"
 import useUserStore from "@/store/UserStore"
 import RequireRole from "@/hoc/RequireRole"
+import TwoLine from "@/components/generic/TwoLine"
 
 /**
  * Page which shows the posts with logined user's authorship (if they have `WRITER` role).
@@ -27,10 +28,7 @@ function UserWrittenPostsPage(): React.ReactElement {
             <RequireRole>
                 <div className="flex flex-col h-fit space-y-6">
                     <div className="flex justify-between items-center">
-                        <div className="flex flex-col space-y-2">
-                            <MainTitle className="text-6xl">Your articles</MainTitle>
-                            <span>Add them, edit them, delete them</span>
-                        </div>
+                        <TwoLine title="Your articles" description="Add them, edit them, delete them" />
                         <AddNewPost />
                     </div>
                     <div className="flex justify-between space-x-16">

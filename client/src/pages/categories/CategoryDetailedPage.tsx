@@ -3,8 +3,7 @@ import { useParams } from "react-router-dom"
 import Loading from "@/components/generic/Loading"
 import { useGetCategoryByCode } from "@/hooks/useCategories"
 
-// TODO: finish the page
-function CategoryDetailedPage() {
+function CategoryDetailedPage(): React.ReactNode {
     const { code } = useParams()
     const { data: categoryData, isLoading, isError } = useGetCategoryByCode(code || '')
 

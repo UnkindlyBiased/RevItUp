@@ -63,8 +63,9 @@ const useEditPost = (postId: string, inputData: PostInput) => {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['posts-all'] })
             queryClient.invalidateQueries({ queryKey: ['post-by-id', postId] })
+            queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0 ] })
         },
-        onSuccess: () => toast('Successfully updated', 'text')
+        onSuccess: () => toast('Congratulations!', 'Your post was successfully updated')
     })
 }
 

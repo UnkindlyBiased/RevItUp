@@ -1,9 +1,10 @@
-import MainTitle from "@/components/pages/posts/MainTitle"
+import { useDocumentTitle } from "@uidotdev/usehooks"
+import { useSearchParams } from "react-router-dom"
+
+import TwoLine from "@/components/generic/TwoLine"
 import PostSearch from "@/components/pages/posts/PostSearch"
 import PostPreviewComp from "@/components/pages/posts/preview/PostPreview"
 import { useSearchPosts } from "@/hooks/useGetPosts"
-import { useDocumentTitle } from "@uidotdev/usehooks"
-import { useSearchParams } from "react-router-dom"
 
 // TODO: fix spacing between first post and title of the page
 function PostSearchPage(): React.ReactElement {
@@ -17,10 +18,7 @@ function PostSearchPage(): React.ReactElement {
     return (
         <div className="flex flex-col">
             <div className="flex justify-between">
-                <div className="flex flex-col space-y-2">
-                    <MainTitle className=" text-6xl">Post search result</MainTitle>
-                    <span className="text-xl">Searched query: {searchParams.get('query')}</span>
-                </div>
+                <TwoLine title="Post search result" description={`Search query: ${query}`} enlargedDesc />
                 <PostSearch />
             </div>
             <div className="flex flex-col space-y-4">

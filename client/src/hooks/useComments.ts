@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CommentService from "@/services/CommentService";
 import CommentBeloning from "@/types/data/comment/CommentBelonging";
 import CommentInput from "@/types/data/comment/CommentInput";
+import useThemedToast from "./useThemedToast";
 
 const useGetComments = (readableId: string, commentFetchType: CommentBeloning) => useQuery({
     queryKey: [commentFetchType, readableId],
@@ -12,14 +13,12 @@ const useGetComments = (readableId: string, commentFetchType: CommentBeloning) =
 
 const useCreateComment = (input: CommentInput, commentFetchType: CommentBeloning) => {
     const queryClient = useQueryClient()
+    const { toast } = useThemedToast()
 
     return useMutation({
         mutationFn: () => CommentService.createComment(input),
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: [commentFetchType, input.postId]
-            })
-        }
+        onSettled: () => queryClient.invalidateQueries({ queryKey: [commentFetchType, input.postId] }),
+        onSuccess: () => toast('Keep the conversation!', 'You have successfully added the comment')
     })
 }
 

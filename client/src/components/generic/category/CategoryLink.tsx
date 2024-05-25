@@ -11,7 +11,7 @@ type CategoryWithLinkProps = {
 function CategoryWithLink({ category, isLinkable }: CategoryWithLinkProps): React.ReactElement {
     return (
         <div className="flex items-center space-x-2">
-            <img className="w-14" src={category.categoryLogo} />
+            <img className="max-w-14" src={category.categoryLogo} />
             <div style={{ backgroundColor: category.categoryColor }} className='w-[1px] h-6' />
             <Link to={`/categories/${category.categoryCode}`} className={cn(!isLinkable && 'pointer-events-none')}>
                 <span className="font-bold cursor-pointer hover:underline uppercase">

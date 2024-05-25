@@ -14,11 +14,9 @@ class FirebaseService {
 
         return snapshot.ref
     }
-
     async getDownloadUrl(ref: StorageReference): Promise<string> {
         return getDownloadURL(ref)
     }
-
     async deleteImage(imageUrl: string): Promise<void> {
         // TODO: implement deleting of image by ref -> storing refs somewhere in the DB
     }
