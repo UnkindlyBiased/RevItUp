@@ -5,10 +5,10 @@ import CommentBeloning from "@/types/data/comment/CommentBelonging";
 import CommentInput from "@/types/data/comment/CommentInput";
 import useThemedToast from "./useThemedToast";
 
-const useGetComments = (readableId: string, commentFetchType: CommentBeloning) => useQuery({
+const useGetComments = (readableId: string, commentFetchType: CommentBeloning, isInView?: boolean) => useQuery({
     queryKey: [commentFetchType, readableId],
     queryFn: () => CommentService.getCommentForPost(readableId),
-    enabled: !!readableId
+    enabled: !!readableId && isInView
 })
 
 const useCreateComment = (input: CommentInput, commentFetchType: CommentBeloning) => {

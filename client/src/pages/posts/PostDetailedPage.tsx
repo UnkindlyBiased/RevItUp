@@ -38,12 +38,8 @@ function PostDetailedPage(): React.ReactNode {
                 <Suspense fallback={<span>{post.postTitle}</span>}>
                     <img className="w-[75%] rounded-lg mb-5 shadow-md" src={post.imageLink} />
                 </Suspense>
-                <div className="flex flex-col space-y-4 text-lg w-[75%] mb-3">
-                    <SpanSplitter text={post.text} />
-                </div>
-                <div className="mb-5">
-                    <FetchedComments readableId={post.id} readableType="post-comments" />
-                </div>
+                <SpanSplitter className="flex flex-col space-y-4 text-lg w-[75%] mb-3" text={post.text} />
+                <FetchedComments className="mb-5" readableId={post.id} readableType="post-comments" />
                 {memoizedCommentUpload}
             </div>
             <div className="flex size-fit items-center space-x-3 mt-10">
