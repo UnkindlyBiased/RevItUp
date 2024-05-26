@@ -9,6 +9,7 @@ export default interface PostModel {
     imageLink: string
     postLink?: string
     creationDate: Date
+    views: number
     author: UserShortDto
     category: CategoryShortDto
 }

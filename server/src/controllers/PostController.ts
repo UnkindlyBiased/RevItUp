@@ -3,7 +3,7 @@ import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
 import SaverService from "../services/SaverService";
-import { RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
+import { RequestWithBody, RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
 
 class PostController {
     async getPosts(req: Request, res: Response, next: NextFunction) {
@@ -161,24 +161,34 @@ class PostController {
             next(e)
         }
     }
-    async removeSavedPost(req: Request, res: Response, next: NextFunction) {
+    async removeSavedPost(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
         try {
             const user = req.user
-            const { postId } = req.body
 
-            const userPosts = await SaverService.removePost(postId, user.id)
+            const userPosts = await SaverService.removePost(req.body.postId, user.id)
             return res.send(userPosts)
         } catch(e) {
             next(e)
         }
     }
-    async checkIfSaved(req: Request, res: Response, next: NextFunction) {
+    async checkIfSaved(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
         try {
             const user = req.user
-            const { postId } = req.body
 
-            const response = await SaverService.checkIfSaved(postId, user.id)
+            const response = await SaverService.checkIfSaved(req.body.postId, user.id)
             return res.send({ response })
+        } catch(e) {
+            next(e)
+        }
+    }
+    async registerView(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
+        try {
+            if (!req.user) {
+                // idkkkkkkkk
+            }
+
+            await PostService.registerView(req.body.postId)
+            return res.status(HttpStatusCodes.UPLOADED).send({ message: 'View added successfully' })
         } catch(e) {
             next(e)
         }

@@ -15,4 +15,5 @@ export default interface IPostRepository {
     create: (input: PostInputDto) => Promise<PostLightModel>
     update: (postId: string, input: PostUpdateDto) => Promise<PostLightModel>
     delete: (id: string) => Promise<PostLightModel>
+    registerView: (id: string) => Promise<void>
 }

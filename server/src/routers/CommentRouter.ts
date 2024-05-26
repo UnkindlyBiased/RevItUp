@@ -2,7 +2,7 @@ import { Router } from 'express'
 import CommentController from '../controllers/CommentController'
 import authMiddleware from '../../utils/middlewares/misc/AuthMiddleware'
 import { commentValidation } from '../../utils/middlewares/validation/CommentValidation'
-import { cacheMiddleware } from '../../utils/middlewares/cache/TestCommentsCache'
+import { cacheMiddleware } from '../../utils/middlewares/cache/CacheMiddleware'
 
 const CommentRouter = Router()
 

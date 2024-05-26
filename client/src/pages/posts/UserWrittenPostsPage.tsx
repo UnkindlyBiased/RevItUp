@@ -8,7 +8,7 @@ import RequireAuth from "@/hoc/RequireAuth"
 import { useGetPostById, useGetPostsByAuthorship } from "@/hooks/useGetPosts"
 import useUserStore from "@/store/UserStore"
 import RequireRole from "@/hoc/RequireRole"
-import TwoLine from "@/components/generic/TwoLine"
+import TwoLine from "@/components/generic/misc/TwoLine"
 
 /**
  * Page which shows the posts with logined user's authorship (if they have `WRITER` role).

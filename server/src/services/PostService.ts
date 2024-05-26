@@ -30,7 +30,7 @@ class PostService {
         }
 
         const post = await this.repository.getPostByLink(link)
-        await cacheClient.set(`post-${link}`, JSON.stringify(post), { EX: 300 })
+        await cacheClient.set(`post-${link}`, JSON.stringify(post), { EX: 30 })
 
         return post
     }
@@ -83,6 +83,9 @@ class PostService {
     }
     async delete(id: string): Promise<PostLightModel> {
         return this.repository.delete(id)
+    }
+    async registerView(id: string): Promise<void> {
+        await this.repository.registerView(id)
     }
 }
 

@@ -1,6 +1,6 @@
 import { Verified } from "lucide-react"
 import UserPfp from "./UserPfp"
-import DateSpan from "@/components/generic/DateSpan"
+import DateSpan from "@/components/generic/misc/DateSpan"
 
 type UserInfoHeadingProps = {
     username: string

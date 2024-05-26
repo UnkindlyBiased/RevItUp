@@ -1,7 +1,7 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
 import { useSearchParams } from "react-router-dom"
 
-import TwoLine from "@/components/generic/TwoLine"
+import TwoLine from "@/components/generic/misc/TwoLine"
 import PostSearch from "@/components/pages/posts/PostSearch"
 import PostPreviewComp from "@/components/pages/posts/preview/PostPreview"
 import { useSearchPosts } from "@/hooks/useGetPosts"

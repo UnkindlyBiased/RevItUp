@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 import PostSerivce from "@/services/PostSerivce";
 import useUserStore from "@/store/UserStore";
@@ -10,10 +10,10 @@ const useGetPosts = (findOptions: string = "") =>  useQuery({
     queryFn: () => PostSerivce.getPosts(findOptions)
 })
 
-const useGetPostByLink = (link: string) => useQuery({
+const useGetPostByLink = (link: string) => useSuspenseQuery({
     queryKey: ['post-detailed', link],
     queryFn: () => PostSerivce.getPostByLink(link),
-    enabled: !!link
+    refetchOnWindowFocus: false
 })
 
 const useGetPostById = (postId: string | null) => useQuery({
@@ -85,6 +85,10 @@ const useDeletePost = (postId: string) => {
     })
 }
 
+const useRegisterView = (postId: string) => useMutation({
+    mutationFn: () => PostSerivce.registerView(postId)
+})
+
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
     queryFn: () => PostSerivce.getSavedPosts()
@@ -134,6 +138,7 @@ export {
     useGetPostsByAuthorship, 
     useGetSavedPosts,
     useSearchPosts,
+    useRegisterView,
     useCreatePost,
     useEditPost,
     useDeletePost,

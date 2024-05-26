@@ -1,6 +1,6 @@
 import { useGetCategories } from "@/hooks/useCategories"
 import CategoryPreview from "@/components/pages/categories/CategoryPreview"
-import TwoLine from "@/components/generic/TwoLine"
+import TwoLine from "@/components/generic/misc/TwoLine"
 
 function CategoriesPage() {
     const { data: categories } = useGetCategories()

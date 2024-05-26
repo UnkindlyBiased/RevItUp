@@ -25,6 +25,9 @@ export default class PostEntity {
     @CreateDateColumn({ type: "timestamp with time zone", default: () => 'CURRENT_TIMESTAMP' })
     creationDate: Date
 
+    @Column({ default: 0, type: 'int' })
+    views: number
+
     @ManyToOne(() => UserEntity, {
         eager: true,
         onDelete: 'CASCADE'

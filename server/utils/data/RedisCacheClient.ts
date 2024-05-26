@@ -1,13 +1,11 @@
 import { createClient } from 'redis'
-import { config } from 'dotenv'
-
-config()
+import env from '../EnvSchema'
 
 const cacheClient = createClient({
-    password: process.env.REDIS_PW,
+    password: env.REDIS_PW,
     socket: {
-        host: process.env.REDIS_SOCKET_HOST,
-        port: Number(process.env.REDIS_SOCKET_PORT) || 10413
+        host: env.REDIS_SOCKET_HOST,
+        port: env.REDIS_SOCKET_PORT
     }
 })
 

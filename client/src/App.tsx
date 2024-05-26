@@ -27,7 +27,11 @@ const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPa
  * The main app component
  */
 function App() {
-    const queryClient = new QueryClient()
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            
+        }
+    })
 
     const browserRouter = createBrowserRouter([{
         element: <Container />,

@@ -1,4 +1,4 @@
-import ContentSearch from "@/components/generic/ContentSearch";
+import ContentSearch from "@/components/generic/misc/input/ContentSearch";
 import { useNavigate } from "react-router-dom";
 
 function PostSearch(): React.ReactElement {

@@ -9,6 +9,7 @@ type PostDetailed = {
     postLink: string
     imageLink: string
     creationDate: Date
+    views: number
     author: UserShort
     category: CategoryShort
 }

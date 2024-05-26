@@ -1,10 +1,10 @@
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
 
-import CustomInput from "@/components/generic/CustomInput";
+import CustomInput from "@/components/generic/misc/input/CustomInput";
 import useUserStore from "@/store/UserStore";
 import UserLogin from "@/types/data/users/UserLogin";
-import GenericButton from "@/components/generic/GenericButton";
+import GenericButton from "@/components/generic/misc/input/GenericButton";
 
 function LoginForm(): React.ReactElement {
     const { register, handleSubmit, formState: { isValid } } = useForm<UserLogin>()

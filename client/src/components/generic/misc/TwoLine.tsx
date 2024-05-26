@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-import MainTitle from "../pages/posts/MainTitle";
+import MainTitle from "../../pages/posts/MainTitle";
 
 type TwoLineProps = Partial<{
     title: string

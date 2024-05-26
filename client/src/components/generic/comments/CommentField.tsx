@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import GenericButton from "@/components/generic/GenericButton";
+import GenericButton from "@/components/generic/misc/input/GenericButton";
 import { useGetSchema } from "@/hooks/useColorMode";
 import { useCreateComment } from "@/hooks/useComments";
 import useUserStore from "@/store/UserStore";

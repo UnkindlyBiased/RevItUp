@@ -164,6 +164,20 @@ class PgPostRepository implements IPostRepository {
         await this.postRep.remove(entity)
         return PostMapper.toLightDataModel(entity)
     }
+    async registerView(id: string): Promise<void> {
+        const entity = await this.postRep.findOne({
+            select: {
+                id: true,
+                views: true
+            },
+            where: { id }
+        })
+        if (!entity) {
+            throw ApiError.NotFound("Such post doesn't exist")
+        }
+
+        await this.postRep.update(id, { views: entity.views + 1 })
+    }
 }
 
 export default new PgPostRepository()

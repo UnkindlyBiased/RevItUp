@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 
-import Loading from "@/components/generic/Loading"
+import Loading from "@/components/generic/misc/Loading"
 import { useGetCategoryByCode } from "@/hooks/useCategories"
 
 function CategoryDetailedPage(): React.ReactNode {

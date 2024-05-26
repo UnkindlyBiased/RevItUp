@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 import { useGetSchema } from "@/hooks/useColorMode"
 import HeaderNavLink from "./inner/HeaderNavLink"
-import Logo from "../../generic/Logo"
+import Logo from "../../generic/misc/Logo"
 import ThemeSwitch from "./inner/ThemeSwitch"
 import UserDropdown from "./inner/DropdownMenu"
 import useUserStore from "@/store/UserStore"

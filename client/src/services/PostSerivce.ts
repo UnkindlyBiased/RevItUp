@@ -67,6 +67,9 @@ class PostService {
     async delete(postId: string): Promise<void> {
         await api.delete(this.ROUTE_PREFIX, { data: { postId } })
     }
+    async registerView(postId: string): Promise<void> {
+        await api.patch(this.ROUTE_PREFIX + '/add-view', { postId })
+    }
 
     async getSavedPosts(): Promise<PostPreview[]> {
         return (await api.get<PostPreview[]>(`${this.ROUTE_PREFIX}/saved`)).data
