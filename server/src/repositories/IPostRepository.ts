@@ -11,6 +11,7 @@ export default interface IPostRepository {
     getRandomPost(): Promise<PostLightModel>
     getPostsByCategoryCode: (code: string, options: DataFindOptions) => Promise<PostModel[]>
     getPostsByAuthorship: (authorId: number, options: DataFindOptions) => Promise<PostModel[]>
+    getPagesAmount: (take: number) => Promise<number>
     search: (inputStr: string) => Promise<PostModel[]>
     create: (input: PostInputDto) => Promise<PostLightModel>
     update: (postId: string, input: PostUpdateDto) => Promise<PostLightModel>

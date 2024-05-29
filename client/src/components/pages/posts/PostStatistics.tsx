@@ -6,7 +6,7 @@ type PostStatisticsProps = {
 
 function PostStatistics({ views }: PostStatisticsProps): React.ReactElement {
     return (
-        <div className="flex items-center space-x-1 opacity-50">
+        <div className="flex items-center space-x-2 text-gray-500">
             <FaEye />
             <span children={views} />
         </div>

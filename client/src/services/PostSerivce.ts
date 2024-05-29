@@ -1,4 +1,5 @@
 import { api } from "@/api"
+import PaginatedResponse from "@/types/data/default/PaginatedResponse"
 import PostDetailed from "@/types/data/posts/PostDetailed"
 import PostInput from "@/types/data/posts/PostInput"
 import PostPreview from "@/types/data/posts/PostPreview"
@@ -12,7 +13,7 @@ class PostService {
     private ROUTE_PREFIX: string = '/posts'
     
     async getPosts(findOptions: string = "") {
-        return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `?${findOptions}`)).data
+        return (await api.get<PaginatedResponse & { posts: PostPreview[] }>(this.ROUTE_PREFIX + `?${findOptions}`)).data
     }
     async getPostByLink(link: string): Promise<PostDetailed> {
         return (await api.get<PostDetailed>(`${this.ROUTE_PREFIX}/${link}`)).data

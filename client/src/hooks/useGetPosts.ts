@@ -6,8 +6,9 @@ import PostInput from "@/types/data/posts/PostInput";
 import useThemedToast from "./useThemedToast";
 
 const useGetPosts = (findOptions: string = "") =>  useQuery({
-    queryKey: ['posts-all'],
-    queryFn: () => PostSerivce.getPosts(findOptions)
+    queryKey: ['posts-all', findOptions],
+    queryFn: () => PostSerivce.getPosts(findOptions),
+    retry: 1
 })
 
 const useGetPostByLink = (link: string) => useSuspenseQuery({

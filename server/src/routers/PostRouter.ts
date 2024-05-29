@@ -16,7 +16,7 @@ PostRouter.get('/by-id/:id', PostController.getPostById)
 PostRouter.get("/by-category/:code", PostController.getPostsByCategoryCode)
 PostRouter.get('/by-auth/:authorId', PostController.getPostsByAuthorship)
 PostRouter.post('/', authMiddleware, writerMiddleware, imageUploadMiddleware.single('postImage'), PostController.create)
-PostRouter.put('/', imageUploadMiddleware.single('postImage'), authMiddleware,  PostController.update)
+PostRouter.put('/', authMiddleware, writerMiddleware, imageUploadMiddleware.single('postImage'),  PostController.update)
 PostRouter.patch('/add-view', PostController.registerView)
 PostRouter.delete('/', authMiddleware, PostController.delete)
 

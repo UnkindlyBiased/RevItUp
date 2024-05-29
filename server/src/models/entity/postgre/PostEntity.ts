@@ -29,7 +29,7 @@ export default class PostEntity {
     views: number
 
     @ManyToOne(() => UserEntity, {
-        eager: true,
+        cascade: true,
         onDelete: 'CASCADE'
     })
     @JoinColumn()

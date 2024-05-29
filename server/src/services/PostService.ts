@@ -47,6 +47,9 @@ class PostService {
 
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
+    async getPagesAmount(take: number) {
+        return this.repository.getPagesAmount(take)
+    }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
         const posts = await this.repository.search(inputStr)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
@@ -64,8 +67,6 @@ class PostService {
         return this.repository.create({ ...candidate, imageLink })
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
-        await cacheClient.del(`post-${input.postLink}`)
-        
         input.postLink = PostHelper.putDashes(input.postTitle)
         if (input.image) {
             const imageRef = await FirebaseService.uploadImage({
@@ -78,6 +79,8 @@ class PostService {
         }
 
         PostHelper.trimPostData(input)
+
+        await cacheClient.del(`post-${input.postLink}`)
 
         return this.repository.update(postId, input)
     }

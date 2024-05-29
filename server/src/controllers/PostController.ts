@@ -4,16 +4,27 @@ import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
 import SaverService from "../services/SaverService";
 import { RequestWithBody, RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
+import DataFindOptions from "../../utils/types/DataFindOptions";
 
 class PostController {
     async getPosts(req: Request, res: Response, next: NextFunction) {
         try {
-            const { take, skip } = req.query;
-            const posts = await PostService.getPosts({ 
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
-            });
-            return res.send(posts)
+            const page = Number(req.query.page) || 1
+            const take = Number(req.query.take)
+            if (take < 1) {
+                throw ApiError.BadRequest('Wrong TAKE value')
+            }
+
+            const maxPage = await PostService.getPagesAmount(take)
+            if (page > maxPage || page < 1) {
+                throw ApiError.BadRequest("Wrong PAGE value")
+            }
+
+            const posts = await PostService.getPosts({ page, take })
+
+            return res.send({
+                posts, page, maxPage
+            })
         } catch(e) {
             next(e)
         }
@@ -46,28 +57,26 @@ class PostController {
             next(e)
         }
     }
-    async getPostsByCategoryCode(req: Request, res: Response, next: NextFunction) {
+    async getPostsByCategoryCode(req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) {
         try {
             const { code } = req.params
-            const { take, skip } = req.query
 
             const posts = await PostService.getPostsByCategoryCode(code, {
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
+                take: Number(req.query.take) || 5,
+                page: Number(req.query.page) || 1
             })
             return res.send(posts)
         } catch(e) {
             next(e)
         }
     }
-    async getPostsByAuthorship(req: Request, res: Response, next: NextFunction) {
+    async getPostsByAuthorship(req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) {
         try {
             const { authorId } = req.params
-            const { take, skip } = req.query
 
             const posts = await PostService.getPostsByAuthorship(Number(authorId), {
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
+                take: Number(req.query.take) || 5,
+                page: Number(req.query.page) || 1
             })
             return res.send(posts)
         } catch(e) {
