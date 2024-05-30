@@ -1,32 +1,31 @@
 import nodemailer, { Transporter } from 'nodemailer'
-import { config } from 'dotenv'
 
-config()
+import env from '../../utils/EnvSchema'
 
 class MailService {
-    private transporter: Transporter // Transporter instance
+    private transporter: Transporter
 
     constructor() {
-        this.transporter = nodemailer.createTransport({ // Init of Transport object
+        this.transporter = nodemailer.createTransport({
             service: 'gmail',
-            host: process.env.SMTP_HOST as string, // SMTP host
-            port: 587, // Port
-            secure: true, // Secure
+            host: env.SMTP_HOST,
+            port: env.SMTP_PORT,
+            secure: true,
             auth: {
-                user: process.env.SMTP_USER as string, // Your email
-                pass: process.env.SMTP_PASSWORD as string // Its password
+                user: env.SMTP_USER, 
+                pass: env.SMTP_PASSWORD
             }
         })
     }
 
 
-    async sendActivationMail(to: string, link: string) { // Sending mail
-        await this.transporter.sendMail({ // Sending the mail to the user
-            from: process.env.SMTP_USER, // From who
-            to, // To
-            subject: 'REVITUP: please activate your account', // Subject of the mail
-            text: '', // Text of the mail
-            html: // Rendered HTML with activation link
+    async sendActivationMail(to: string, link: string) {
+        await this.transporter.sendMail({
+            from: env.SMTP_USER,
+            to,
+            subject: 'REVITUP: please activate your account',
+            text: '',
+            html:
             `
                 <div>
                     <h1>Please activate your account on REVITUP for access to motorsport news in one place</h1>

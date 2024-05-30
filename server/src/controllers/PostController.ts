@@ -3,17 +3,28 @@ import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
 import SaverService from "../services/SaverService";
-import { RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
+import { RequestWithBody, RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
+import DataFindOptions from "../../utils/types/DataFindOptions";
 
 class PostController {
     async getPosts(req: Request, res: Response, next: NextFunction) {
         try {
-            const { take, skip } = req.query;
-            const posts = await PostService.getPosts({ 
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
-            });
-            return res.send(posts)
+            const page = Number(req.query.page) || 1
+            const take = Number(req.query.take)
+            if (take < 1) {
+                throw ApiError.BadRequest('Wrong TAKE value')
+            }
+
+            const maxPage = await PostService.getPagesAmount(take)
+            if (page > maxPage || page < 1) {
+                throw ApiError.BadRequest("Wrong PAGE value")
+            }
+
+            const posts = await PostService.getPosts({ page, take })
+
+            return res.send({
+                posts, page, maxPage
+            })
         } catch(e) {
             next(e)
         }
@@ -46,28 +57,26 @@ class PostController {
             next(e)
         }
     }
-    async getPostsByCategoryCode(req: Request, res: Response, next: NextFunction) {
+    async getPostsByCategoryCode(req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) {
         try {
             const { code } = req.params
-            const { take, skip } = req.query
 
             const posts = await PostService.getPostsByCategoryCode(code, {
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
+                take: Number(req.query.take) || 5,
+                page: Number(req.query.page) || 1
             })
             return res.send(posts)
         } catch(e) {
             next(e)
         }
     }
-    async getPostsByAuthorship(req: Request, res: Response, next: NextFunction) {
+    async getPostsByAuthorship(req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) {
         try {
             const { authorId } = req.params
-            const { take, skip } = req.query
 
             const posts = await PostService.getPostsByAuthorship(Number(authorId), {
-                take: Number(take) | 0,
-                skip: Number(skip) | 0
+                take: Number(req.query.take) || 5,
+                page: Number(req.query.page) || 1
             })
             return res.send(posts)
         } catch(e) {
@@ -88,13 +97,18 @@ class PostController {
     }
     async create(req: Request, res: Response, next: NextFunction) {
         try {
-            const { postTitle, previewText, text, imageLink, categoryId } = req.body
+            const { postTitle, previewText, text, categoryId } = req.body
+
+            const inputImage = req.file
+            if (!inputImage) {
+                throw ApiError.MissingParameters("Image file was not given")
+            }
 
             const post = await PostService.create({
                 postTitle,
                 previewText,
                 text,
-                imageLink,
+                image: inputImage,
                 authorId: req.user.id,
                 categoryId: Number(categoryId)
             })
@@ -105,19 +119,21 @@ class PostController {
     }
     async update(req: Request, res: Response, next: NextFunction) {
         try {
-            const { id, postTitle, previewText, text, imageLink, postLink, authorId, categoryId } = req.body
+            const { id, postTitle, previewText, text, postLink, authorId, categoryId } = req.body
             if (req.user.id !== Number(authorId)) {
                 throw ApiError.Forbidden("The update can't be done because you're not the author of this article")
             }
+
+            const inputImage = req.file
 
             const updatedPost = await PostService.update(id, {
                 postTitle,
                 previewText,
                 text,
-                imageLink,
                 postLink,
                 userId: req.user.id,
-                categoryId: Number(categoryId)
+                categoryId: Number(categoryId),
+                image: inputImage
             })
             return res.send(updatedPost)
         } catch(e) {
@@ -154,23 +170,41 @@ class PostController {
             next(e)
         }
     }
-    async removeSavedPost(req: Request, res: Response, next: NextFunction) {
+    async removeSavedPost(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
         try {
             const user = req.user
-            const { postId } = req.body
 
-            const userPosts = await SaverService.removePost(postId, user.id)
+            const userPosts = await SaverService.removePost(req.body.postId, user.id)
             return res.send(userPosts)
         } catch(e) {
             next(e)
         }
     }
-    async checkIfSaved(req: Request, res: Response, next: NextFunction) {
+    async checkIfSaved(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
         try {
             const user = req.user
-            const { postId } = req.body
 
-            const response = await SaverService.checkIfSaved(postId, user.id)
+            const response = await SaverService.checkIfSaved(req.body.postId, user.id)
+            return res.send({ response })
+        } catch(e) {
+            next(e)
+        }
+    }
+    async registerView(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
+        try {
+            if (!req.user) {
+                return res.send({ message: 'Not authorized' })
+            }
+
+            await PostService.registerView(req.body.postId)
+            return res.status(HttpStatusCodes.UPLOADED).send({ message: 'View added successfully' })
+        } catch(e) {
+            next(e)
+        }
+    }
+    async checkIfExistsByTitle(req: RequestWithBody<{ title: string }>, res: Response, next: NextFunction) {
+        try {
+            const response = await PostService.checkIfExistsByTitle(req.body.title)
             return res.send({ response })
         } catch(e) {
             next(e)

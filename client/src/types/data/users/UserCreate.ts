@@ -1,10 +1,8 @@
-import Country from "../country/Country"
-
 type UserCreate = {
-    username: string,
-    password: string,
-    emailAddress: string,
-    country: Country
+    username: string
+    password: string
+    emailAddress: string
+    countryId: number
 }
 
 export default UserCreate

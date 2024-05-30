@@ -12,6 +12,7 @@ import CommentRouter from './src/routers/CommentRouter'
 import { connectToCacheClient } from './utils/data/RedisCacheClient'
 import PostRouter from './src/routers/PostRouter'
 import CategoryRouter from './src/routers/CategoryRouter'
+import env from './utils/EnvSchema'
 
 config()
 
@@ -20,8 +21,9 @@ const app = express()
 // * Third-party middlewares
 app.use(express.json())
 app.use(cookieParser())
+
 app.use(cors({ 
-    origin: 'http://localhost:4004',
+    origin: env.CLIENT_URL ||'http://localhost:4004',
     credentials: true
 }))
 
@@ -37,7 +39,7 @@ app.use('/categories', CategoryRouter)
 app.use(errorMiddleware)
 
 async function startApp() {
-    const port = Number(process.env.APP_PORT) || 6006
+    const PORT = env.APP_PORT || 6006
     try {
         // * Connections to databases
         await PgDataSource.initialize()
@@ -48,8 +50,8 @@ async function startApp() {
         await MongoDataSource.initialize()
         await MongoDataSource.synchronize()
         
-        app.listen(port, () => {
-            console.log(`App is started on port ${port}`)
+        app.listen(PORT, () => {
+            console.log(`App is started on port ${PORT}`)
         })
     } catch(e) {
         console.log(e)

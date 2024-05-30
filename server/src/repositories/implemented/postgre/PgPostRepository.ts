@@ -1,11 +1,12 @@
 import { ILike, Repository } from "typeorm";
+
 import PostModel from "../../../models/domain/Post";
 import IPostRepository from "../../IPostRepository";
 import PostEntity from "../../../models/entity/postgre/PostEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import PostMapper from "../../../models/mappers/PostMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
-import PostInputDto from "../../../models/dto/posts/PostInputDto"
+import { PostInputDto } from "../../../models/dto/posts/PostInputDto"
 import PostLightModel from "../../../models/dto/posts/PostLightModel";
 import PostUpdateDto from "../../../models/dto/posts/PostUpdateDto";
 import DataFindOptions from "../../../../utils/types/DataFindOptions";
@@ -19,16 +20,13 @@ class PgPostRepository implements IPostRepository {
 
     async getPosts(options: DataFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
+            take: options.take,
+            skip: options.take * (options.page - 1),
             relations: ['author', 'author.country', 'category'],
             order: {
                 creationDate: 'DESC'
             },
-            take: options.take,
-            skip: options.skip
         })
-        if (!entities) {
-            throw ApiError.NotFound("No posts were found")
-        }
 
         return entities.map(post => PostMapper.toDataModel(post))
     }
@@ -71,7 +69,7 @@ class PgPostRepository implements IPostRepository {
             .getOne()
             .then(post => post)
         if (!post) {
-            throw ApiError.NotFound("No posts were found in database")
+            throw ApiError.BadRequest("No posts were found in database")
         }
 
         return PostMapper.toLightDataModel(post)
@@ -84,8 +82,7 @@ class PgPostRepository implements IPostRepository {
                 }
             },
             relations: ['author', 'author.country', 'category'],
-            take: options.take,
-            skip: options.skip
+            take: options.take
         })
 
         return entities.map(post => PostMapper.toDataModel(post))
@@ -96,11 +93,18 @@ class PgPostRepository implements IPostRepository {
                 category: { categoryCode: code }
             },
             relations: ['author', 'author.country', 'category'],
-            take: options.take,
-            skip: options.skip,
+            take: options.take
         })
 
         return entities.map(entity => PostMapper.toDataModel(entity))
+    }
+    async getPagesAmount(take: number): Promise<number> {
+        const allEntities = await this.postRep.find({
+            select: { id: true }
+        })
+        const pagesAmount = Math.floor(allEntities.length / take)
+
+        return pagesAmount !== 0 ? pagesAmount : 1
     }
     async search(searchStr: string): Promise<PostModel[]> {
         const entities = await this.postRep.find({
@@ -112,7 +116,7 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
-    async create(input: PostInputDto): Promise<PostModel> {
+    async create(input: PostInputDto): Promise<PostLightModel> {
         const candidate = await this.postRep.findOneBy({
             postTitle: input.postTitle
         })
@@ -128,7 +132,7 @@ class PgPostRepository implements IPostRepository {
 
         await this.postRep.insert(entity)
 
-        return PostMapper.toDataModel(entity)
+        return PostMapper.toLightDataModel(entity)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
         await this.postRep.update(postId, {
@@ -149,7 +153,7 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(entity)
     }
-    async delete(id: string): Promise<PostModel> {
+    async delete(id: string): Promise<PostLightModel> {
         if (!id) {
             throw ApiError.MissingParameters("No ID were given")
         }
@@ -160,7 +164,29 @@ class PgPostRepository implements IPostRepository {
         }
 
         await this.postRep.remove(entity)
-        return PostMapper.toDataModel(entity)
+        return PostMapper.toLightDataModel(entity)
+    }
+    async registerView(id: string): Promise<void> {
+        const entity = await this.postRep.findOne({
+            select: {
+                id: true,
+                views: true
+            },
+            where: { id }
+        })
+        if (!entity) {
+            throw ApiError.NotFound("Such post doesn't exist")
+        }
+
+        await this.postRep.update(id, { views: entity.views + 1 })
+    }
+    async checkIfExistsByTitle(title: string): Promise<boolean> {
+        const entity = await this.postRep.findOne({
+            where: { postTitle: ILike(title) },
+            select: { id: true }
+        })
+
+        return !!entity
     }
 }
 

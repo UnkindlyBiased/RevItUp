@@ -7,7 +7,7 @@ function GenericButton({ children, className, disabled, onClick, ...props }: Com
     return (
         <button {...props}
             disabled={disabled} 
-            className={cn("text-white size-fit rounded-md px-4 py-2 transition-all font-bold",  schema.primaryBgColor,className)} 
+            className={cn("text-white size-fit rounded-md px-4 py-2 transition-all font-bold disabled:opacity-50",  schema.primaryBgColor,className)} 
             onClick={onClick}
             children={children} />
     )

@@ -1,4 +1,3 @@
-import PostPreview from "@/types/data/posts/PostPreview"
 import { api } from "../api"
 import UserCreate from "../types/data/users/UserCreate"
 import UserDetailed from "../types/data/users/UserDetailed"

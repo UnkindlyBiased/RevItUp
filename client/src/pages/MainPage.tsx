@@ -1,5 +1,5 @@
 import { useDocumentTitle } from '@uidotdev/usehooks'
-import { Suspense, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import RandomPost from '../components/pages/main-page/RandomPost'
 import { useGetPosts } from '@/hooks/useGetPosts'
@@ -16,16 +16,14 @@ function MainPage(): React.ReactElement {
     return (
         <div className='flex flex-col space-y-4 h-max'>
             <div className='flex flex-col space-y-4'>
-                {topPosts?.map((post, i) => (
+                {topPosts?.posts.map((post, i) => (
                     i === 0 ? <PostTopPreview key={i} post={post} /> : <PostPreviewComp key={i} post={post} />
                 ))}
             </div>
             <div className='flex justify-center'>
                 <MoreButton />
             </div>
-            <Suspense>
-                {memoizedRandomPost}
-            </Suspense>
+            {memoizedRandomPost}
         </div>
     )
 }

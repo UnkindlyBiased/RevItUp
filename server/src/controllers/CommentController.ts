@@ -35,7 +35,7 @@ class CommentController {
             const { text, repliedToId, postId } = req.body
             const user = req.user
 
-            const comment = await CommentService.create({ text, userId: user.id, repliedToId, postId })
+            const comment = await CommentService.createPostComment({ text, userId: user.id, repliedToId, postId })
             return res.status(HttpStatusCodes.UPLOADED).send(comment)
         } catch(e) {
             next(e)

@@ -17,7 +17,7 @@ class PgCategoryRepository implements ICategoryRepository {
     async getCategories(): Promise<CategoryModel[]> {
         const entities = await this.categoryRep.find({
             order: {
-                id: 'ASC'
+                categoryName: 'ASC'
             }
         })
         return entities.map(entity => CategoryMapper.toDataModel(entity))

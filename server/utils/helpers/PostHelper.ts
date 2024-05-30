@@ -1,4 +1,4 @@
-import PostInputDto from "../../src/models/dto/posts/PostInputDto";
+import { PostInputDto } from "../../src/models/dto/posts/PostInputDto";
 import PostUpdateDto from "../../src/models/dto/posts/PostUpdateDto";
 
 class PostHelper {

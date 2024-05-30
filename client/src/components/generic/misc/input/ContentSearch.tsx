@@ -24,7 +24,7 @@ function ContentSearch({ title, onSearch }: ContentSearchProps): React.ReactElem
             <CustomInput placeholder="Write something here..." value={query} onChange={e => setQuery(e.target.value)} />
             <button 
                 disabled={query.trim().length === 0} 
-                className="size-fit px-4 py-2 text-black bg-white rounded-md" 
+                className="size-fit px-4 py-2 text-black bg-white rounded-md disabled:opacity-50 transition" 
                 children='Search'
                 onClick={handleSearch} />
         </div>

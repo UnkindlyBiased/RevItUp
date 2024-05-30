@@ -1,8 +1,13 @@
 import { createClient } from 'redis'
+import env from '../EnvSchema'
 
 const cacheClient = createClient({
-    url: process.env.REDIS_URL,
-});
+    password: env.REDIS_PW,
+    socket: {
+        host: env.REDIS_SOCKET_HOST,
+        port: env.REDIS_SOCKET_PORT
+    }
+})
 
 async function connectToCacheClient() {
     await cacheClient.connect()

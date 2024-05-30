@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
 import PostSerivce from "@/services/PostSerivce";
 import useUserStore from "@/store/UserStore";
@@ -6,14 +6,15 @@ import PostInput from "@/types/data/posts/PostInput";
 import useThemedToast from "./useThemedToast";
 
 const useGetPosts = (findOptions: string = "") =>  useQuery({
-    queryKey: ['posts-all'],
-    queryFn: () => PostSerivce.getPosts(findOptions)
+    queryKey: ['posts-all', findOptions],
+    queryFn: () => PostSerivce.getPosts(findOptions),
+    retry: 1
 })
 
-const useGetPostByLink = (link: string) => useQuery({
+const useGetPostByLink = (link: string) => useSuspenseQuery({
     queryKey: ['post-detailed', link],
     queryFn: () => PostSerivce.getPostByLink(link),
-    enabled: !!link
+    refetchOnWindowFocus: false
 })
 
 const useGetPostById = (postId: string | null) => useQuery({
@@ -24,7 +25,8 @@ const useGetPostById = (postId: string | null) => useQuery({
 
 const useGetRandomPost = () => useQuery({
     queryKey: ['random-post'],
-    queryFn: () => PostSerivce.getRandomPost()
+    queryFn: () => PostSerivce.getRandomPost(),
+    refetchOnWindowFocus: false
 })
 
 const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQuery({
@@ -62,8 +64,9 @@ const useEditPost = (postId: string, inputData: PostInput) => {
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ['posts-all'] })
             queryClient.invalidateQueries({ queryKey: ['post-by-id', postId] })
+            queryClient.invalidateQueries({ queryKey: ['authored-posts', user?.id || 0 ] })
         },
-        onSuccess: () => toast('Successfully updated', 'text')
+        onSuccess: () => toast('Congratulations!', 'Your post was successfully updated')
     })
 }
 
@@ -82,6 +85,18 @@ const useDeletePost = (postId: string) => {
         onSuccess: () => toast('Deletion', 'Post was successfully deleted')
     })
 }
+
+const useRegisterView = (postId: string) => useMutation({
+    mutationFn: () => PostSerivce.registerView(postId)
+})
+
+const useCheckByTitle = (title: string) => useQuery({
+    queryKey: ['title-check', title],
+    queryFn: () => PostSerivce.checkIfExistsByTitle(title),
+    enabled: !!title && title.length >= 15,
+    refetchOnWindowFocus: false,
+    staleTime: 3000
+})
 
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
@@ -132,6 +147,8 @@ export {
     useGetPostsByAuthorship, 
     useGetSavedPosts,
     useSearchPosts,
+    useRegisterView,
+    useCheckByTitle,
     useCreatePost,
     useEditPost,
     useDeletePost,
