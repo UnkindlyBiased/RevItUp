@@ -32,7 +32,7 @@ function UserWrittenPostsPage(): React.ReactElement {
                         <AddNewPost />
                     </div>
                     <div className="flex justify-between space-x-16">
-                        <div className="flex flex-col space-y-4 w-fit h-96 overflow-y-scroll">
+                        <div className="flex flex-col space-y-4 w-fit h-96 overflow-y-clip">
                             {posts?.map((post, i) => (
                                 <AuthoredPostNavLink key={i} post={post} onClick={() => setPostId(post.id)} />
                             ))}

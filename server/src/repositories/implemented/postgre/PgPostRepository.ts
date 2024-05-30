@@ -180,6 +180,14 @@ class PgPostRepository implements IPostRepository {
 
         await this.postRep.update(id, { views: entity.views + 1 })
     }
+    async checkIfExistsByTitle(title: string): Promise<boolean> {
+        const entity = await this.postRep.findOne({
+            where: { postTitle: ILike(title) },
+            select: { id: true }
+        })
+
+        return !!entity
+    }
 }
 
 export default new PgPostRepository()

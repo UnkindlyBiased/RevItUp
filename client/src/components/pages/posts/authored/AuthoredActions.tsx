@@ -7,15 +7,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useDebounce } from "@uidotdev/usehooks"
 
 import { useGetSchema } from "@/hooks/useColorMode"
-import { useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
+import { useCheckByTitle, useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
 import PostInput from "@/types/data/posts/PostInput"
 import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
     const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
+
+    const debouncedTitle = useDebounce(watch().postTitle, 500)
+    const { data: isTitleNotUnique, isLoading: weAreChecking } = useCheckByTitle(debouncedTitle)
 
     return (
         <Dialog onOpenChange={() => reset()}>
@@ -29,9 +33,12 @@ function AddNewPost(): React.ReactElement {
                     <DialogDescription>Remember that article's title should be unique</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
-                    <Textarea
-                        {...register('postTitle', { required: true, minLength: 15 })}
-                        placeholder="Article's title" />
+                    <>
+                        <Textarea
+                            {...register('postTitle', { required: true, minLength: 15 })}
+                            placeholder="Article's title" />
+                        { isTitleNotUnique && <span className="text-red-600">Post with this title already exists, try again</span> }
+                    </>
                     <Textarea
                         {...register('previewText', { required: true })}
                         placeholder="Article's placeholder text. Should be short and engaging" />
@@ -44,8 +51,8 @@ function AddNewPost(): React.ReactElement {
                         onValueChange={(value) => setValue('categoryId', value)} />
                 </div>
                 <DialogFooter className="flex items-center">
-                    { !isMutating && <span className="opacity-50">Adding</span> }
-                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId)}>
+                    { isMutating && <span className="opacity-50">Adding</span> }
+                    <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId) || isTitleNotUnique || weAreChecking}>
                         Add post
                     </button>
                 </DialogFooter>

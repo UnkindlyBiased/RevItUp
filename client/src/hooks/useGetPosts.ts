@@ -90,6 +90,14 @@ const useRegisterView = (postId: string) => useMutation({
     mutationFn: () => PostSerivce.registerView(postId)
 })
 
+const useCheckByTitle = (title: string) => useQuery({
+    queryKey: ['title-check', title],
+    queryFn: () => PostSerivce.checkIfExistsByTitle(title),
+    enabled: !!title && title.length >= 15,
+    refetchOnWindowFocus: false,
+    staleTime: 3000
+})
+
 const useGetSavedPosts = () => useQuery({
     queryKey: ['saved-posts'],
     queryFn: () => PostSerivce.getSavedPosts()
@@ -140,6 +148,7 @@ export {
     useGetSavedPosts,
     useSearchPosts,
     useRegisterView,
+    useCheckByTitle,
     useCreatePost,
     useEditPost,
     useDeletePost,

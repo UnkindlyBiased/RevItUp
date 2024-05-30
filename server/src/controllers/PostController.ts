@@ -193,11 +193,19 @@ class PostController {
     async registerView(req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) {
         try {
             if (!req.user) {
-                // idkkkkkkkk
+                return res.send({ message: 'Not authorized' })
             }
 
             await PostService.registerView(req.body.postId)
             return res.status(HttpStatusCodes.UPLOADED).send({ message: 'View added successfully' })
+        } catch(e) {
+            next(e)
+        }
+    }
+    async checkIfExistsByTitle(req: RequestWithBody<{ title: string }>, res: Response, next: NextFunction) {
+        try {
+            const response = await PostService.checkIfExistsByTitle(req.body.title)
+            return res.send({ response })
         } catch(e) {
             next(e)
         }

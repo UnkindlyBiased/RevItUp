@@ -17,4 +17,5 @@ export default interface IPostRepository {
     update: (postId: string, input: PostUpdateDto) => Promise<PostLightModel>
     delete: (id: string) => Promise<PostLightModel>
     registerView: (id: string) => Promise<void>
+    checkIfExistsByTitle: (title: string) => Promise<boolean>
 }

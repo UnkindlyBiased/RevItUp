@@ -41,8 +41,6 @@ class PostService {
             data.append(key, inputData[key as keyof Omit<PostInput, 'postImage'>])
         })
 
-        console.log(data)
-
         await api.post(this.ROUTE_PREFIX, data)
     }
     async update(postId: string, inputData: PostInput, userId: number): Promise<void> {
@@ -70,6 +68,9 @@ class PostService {
     }
     async registerView(postId: string): Promise<void> {
         await api.patch(this.ROUTE_PREFIX + '/add-view', { postId })
+    }
+    async checkIfExistsByTitle(title: string): Promise<boolean> {
+        return (await api.post<{ response: boolean }>(this.ROUTE_PREFIX + "/exists", { title })).data.response
     }
 
     async getSavedPosts(): Promise<PostPreview[]> {

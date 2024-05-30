@@ -88,7 +88,10 @@ class PostService {
         return this.repository.delete(id)
     }
     async registerView(id: string): Promise<void> {
-        await this.repository.registerView(id)
+        this.repository.registerView(id)
+    }
+    async checkIfExistsByTitle(title: string): Promise<boolean> {
+        return this.repository.checkIfExistsByTitle(title)
     }
 }
 

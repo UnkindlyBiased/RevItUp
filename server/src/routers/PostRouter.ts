@@ -11,6 +11,8 @@ PostRouter.get('/', cacheMiddleware('posts-all'), PostController.getPosts)
 PostRouter.get("/random", PostController.getRandomPost)
 PostRouter.get("/search", PostController.search)
 PostRouter.get('/saved', authMiddleware, PostController.getSavedPosts)
+PostRouter.post('/exists', PostController.checkIfExistsByTitle)
+
 PostRouter.get('/:link', PostController.getPostByLink)
 PostRouter.get('/by-id/:id', PostController.getPostById)
 PostRouter.get("/by-category/:code", PostController.getPostsByCategoryCode)
