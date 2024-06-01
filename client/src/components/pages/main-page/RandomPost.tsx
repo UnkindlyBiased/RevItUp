@@ -5,12 +5,15 @@ import { Link } from "react-router-dom"
 import { useGetSchema } from "@/hooks/useColorMode"
 import { useGetRandomPost } from "@/hooks/useGetPosts"
 import Error from "@/components/generic/boundaries/Error"
+import Loading from "@/components/generic/misc/Loading"
 
 function RandomPost(): React.ReactNode {
-    const { data: randomPost } = useGetRandomPost()
+    const { data: randomPost, isError } = useGetRandomPost()
     const schema = useGetSchema()
+
+    if (!randomPost) return <Loading></Loading>
     
-    if (!randomPost) return <Error />
+    if (isError) return <Error />
 
     return (
         <div className={cn('px-8 py-7 flex items-center justify-between space-x-3 rounded-xl bg-gradient-to-r', schema.randomPostBgGradient)}>

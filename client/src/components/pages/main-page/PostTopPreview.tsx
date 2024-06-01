@@ -1,14 +1,19 @@
 import { Link } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import PostPreview from "@/types/data/posts/PostPreview";
 import MainTitle from "../posts/MainTitle";
 import CategoryWithLink from "@/components/generic/category/CategoryLink";
 import PostStatistics from "../posts/PostStatistics";
+import SuspendedImage from "@/components/generic/misc/SuspendedImage";
 
 function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
     return (
         <div className="flex flex-col space-y-3 w-[65%]">
-            <img className="w-fit max-h-[25rem] object-contain rounded-md" src={post.imageLink} />
+            <SuspendedImage className="w-[85%] h-max rounded-md" src={post.imageLink}
+                loadingComp={
+                    <Skeleton className="w-[85%] h-96 rounded-md" />
+                } />
             <div className="flex items-center size-fit space-x-4">
                 <CategoryWithLink category={post.category} isLinkable />
                 <PostStatistics views={post.views} />

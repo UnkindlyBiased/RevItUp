@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaUser } from 'react-icons/fa6'
 
 import useUserStore from '@/store/UserStore'
+import AppRoutes from '@/utils/enums/AppRoutes'
 
 /**
  * Dropdown menu for the header
@@ -28,16 +29,16 @@ function UserDropdown(): React.ReactElement {
                     </DropdownMenuItem>
                 </> }
                 { user && <>
-                    <DropdownMenuItem onClick={() => navigate('/me')}>
+                    <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_PROFILE)}>
                         Your profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/me/saved-posts')}>
+                    <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_SAVED_POSTS)}>
                         Saved posts
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     { user.role === "writer" || user.role === "admin" && (
                         <>
-                            <DropdownMenuItem onClick={() => navigate('/me/written-articles')}>
+                            <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_WRITTEN_POSTS)}>
                                 Your articles
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

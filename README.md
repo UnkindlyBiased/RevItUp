@@ -16,13 +16,18 @@ Simply it'a website for every and any motorsport article. F1-4, WEC, WRC, IMSA, 
 - **Data fetching:** Axios
 - **State management:** Zustand, TanStack Query
 - **Development tools:** dotenv, TypeScript, ESLint
+- **Other:** Framer Motion
 
 ### Server
 
 - **Frameworks:** Node.JS, Express
 - **Middlewares:** CORS (Cross-Origin-Resource-Sharing), Cookie Parser
-- **Data access:** PostgreSQL, MongoDB, Redis, TypeORM
-- **Encrypting/hiding:** bcrypt, dotenv
+- **Data access:** PostgreSQL, MongoDB, Redis, TypeORM, Firebase
+- **Encrypting/hiding:** bcrypt, dotenv, Zod
 - **Data validation:** Express Validator
 - **Email sending**: Nodemailer
 - **Development tools:** Typescript, Nodemon
+
+## Installation
+
+Idk, will fill later

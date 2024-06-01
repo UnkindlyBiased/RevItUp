@@ -1,7 +1,7 @@
 import { SubmitHandler, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
-import CustomInput from "@/components/generic/misc/input/CustomInput";
 import useUserStore from "@/store/UserStore";
 import UserLogin from "@/types/data/users/UserLogin";
 import GenericButton from "@/components/generic/misc/input/GenericButton";
@@ -26,8 +26,8 @@ function LoginForm(): React.ReactElement {
             <span className="font-medium text-2xl">Login</span>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="flex flex-col space-y-5 items-center">
-                    <CustomInput placeholder="Username" {...register("username", { required: true })} />
-                    <CustomInput placeholder="Password" type="password" {...register("password", { required: true, minLength: 8 })} />
+                    <Input placeholder="Username" {...register("username", { required: true })} />
+                    <Input placeholder="Password" type="password" {...register("password", { required: true, minLength: 8 })} />
                     <GenericButton disabled={!isValid} type="submit">Login</GenericButton>
                 </div>
             </form>

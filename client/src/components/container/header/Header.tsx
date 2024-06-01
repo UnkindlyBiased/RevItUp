@@ -6,6 +6,7 @@ import Logo from "../../generic/misc/Logo"
 import ThemeSwitch from "./inner/ThemeSwitch"
 import UserDropdown from "./inner/DropdownMenu"
 import useUserStore from "@/store/UserStore"
+import AppRoutes from "@/utils/enums/AppRoutes"
 
 function Header(): React.ReactElement {  
     const schema = useGetSchema()
@@ -16,12 +17,12 @@ function Header(): React.ReactElement {
             <div className="flex space-x-8 items-center">
                 <Logo className="w-48 md:w-52 md:hover:w-56 transition-all" />
                 <div className="hidden lg:flex lg:items-center lg:space-x-7">
-                    <HeaderNavLink link='/news'>News</HeaderNavLink>
+                    <HeaderNavLink link={AppRoutes.POSTS}>News</HeaderNavLink>
                     <HeaderNavLink link='/sdfsdf'>Events</HeaderNavLink>
                     <HeaderNavLink link='/asdasd'>Threads</HeaderNavLink>
                     <HeaderNavLink link='/sdasd'>Drivers</HeaderNavLink>
-                    <HeaderNavLink link='/categories'>Categories</HeaderNavLink>
-                    { user?.role == 'admin' && <HeaderNavLink link='/admin'>Admin panel</HeaderNavLink> }
+                    <HeaderNavLink link={AppRoutes.CATEGORIES}>Categories</HeaderNavLink>
+                    { user?.role == 'admin' && <HeaderNavLink link={AppRoutes.ADMIN}>Admin panel</HeaderNavLink> }
                 </div>
             </div>
             <div className="flex items-center space-x-5">

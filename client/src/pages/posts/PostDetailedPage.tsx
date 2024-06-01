@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react"
 import { useParams } from "react-router-dom"
 import { useDocumentTitle } from "@uidotdev/usehooks"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import AuthorBox from "@/components/pages/posts/detailed/AuthorBox"
 import CommentUpload from "@/components/generic/comments/CommentField"
@@ -16,9 +17,9 @@ import SuspendedImage from "@/components/generic/misc/SuspendedImage"
 import PostStatistics from "@/components/pages/posts/PostStatistics"
 
 function PostDetailedPage(): React.ReactNode {
-    const { articleLink } = useParams()
+    const { postLink } = useParams()
 
-    const { data: post, isLoading, error } = useGetPostByLink(articleLink || '')
+    const { data: post, isLoading, error } = useGetPostByLink(postLink || '')
     const { data: isSaved } = useGetSavedCheck(post?.id || '')
     const { mutateAsync: addView } = useRegisterView(post?.id || '')
 
@@ -48,7 +49,7 @@ function PostDetailedPage(): React.ReactNode {
                 <span className="text-2xl font-medium mb-5">{post.previewText}</span>
                 <SuspendedImage 
                     className="w-[75%] rounded-lg mb-5 shadow-md" src={post.imageLink} 
-                    loadingComp={<div className="w-[75%] h-96 rounded-lg bg-opacity-25 bg-gray-500" />} />
+                    loadingComp={<Skeleton className="w-[75%] h-96 rounded-lg" />} />
                 <SpanSplitter className="flex flex-col space-y-4 text-lg w-[75%] mb-3" text={post.text} />
                 <FetchedComments className="mb-5" readableId={post.id} readableType="post-comments" />
                 {memoizedCommentUpload}

@@ -6,7 +6,6 @@ import PostSearch from "@/components/pages/posts/PostSearch"
 import PostPreviewComp from "@/components/pages/posts/preview/PostPreview"
 import { useSearchPosts } from "@/hooks/useGetPosts"
 
-// TODO: fix spacing between first post and title of the page
 function PostSearchPage(): React.ReactElement {
     const [searchParams] = useSearchParams()
     const query = searchParams.get('query')
