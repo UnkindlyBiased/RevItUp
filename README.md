@@ -22,7 +22,7 @@ Simply it'a website for every and any motorsport article. F1-4, WEC, WRC, IMSA, 
 
 - **Frameworks:** Node.JS, Express
 - **Middlewares:** CORS (Cross-Origin-Resource-Sharing), Cookie Parser
-- **Data access:** PostgreSQL, MongoDB, Redis, TypeORM, Firebase
+- **Data access:** PostgreSQL, Redis, Firebase, TypeORM
 - **Encrypting/hiding:** bcrypt, dotenv, Zod
 - **Data validation:** Express Validator
 - **Email sending**: Nodemailer

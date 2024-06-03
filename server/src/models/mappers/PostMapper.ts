@@ -31,7 +31,7 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             imageLink: entity.imageLink,
             postLink: entity.postLink,
             views: entity.views,
-            category: entity.category
+            category: CategoryMapper.mapModelToCategoryShortDto(entity.category)
         }
     }
 

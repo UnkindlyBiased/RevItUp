@@ -1,7 +1,7 @@
 import SavedPostsModel from "../models/domain/SavedPosts";
 import PostPreviewDto from "../models/dto/posts/PostPreviewDto";
 import PostMapper from "../models/mappers/PostMapper";
-import MongoSavedPostsRepository from "../repositories/implemented/mongo/MongoSavedPostsRepository";
+import PgSavedPostsRepository from "../repositories/implemented/postgre/PgSavedPostsRepository";
 import ISavedPostsRepository from "../repositories/ISavedPostsRepository";
 import PostService from "./PostService";
 
@@ -30,4 +30,4 @@ class SaverService {
     }
 }
 
-export default new SaverService(MongoSavedPostsRepository)
+export default new SaverService(PgSavedPostsRepository)

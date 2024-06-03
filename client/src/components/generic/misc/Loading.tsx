@@ -1,6 +1,8 @@
 function Loading(): React.ReactElement {
     return (
-        <span>Loading</span>
+        <div className="flex justify-center items-center">
+            <span>Loading</span>
+        </div>
     )
 }
 

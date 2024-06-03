@@ -1,7 +1,7 @@
 import express from 'express'
 import 'reflect-metadata'
 import { config } from 'dotenv'
-import { MongoDataSource, PgDataSource } from './utils/data/AppDataSource'
+import { PgDataSource } from './utils/data/AppDataSource'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
@@ -37,9 +37,6 @@ async function startApp() {
         await PgDataSource.synchronize()
 
         await connectToCacheClient()
-
-        await MongoDataSource.initialize()
-        await MongoDataSource.synchronize()
         
         app.listen(PORT, () => {
             console.log(`App is started on port ${PORT}`)

@@ -24,8 +24,6 @@ export default class CategoryEntity {
     @Column({ default: 2000 })
     categoryCreationDate: number
 
-    @OneToMany(() => PostEntity, post => post.category, {
-        eager: true
-    })
+    @OneToMany(() => PostEntity, post => post.category, )
     posts: PostEntity[]
 }

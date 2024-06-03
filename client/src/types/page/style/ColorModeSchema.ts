@@ -4,9 +4,7 @@ type ColorModeSchema = {
     defaultFontColor: string,
     inputFontColor: string,
     border: string,
-
-    // * This isn't so important, but needed for better design
-    randomPostBgGradient: string,
+    randomLogo: string
 }
 
 const LightModeSchema: ColorModeSchema = {
@@ -15,7 +13,7 @@ const LightModeSchema: ColorModeSchema = {
     inputFontColor: 'text-white',
     secondaryBgColor: 'bg-white',
     border: "border-black border-opacity-50",
-    randomPostBgGradient: 'from-teal-400 to-yellow-200'
+    randomLogo: 'stroke-gray-700'
 }
 
 const DarkModeSchema: ColorModeSchema = {
@@ -24,7 +22,7 @@ const DarkModeSchema: ColorModeSchema = {
     inputFontColor: 'text-black',
     secondaryBgColor: 'bg-black',
     border: "border-white border-opacity-50",
-    randomPostBgGradient: 'from-slate-900 to-slate-700'
+    randomLogo: 'stroke-gray-300'
 }
 
 export { type ColorModeSchema, LightModeSchema, DarkModeSchema }

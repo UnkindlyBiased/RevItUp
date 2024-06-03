@@ -3,6 +3,7 @@ import { CountryEntity } from "./CountryEntity";
 import { TokenEntity } from "./TokenEntity";
 import UserRoles from "../../../../utils/enums/UserRoles";
 import PostCommentEntity from "./CommentEntity";
+import SavedPostsEntity from "./SavedPostsEntity";
 
 @Entity({ name: 'Users' })
 export class UserEntity {
@@ -42,4 +43,7 @@ export class UserEntity {
 
     @OneToOne(() => TokenEntity, token => token.user)
     refreshToken: TokenEntity
+
+    @OneToOne(() => SavedPostsEntity, savedPosts => savedPosts.user)
+    savedPosts: SavedPostsEntity
 }
