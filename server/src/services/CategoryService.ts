@@ -3,7 +3,6 @@ import CategoryCreateDto from "../models/dto/categories/CategoryCreateDto";
 import CategoryShortDto from "../models/dto/categories/CategoryShortDto";
 import CategoryMapper from "../models/mappers/CategoryMapper";
 import ICategoryRepository from "../repositories/ICategoryRepository";
-import PgCategoryRepository from "../repositories/implemented/postgre/PgCategoryRepository";
 
 class CategoryService {
     constructor(private repository: ICategoryRepository) {}
@@ -24,4 +23,4 @@ class CategoryService {
     }
 }
 
-export default new CategoryService(new PgCategoryRepository())
+export default CategoryService

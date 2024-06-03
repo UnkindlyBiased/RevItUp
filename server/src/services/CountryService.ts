@@ -1,6 +1,5 @@
 import CountryModel from "../models/domain/Country";
 import ICountryRepository from "../repositories/ICountryRepository";
-import PgCountryRepository from "../repositories/implemented/postgre/PgCountryRepository";
 
 class CountryService {
     constructor(private repository: ICountryRepository) {  }
@@ -16,4 +15,4 @@ class CountryService {
     }
 }
 
-export default new CountryService(PgCountryRepository)
+export default CountryService

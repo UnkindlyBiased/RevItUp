@@ -190,4 +190,4 @@ class PgPostRepository implements IPostRepository {
     }
 }
 
-export default new PgPostRepository()
+export default PgPostRepository

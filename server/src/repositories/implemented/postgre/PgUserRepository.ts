@@ -96,4 +96,4 @@ class PgUserRepository implements IUserRepository {
     }
 }
 
-export default new PgUserRepository()
+export default PgUserRepository

@@ -3,7 +3,6 @@ import CommentModel from "../models/domain/Comment";
 import CommentInputDto from "../models/dto/comments/CommentInputDto";
 import CommentShortDto from "../models/dto/comments/CommentShortDto";
 import ICommentRepository from "../repositories/ICommentRepository";
-import PgCommentRepository from "../repositories/implemented/postgre/PgCommentRepository";
 
 class CommentService {
     constructor(private repository: ICommentRepository) {}
@@ -28,4 +27,4 @@ class CommentService {
     }
 }
 
-export default new CommentService(PgCommentRepository)
+export default CommentService

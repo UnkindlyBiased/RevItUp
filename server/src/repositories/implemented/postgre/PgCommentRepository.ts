@@ -72,4 +72,4 @@ class PgCommentRepository implements ICommentRepository {
     }
 }
 
-export default new PgCommentRepository()
+export default PgCommentRepository

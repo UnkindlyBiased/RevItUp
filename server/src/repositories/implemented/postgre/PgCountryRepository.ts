@@ -39,4 +39,4 @@ class PgCountryRepository implements ICountryRepository {
     }
 }
 
-export default new PgCountryRepository()
+export default PgCountryRepository

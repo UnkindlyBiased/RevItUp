@@ -1,5 +1,4 @@
 import TokenModel from "../models/domain/Token";
-import PgTokenRepository from "../repositories/implemented/postgre/PgTokenRepository";
 import ITokenRepository from "../repositories/ITokenRepository";
 
 class TokenService {
@@ -23,4 +22,4 @@ class TokenService {
     }
 }
 
-export default new TokenService(PgTokenRepository)
+export default TokenService

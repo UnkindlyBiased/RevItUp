@@ -5,7 +5,6 @@ import UserEditDto from "../models/dto/users/UserEditDto"
 import UserShortDto from "../models/dto/users/UserShortDto"
 import UserMapper from "../models/mappers/UserMapper"
 import IUserRepository from "../repositories/IUserRepository"
-import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 import bcrypt from 'bcrypt'
 import UserModel from "../models/domain/User"
 import UserHelper from "../../utils/helpers/UserHelper"
@@ -16,9 +15,20 @@ import TokenHelper from "../../utils/helpers/TokenHelper"
 import TokenService from "./TokenService"
 import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
 import SaverService from "./SaverService"
+import PgSavedPostsRepository from "../repositories/implemented/postgre/PgSavedPostsRepository"
+import PgTokenRepository from "../repositories/implemented/postgre/PgTokenRepository"
+import TokenModel from "../models/domain/Token"
 
 class UserService {
-    constructor(private readonly repository: IUserRepository) {}
+    private readonly mailService: MailService
+    private readonly saverService: SaverService
+    private readonly tokenService: TokenService
+
+    constructor(private readonly repository: IUserRepository) {
+        this.mailService = new MailService()
+        this.saverService = new SaverService(new PgSavedPostsRepository())
+        this.tokenService = new TokenService(new PgTokenRepository())
+    }
 
     // * CRUD logic
     async getUsers(): Promise<UserShortDto[]> {
@@ -40,7 +50,7 @@ class UserService {
             await this.repository.getUserById(id)
         )
     }
-    async create(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
+    create = async (candidate: UserCreateDto): Promise<UserCreateOutputDto> => {
         UserHelper.trimUserData(candidate)
 
         const hashPassword = bcrypt.hashSync(candidate.password, 3)
@@ -51,9 +61,9 @@ class UserService {
             password: hashPassword,
             activationLink,
         })
-        await MailService.sendActivationMail(candidate.emailAddress, 
+        await this.mailService.sendActivationMail(candidate.emailAddress, 
             `http://localhost:${process.env.APP_PORT}/auth/activate/${activationLink}`)
-        await SaverService.create(user.id)
+        await this.saverService.create(user.id)
 
         return this.generateDtoWithTokens(user)
     }
@@ -96,9 +106,8 @@ class UserService {
 
         return this.generateDtoWithTokens(user)
     }
-    async logout(refreshToken: string) {
-        const token = TokenService.removeToken(refreshToken)
-        return token
+    logout = async (refreshToken: string): Promise<TokenModel> => {
+        return this.tokenService.removeToken(refreshToken)
     }
     async activate(activationLink: string): Promise<UserEditDto> {
         const user = await this.repository.getUserByActivationLink(activationLink)
@@ -114,14 +123,14 @@ class UserService {
 
         return dto
     }
-    async refresh(refreshToken: string) {
+    refresh = async (refreshToken: string): Promise<UserCreateOutputDto> => {
         if (!refreshToken) {
             throw ApiError.Unauthorized('Refresh token is not valid')
         }
 
         const userData = TokenHelper.validateRefreshToken(refreshToken)
 
-        const tokenEntity = await TokenService.getByRefreshToken(refreshToken)
+        const tokenEntity = await this.tokenService.getByRefreshToken(refreshToken)
 
         if (!userData || !tokenEntity) {
             throw ApiError.Unauthorized('User is unauthorized')
@@ -135,11 +144,11 @@ class UserService {
         return await this.generateDtoWithTokens(user)
     }
 
-    private async generateDtoWithTokens(user: UserModel): Promise<UserCreateOutputDto> {
+    private generateDtoWithTokens = async (user: UserModel): Promise<UserCreateOutputDto> => {
         const dto: UserTokenDto = UserMapper.mapUserModelToUserTokenDto(user)
 
         const tokens = TokenHelper.createTokenPair(dto)
-        await TokenService.saveToken(dto.id, tokens.refreshToken)
+        await this.tokenService.saveToken(dto.id, tokens.refreshToken)
 
         return {
             user: dto,
@@ -148,4 +157,4 @@ class UserService {
     }
 }
 
-export default new UserService(PgUserRepository)
+export default UserService

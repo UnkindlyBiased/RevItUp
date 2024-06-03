@@ -29,8 +29,6 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
             throw ApiError.NotFound("User with this ID was not found")
         }
 
-        console.log(candidate)
-
         return SavedPostsMapper.toDataModel(candidate)
     }
     async create(userId: number): Promise<SavedPostsModel> {
@@ -74,4 +72,4 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
     }
 }
 
-export default new PgSavedPostsRepository()
+export default PgSavedPostsRepository

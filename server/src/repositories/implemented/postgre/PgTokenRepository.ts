@@ -69,4 +69,4 @@ class PgTokenRepository implements ITokenRepository {
     }
 }
 
-export default new PgTokenRepository()
+export default PgTokenRepository

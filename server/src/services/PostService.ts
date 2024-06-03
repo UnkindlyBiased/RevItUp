@@ -9,12 +9,15 @@ import PostPreviewDto from "../models/dto/posts/PostPreviewDto";
 import PostShortDto from "../models/dto/posts/PostShortDto";
 import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 import PostMapper from "../models/mappers/PostMapper";
-import PgPostRepository from "../repositories/implemented/postgre/PgPostRepository";
 import IPostRepository from "../repositories/IPostRepository";
 import FirebaseService from "./FirebaseService";
 
 class PostService {
-    constructor(private repository: IPostRepository) {}
+    private readonly firebaseService: FirebaseService
+    
+    constructor(private repository: IPostRepository) {
+        this.firebaseService = new FirebaseService()
+    }
 
     async getPosts(options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPosts(options)
@@ -54,27 +57,27 @@ class PostService {
         const posts = await this.repository.search(inputStr)
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
-    async create(candidate: PostInputWithImageDto): Promise<PostLightModel> {
+    create = async (candidate: PostInputWithImageDto): Promise<PostLightModel> => {
         candidate.postLink = PostHelper.putDashes(candidate.postTitle)
 
-        const imageRef = await FirebaseService.uploadImage({
+        const imageRef = await this.firebaseService.uploadImage({
             image: candidate.image,
             imageName: candidate.postLink + '-' + Math.floor(Math.random() * 100000000),
             endpoint: FirebaseRefEndponts.POSTS
         })
-        const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+        const imageLink = await this.firebaseService.getDownloadUrl(imageRef)
 
         return this.repository.create({ ...candidate, imageLink })
     }
-    async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
+    update = async (postId: string, input: PostUpdateDto): Promise<PostLightModel> => {
         input.postLink = PostHelper.putDashes(input.postTitle)
         if (input.image) {
-            const imageRef = await FirebaseService.uploadImage({
+            const imageRef = await this.firebaseService.uploadImage({
                 image: input.image,
                 imageName: input.postLink + '-' + Math.floor(Math.random() * 100000000),
                 endpoint: FirebaseRefEndponts.POSTS
             })
-            const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+            const imageLink = await this.firebaseService.getDownloadUrl(imageRef)
             input.imageLink = imageLink
         }
 
@@ -95,4 +98,4 @@ class PostService {
     }
 }
 
-export default new PostService(PgPostRepository)
+export default PostService

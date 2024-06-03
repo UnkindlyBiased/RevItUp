@@ -1,6 +1,8 @@
 import { Router } from "express";
 import UserController from "../controllers/UserController";
 import { userValidation } from "../../utils/middlewares/validation/UserValidation";
+import UserService from "../services/UserService";
+import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository";
 
 const AuthRouter = Router()
 

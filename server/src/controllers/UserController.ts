@@ -3,37 +3,44 @@ import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import { validationResult } from "express-validator"
+import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 
 class UserController {
-    async getUsers(_req: Request, res: Response, next: NextFunction) {
+    private readonly service: UserService
+
+    constructor() {
+        this.service = new UserService(new PgUserRepository())
+    }
+
+    getUsers = async (_req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await UserService.getUsers()
+            const users = await this.service.getUsers()
             return res.send(users)
         } catch(e) {
             next(e)
         }
     }
-    async getUserByName(req: Request, res: Response, next: NextFunction) {
+    getUserByName = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { username } = req.params
-            const user = await UserService.getUserByName(username)
+            const user = await this.service.getUserByName(username)
 
             return res.send(user)
         } catch (e) {
             next(e)
         }
     }
-    async getUserById(req: Request, res: Response, next: NextFunction) {
+    getUserById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params
-            const user = await UserService.getUserById(Number(id))
+            const user = await this.service.getUserById(Number(id))
 
             return res.send(user)
         } catch(e) {
             next(e)
         }
     }
-    async create(req: Request, res: Response, next: NextFunction) {
+    create = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const result = validationResult(req)
             if (!result.isEmpty()) {
@@ -44,7 +51,7 @@ class UserController {
             }
 
             const { username, password, emailAddress, countryId } = req.body
-            const user = await UserService.create({
+            const user = await this.service.create({
                 username,
                 password,
                 emailAddress,
@@ -57,10 +64,10 @@ class UserController {
             next(e)
         }
     }
-    async update(req: Request, res: Response, next: NextFunction) {
+    update = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id, username, password, biography, emailAddress } = req.body
-            const updatedUser = await UserService.update(Number(id), {
+            const updatedUser = await this.service.update(Number(id), {
                 username,
                 password,
                 biography,
@@ -71,20 +78,20 @@ class UserController {
             next(e)
         }
     }
-    async delete(req: Request, res: Response, next: NextFunction) {
+    delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id, password } = req.body
-            const userToRemove = await UserService.delete(Number(id), password)
+            const userToRemove = await this.service.delete(Number(id), password)
 
             res.send(userToRemove)
         } catch (e) {
             next(e)
         }
     }
-    async login(req: Request, res: Response, next: NextFunction) {
+    login = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { username, password } = req.body
-            const userData = await UserService.login(username, password)
+            const userData = await this.service.login(username, password)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)
@@ -92,10 +99,10 @@ class UserController {
             next(e)
         }
     }
-    async logout(req: Request, res: Response, next: NextFunction) {
+    logout = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.body
-            await UserService.logout(refreshToken)
+            await this.service.logout(refreshToken)
 
             res.clearCookie('refreshToken')
             res.json({
@@ -106,20 +113,20 @@ class UserController {
             next(e)
         }
     }
-    async activate(req: Request, res: Response, next: NextFunction) {
+    activate = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { link } = req.params
-            await UserService.activate(link)
+            await this.service.activate(link)
 
             return res.redirect(process.env.CLIENT_URL as string)
         } catch(e) {
             next(e)
         }
     }
-    async refresh(req: Request, res: Response, next: NextFunction) {
+    refresh = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.cookies
-            const userData = await UserService.refresh(refreshToken)
+            const userData = await this.service.refresh(refreshToken)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)
