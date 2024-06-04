@@ -1,6 +1,8 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./UserEntity";
+
+import UserEntity from "./UserEntity";
 import PostEntity from "./PostEntity";
+import ThreadEntity from "./ThreadEntity";
 
 @Entity({ name: "Comments" })
 export default class CommentEntity {
@@ -35,4 +37,10 @@ export default class CommentEntity {
         onDelete: 'CASCADE'
     })
     post: PostEntity
+
+    @ManyToOne(() => ThreadEntity, {
+        cascade: true,
+        onDelete: 'CASCADE'
+    })
+    thread: ThreadEntity
 }

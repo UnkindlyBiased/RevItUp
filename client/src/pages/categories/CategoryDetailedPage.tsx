@@ -14,11 +14,11 @@ function CategoryDetailedPage(): React.ReactNode {
     return (
         <div className="flex flex-col space-y-4">
             <div className="flex space-x-3 items-center">
-                <img className="w-40" src={categoryData.categoryLogo} />
+                <img className="w-40" src={categoryData.logo} />
                 <div className="w-[1px] h-12" style={{ backgroundColor: categoryData.categoryColor }} />
                 <div className="flex flex-col space-y-1">
                     <span className="text-5xl font-bold">{categoryData.categoryName}</span>
-                    <span>Creation date: {categoryData.categoryCreationDate}</span>
+                    <span>Creation date: {categoryData.creationDate}</span>
                 </div>
             </div>
             <div className="flex flex-col w-60">

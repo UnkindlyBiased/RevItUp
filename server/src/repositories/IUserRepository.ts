@@ -9,5 +9,5 @@ export default interface IUserRepository {
     getUserByActivationLink: (activationLink: string) => Promise<UserModel>
     create(candidate: UserCreateDto): Promise<UserModel>
     update(id: number, updateData: UserEditDto): Promise<UserModel>
-    delete(id: number): Promise<UserModel>
+    delete(id: number): Promise<void>
 }

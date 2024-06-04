@@ -4,7 +4,7 @@ export default interface ThreadModel {
     id: string
     threadTitle: string
     threadText: string
-    threadLink: string
+    threadLink?: string
     creationDate: Date
     views: number
     author: UserShortDto

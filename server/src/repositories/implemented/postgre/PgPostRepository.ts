@@ -178,7 +178,7 @@ class PgPostRepository implements IPostRepository {
             throw ApiError.NotFound("Such post doesn't exist")
         }
 
-        await this.postRep.update(id, { views: entity.views + 1 })
+        await this.postRep.update(id, { views: ++entity.views })
     }
     async checkIfExistsByTitle(title: string): Promise<boolean> {
         const entity = await this.postRep.findOne({

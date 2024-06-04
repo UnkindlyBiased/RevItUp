@@ -1,12 +1,13 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CountryEntity } from "./CountryEntity";
-import { TokenEntity } from "./TokenEntity";
+import CountryEntity from "./CountryEntity";
+import TokenEntity from "./TokenEntity";
+
 import UserRoles from "../../../../utils/enums/UserRoles";
-import PostCommentEntity from "./CommentEntity";
+import CommentEntity from "./CommentEntity";
 import SavedPostsEntity from "./SavedPostsEntity";
 
 @Entity({ name: 'Users' })
-export class UserEntity {
+export default class UserEntity {
     @PrimaryGeneratedColumn()
     id: number
 
@@ -38,8 +39,8 @@ export class UserEntity {
     @JoinColumn()
     country: CountryEntity
 
-    @OneToMany(() => PostCommentEntity, comment => comment.user)
-    comments: PostCommentEntity[]
+    @OneToMany(() => CommentEntity, comment => comment.user)
+    comments: CommentEntity[]
 
     @OneToOne(() => TokenEntity, token => token.user)
     refreshToken: TokenEntity

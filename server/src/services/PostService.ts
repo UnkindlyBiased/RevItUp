@@ -1,6 +1,6 @@
 import { cacheClient } from "../../utils/data/RedisCacheClient";
 import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints";
-import PostHelper from "../../utils/helpers/PostHelper";
+import PostThreadHelper from "../../utils/helpers/PostHelper";
 import DataFindOptions from "../../utils/types/DataFindOptions";
 import PostModel from "../models/domain/Post";
 import { PostInputWithImageDto }  from "../models/dto/posts/PostInputDto";
@@ -58,7 +58,7 @@ class PostService {
         return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
     }
     create = async (candidate: PostInputWithImageDto): Promise<PostLightModel> => {
-        candidate.postLink = PostHelper.putDashes(candidate.postTitle)
+        candidate.postLink = PostThreadHelper.putDashes(candidate.postTitle)
 
         const imageRef = await this.firebaseService.uploadImage({
             image: candidate.image,
@@ -70,7 +70,7 @@ class PostService {
         return this.repository.create({ ...candidate, imageLink })
     }
     update = async (postId: string, input: PostUpdateDto): Promise<PostLightModel> => {
-        input.postLink = PostHelper.putDashes(input.postTitle)
+        input.postLink = PostThreadHelper.putDashes(input.postTitle)
         if (input.image) {
             const imageRef = await this.firebaseService.uploadImage({
                 image: input.image,
@@ -81,7 +81,7 @@ class PostService {
             input.imageLink = imageLink
         }
 
-        PostHelper.trimPostData(input)
+        PostThreadHelper.trimPostData(input)
 
         await cacheClient.del(`post-${input.postLink}`)
 

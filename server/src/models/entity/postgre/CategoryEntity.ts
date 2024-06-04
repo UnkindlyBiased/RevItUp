@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+
 import PostEntity from "./PostEntity";
 
 @Entity({ name: 'Categories' })
@@ -13,7 +14,7 @@ export default class CategoryEntity {
     categoryColor: string
 
     @Column()
-    categoryLogo: string
+    logo: string
 
     @Column({ unique: true })
     categoryCode: string
@@ -22,8 +23,8 @@ export default class CategoryEntity {
     biography: string
 
     @Column({ default: 2000 })
-    categoryCreationDate: number
+    creationDate: number
 
-    @OneToMany(() => PostEntity, post => post.category, )
+    @OneToMany(() => PostEntity, post => post.category)
     posts: PostEntity[]
 }

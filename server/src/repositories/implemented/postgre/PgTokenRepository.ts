@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import TokenModel from "../../../models/domain/Token";
 import ITokenRepository from "../../ITokenRepository";
-import { TokenEntity } from "../../../models/entity/postgre/TokenEntity";
+import TokenEntity from "../../../models/entity/postgre/TokenEntity";
 import TokenMapper from "../../../models/mappers/TokenMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";

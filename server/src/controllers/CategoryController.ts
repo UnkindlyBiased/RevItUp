@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+
 import CategoryService from "../services/CategoryService";
 import CategoryCreateDto from "../models/dto/categories/CategoryCreateDto";
 import PgCategoryRepository from "../repositories/implemented/postgre/PgCategoryRepository";
+import { RequestWithBody, RequestWithParams } from "../../utils/types/DifferentiatedRequests";
 
 class CategoryController {
     private readonly service: CategoryService
@@ -18,38 +20,28 @@ class CategoryController {
             next(e)
         }
     }
-    getByCategoryCode = async (req: Request, res: Response, next: NextFunction) => {
+    getByCategoryCode = async (req: RequestWithParams<{ code: string }>, res: Response, next: NextFunction) => {
         try {
-            const { code } = req.params
-            
-            const category = await this.service.getByCategoryCode(code)
+            const category = await this.service.getByCategoryCode(req.params.code)
+
             return res.send(category)
         } catch(e) {
             next(e)
         }
     }
-    getCategoriesByPostsLengthSorted = async (req: Request, res: Response, next: NextFunction) => {
+    getCategoriesByPostsLengthSorted = async (_req: Request, res: Response, next: NextFunction) => {
         try {
             const categories = await this.service.getCategoriesByPostsLengthSorted()
+            
             return res.send(categories)
         } catch(e) {
             next(e)
         }
     }
-    // TODO: check if using the spread operator is possible
-    async create(req: Request, res: Response, next: NextFunction) {
+    create = async (req: RequestWithBody<CategoryCreateDto>, res: Response, next: NextFunction) => {
         try {
-            const { name, color, logo, code, biography, creationDate } = req.body
-            const data: CategoryCreateDto = {
-                categoryName: name,
-                categoryColor: color,
-                categoryLogo: logo,
-                categoryCode: code,
-                biography: biography || null,
-                categoryCreationDate: creationDate
-            }
-
-            const category = await this.service.create(data)
+            const category = await this.service.create(req.body)
+            
             return res.send(category)
         } catch(e) {
             next(e)

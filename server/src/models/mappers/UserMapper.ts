@@ -1,4 +1,4 @@
-import { UserEntity } from "../entity/postgre/UserEntity";
+import UserEntity from "../entity/postgre/UserEntity";
 import UserCreateDto from "../dto/users/UserCreateDto";
 import UserDetailedDto from "../dto/users/UserDetailedDto";
 import UserEditDto from "../dto/users/UserEditDto";

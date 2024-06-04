@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { validationResult } from "express-validator";
+
 import CommentService from "../services/CommentService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
-import { validationResult } from "express-validator";
 import PgCommentRepository from "../repositories/implemented/postgre/PgCommentRepository";
 
 class CommentController {

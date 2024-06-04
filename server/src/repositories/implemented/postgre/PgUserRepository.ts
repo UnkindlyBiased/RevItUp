@@ -1,5 +1,5 @@
 import { Repository } from "typeorm"
-import { UserEntity } from "../../../models/entity/postgre/UserEntity"
+import UserEntity from "../../../models/entity/postgre/UserEntity"
 import { PgDataSource } from "../../../../utils/data/AppDataSource"
 import UserCreateDto from "../../../models/dto/users/UserCreateDto"
 import { ApiError } from "../../../../utils/errors/ApiError"
@@ -85,14 +85,16 @@ class PgUserRepository implements IUserRepository {
         await this.userRep.update(updatedUser.id, updatedUser)
         return UserMapper.toDataModel(updatedUser)
     }
-    async delete(id: number): Promise<UserModel> {
-        const user = await this.userRep.findOneBy({ id })
+    async delete(id: number): Promise<void> {
+        const user = await this.userRep.findOne({
+            where: { id },
+            select: { id: true }
+        })
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }
         
         await this.userRep.remove(user)
-        return UserMapper.toDataModel(user)
     }
 }
 

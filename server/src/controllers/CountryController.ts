@@ -1,4 +1,5 @@
-import { Request, Response, NextFunction } from 'express' 
+import { Request, Response, NextFunction } from 'express'
+
 import CountryService from '../services/CountryService'
 import { ApiError } from '../../utils/errors/ApiError'
 import PgCountryRepository from '../repositories/implemented/postgre/PgCountryRepository'

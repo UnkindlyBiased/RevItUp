@@ -2,8 +2,8 @@ export default interface CategoryModel {
     id: number
     categoryName: string
     categoryColor: string
-    categoryLogo: string
+    logo: string
     categoryCode: string
     biography: string
-    categoryCreationDate: number
+    сreationDate: number
 }

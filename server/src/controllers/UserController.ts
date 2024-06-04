@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express"
+
 import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
-import { validationResult } from "express-validator"
 import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
+import { RequestWithBody } from "../../utils/types/DifferentiatedRequests"
 
 class UserController {
     private readonly service: UserService
@@ -42,14 +43,6 @@ class UserController {
     }
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const result = validationResult(req)
-            if (!result.isEmpty()) {
-                return res.status(HttpStatusCodes.BAD_REQUEST).send({
-                    message: "Validation of body has failed",
-                    errorStack: result
-                })
-            }
-
             const { username, password, emailAddress, countryId } = req.body
             const user = await this.service.create({
                 username,
@@ -78,12 +71,11 @@ class UserController {
             next(e)
         }
     }
-    delete = async (req: Request, res: Response, next: NextFunction) => {
+    delete = async (req: RequestWithBody<{ id: number, password: string }>, res: Response, next: NextFunction) => {
         try {
-            const { id, password } = req.body
-            const userToRemove = await this.service.delete(Number(id), password)
+            await this.service.delete(req.body.id, req.body.password)
 
-            res.send(userToRemove)
+            res.status(HttpStatusCodes.DELETED).send()
         } catch (e) {
             next(e)
         }

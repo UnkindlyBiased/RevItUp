@@ -83,7 +83,7 @@ class UserService {
         const updatedUser = await this.repository.update(id, updateData)
         return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
     }
-    async delete(id: number, password: string): Promise<UserModel> {
+    async delete(id: number, password: string): Promise<void> {
         const userToRemove = await this.repository.getUserById(id)
         
         const arePasswordsEqual = await bcrypt.compare(password, userToRemove.password)
@@ -92,7 +92,6 @@ class UserService {
         }
 
         await this.repository.delete(id)
-        return userToRemove
     }
 
     // * Auth logic

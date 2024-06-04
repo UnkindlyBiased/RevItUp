@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+
 import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import { ApiError } from "../../utils/errors/ApiError";
@@ -202,10 +203,6 @@ class PostController {
     }
     registerView = async (req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) => {
         try {
-            if (!req.user) {
-                return res.send({ message: 'Not authorized' })
-            }
-
             await this.postSerivce.registerView(req.body.postId)
             return res.status(HttpStatusCodes.UPLOADED).send({ message: 'View added successfully' })
         } catch(e) {

@@ -1,0 +1,18 @@
+import { Router } from "express";
+
+import { cacheMiddleware } from "../../utils/middlewares/cache/CacheMiddleware";
+import ThreadController from "../controllers/ThreadController";
+import authMiddleware from "../../utils/middlewares/misc/AuthMiddleware";
+import threadValidation from '../../utils/middlewares/validation/ThreadValidation'
+import validationResultMiddleware from '../../utils/middlewares/validation/ValidationResultMiddleware'
+
+const ThreadRouter = Router()
+
+ThreadRouter.get('/', cacheMiddleware('threads-all'), ThreadController.getThreads)
+ThreadRouter.get('/:link', ThreadController.getThreadByLink)
+ThreadRouter.post('/', authMiddleware, threadValidation, validationResultMiddleware, ThreadController.create)
+ThreadRouter.put('/', authMiddleware, threadValidation, validationResultMiddleware, ThreadController.update)
+ThreadRouter.patch('/', ThreadController.registerView)
+ThreadRouter.delete('/', authMiddleware, ThreadController.delete)
+
+export default ThreadRouter
