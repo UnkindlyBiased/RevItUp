@@ -27,8 +27,8 @@ class PostService {
     async getPostsByAuthorship(authorId: number, options: string) {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
     }
-    async search(query: string) {
-        return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/search?inputStr=${query}`)).data
+    async search(findOptions: string = "") {
+        return (await api.get<PaginatedResponse & { posts: PostPreview[] }>(this.ROUTE_PREFIX + `/search?${findOptions}`)).data
     }
     async create(inputData: PostInput): Promise<void> {
         const data = new FormData()

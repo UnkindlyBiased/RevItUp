@@ -3,6 +3,7 @@ import ThreadLightModel from "../dto/threads/ThreadLightModel";
 import ThreadShortDto from "../dto/threads/ThreadShortDto";
 import ThreadEntity from "../entity/postgre/ThreadEntity";
 import IDataMapper from "../misc/IDataMapper";
+import ThreadCategoryMapper from "./ThreadCategoryMapper";
 import UserMapper from "./UserMapper";
 
 class ThreadMapper implements IDataMapper<ThreadModel, ThreadEntity> {
@@ -10,6 +11,7 @@ class ThreadMapper implements IDataMapper<ThreadModel, ThreadEntity> {
         return {
             ...entity,
             author: UserMapper.toUserShortDto(entity.author),
+            threadCategory: ThreadCategoryMapper.toDto(entity.threadCategory)
         }
     }
     toLigthDataModel(entity: ThreadEntity): ThreadLightModel {
@@ -19,7 +21,8 @@ class ThreadMapper implements IDataMapper<ThreadModel, ThreadEntity> {
             threadLink: entity.threadLink,
             threadText: entity.threadText,
             views: entity.views,
-            creationDate: entity.creationDate
+            creationDate: entity.creationDate,
+            threadCategory: ThreadCategoryMapper.toDto(entity.threadCategory)
         }
     }
     toThreadShortDto(model: ThreadModel): ThreadShortDto {
@@ -28,7 +31,8 @@ class ThreadMapper implements IDataMapper<ThreadModel, ThreadEntity> {
             threadLink: model.threadLink,
             views: model.views,
             creationDate: model.creationDate,
-            author: model.author
+            author: model.author,
+            threadCategory: model.threadCategory
         }
     }
 }

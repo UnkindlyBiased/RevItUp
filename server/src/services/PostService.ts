@@ -50,11 +50,11 @@ class PostService {
 
         return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
-    async getPagesAmount(take: number) {
-        return this.repository.getPagesAmount(take)
+    async getPagesAmount(take: number, condition?: Record<string, any>) {
+        return this.repository.getPagesAmount(take, condition)
     }
-    async search(inputStr: string): Promise<PostPreviewDto[]> {
-        const posts = await this.repository.search(inputStr)
+    async search(inputStr: string, options: DataFindOptions): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.search(inputStr, options)
         return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     create = async (candidate: PostInputWithImageDto): Promise<PostLightModel> => {

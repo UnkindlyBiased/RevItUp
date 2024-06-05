@@ -4,7 +4,7 @@ import PaginationContextProps from "@/types/page/PaginationProps"
 
 const PaginationContext = createContext<PaginationContextProps | undefined>(undefined)
 
-function PaginationProvider({ value, children }: { value: PaginationContextProps | undefined, children: React.ReactElement }): React.ReactElement {
+function PaginationProvider({ value, children }: { value: PaginationContextProps | undefined, children?: React.ReactElement }): React.ReactElement {
     return <PaginationContext.Provider value={value} children={children} />
 }
 

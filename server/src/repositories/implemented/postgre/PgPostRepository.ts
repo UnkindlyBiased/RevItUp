@@ -88,18 +88,24 @@ class PgPostRepository implements IPostRepository {
 
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
-    async getPagesAmount(take: number): Promise<number> {
+    async getPagesAmount(take: number, condition?: Record<string, any>): Promise<number> {
         const allEntities = await this.postRep.find({
-            select: { id: true }
+            select: { id: true },
+            where: condition
         })
         const pagesAmount = Math.ceil(allEntities.length / take)
 
         return pagesAmount !== 0 ? pagesAmount : 1
     }
-    async search(searchStr: string): Promise<PostModel[]> {
+    async search(searchStr: string, options: DataFindOptions): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
                 postTitle: ILike(`%${searchStr}%`)
+            },
+            take: options.take,
+            skip: options.take * (options.page - 1),
+            order: {
+                creationDate: 'DESC'
             },
             relations: ['author', 'author.country', 'category']
         })

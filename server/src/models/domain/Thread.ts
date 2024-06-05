@@ -1,3 +1,4 @@
+import ThreadCategoryDto from "../dto/threads/ThreadCategoryDto"
 import UserShortDto from "../dto/users/UserShortDto"
 
 export default interface ThreadModel {
@@ -8,4 +9,5 @@ export default interface ThreadModel {
     creationDate: Date
     views: number
     author: UserShortDto
+    threadCategory: ThreadCategoryDto
 }

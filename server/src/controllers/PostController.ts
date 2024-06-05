@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { ILike } from "typeorm";
 
 import PostService from "../services/PostService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
@@ -20,23 +21,24 @@ class PostController {
         this.saverService = new SaverService(new PgSavedPostsRepository())
     }
 
-    getPosts = async (req: Request, res: Response, next: NextFunction) => {
+    getPosts = async (req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) => {
         try {
-            const page = Number(req.query.page) || 1
-            const take = Number(req.query.take)
-            if (take < 1) {
+            if (req.query.take < 1) {
                 throw ApiError.BadRequest('Wrong TAKE value')
             }
 
-            const maxPage = await this.postSerivce.getPagesAmount(take)
-            if (page > maxPage || page < 1) {
+            const maxPage = await this.postSerivce.getPagesAmount(req.query.take)
+            if (req.query.page > maxPage || req.query.page < 1) {
                 throw ApiError.BadRequest("Wrong PAGE value")
             }
 
-            const posts = await this.postSerivce.getPosts({ page, take })
+            const posts = await this.postSerivce.getPosts({
+                page: req.query.page || 1,
+                take: req.query.take,
+            })
 
             return res.send({
-                posts, page, maxPage
+                posts, page: Number(req.query.page), maxPage
             })
         } catch(e) {
             next(e)
@@ -93,14 +95,25 @@ class PostController {
             next(e)
         }
     }
-    search = async (req: RequestWithQuery<{ inputStr: string }>, res: Response, next: NextFunction) => {
+    search = async (req: RequestWithQuery<{ query: string } & DataFindOptions>, res: Response, next: NextFunction) => {
         try {
-            if (!req.query.inputStr) {
+            if (!req.query.query) {
                 throw ApiError.MissingParameters("No search parameters were given")
             }
-            const searchedPosts = await this.postSerivce.search(req.query.inputStr)
+            if (req.query.take < 1) {
+                throw ApiError.BadRequest('Wrong TAKE value')
+            }
 
-            return res.send(searchedPosts)
+            const maxPage = await this.postSerivce.getPagesAmount(req.query.take, { 'postTitle': ILike(`%${req.query.query}%`) })
+            if (req.query.page > maxPage || req.query.page < 1) {
+                throw ApiError.BadRequest("Wrong PAGE value")
+            }
+
+            const searchedPosts = await this.postSerivce.search(req.query.query, {
+                ...req.query
+            })
+
+            return res.send({ posts: searchedPosts, page: Number(req.query.page), maxPage })
         } catch(e) {
             next(e)
         }

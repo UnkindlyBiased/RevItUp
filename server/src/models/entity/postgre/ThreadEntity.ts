@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import UserEntity from "./UserEntity";
+import ThreadCategoryEntity from "./ThreadCategoryEntity";
 
 @Entity('Threads')
 export default class ThreadEntity {
@@ -29,4 +30,12 @@ export default class ThreadEntity {
     })
     @JoinColumn()
     author: UserEntity
+
+    @ManyToOne(() => ThreadCategoryEntity, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        nullable: true
+    })
+    @JoinColumn()
+    threadCategory: ThreadCategoryEntity
 }

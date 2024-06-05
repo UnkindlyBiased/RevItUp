@@ -31,7 +31,7 @@ const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQ
     queryFn: () => PostSerivce.getPostsByAuthorship(authorId, options)
 })
 
-const useSearchPosts = (inputQuery: string) => useQuery({
+const useSearchPosts = (inputQuery: string = "") => useQuery({
     queryKey: ['search-posts', inputQuery],
     queryFn: () => PostSerivce.search(inputQuery)
 })

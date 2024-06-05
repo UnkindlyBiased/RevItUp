@@ -35,12 +35,11 @@ function PostsPage(): React.ReactNode {
     useEffect(() => {
         const currentPage = searchParams.get('page') || '1';
 
-        if (take !== searchParams.get('take')) {
-            setSearchParams({ page: '1', take });
-        } else if (currentPage !== '1') {
-            setSearchParams({ page: currentPage, take });
+        if ((pagedData && Number(currentPage) > pagedData.maxPage) || 
+                (take !== searchParams.get('take'))) {
+            setSearchParams({ page: '1', take })
         }
-    }, [take, setSearchParams, searchParams]);
+    }, [take, searchParams, setSearchParams, pagedData])
 
     const providerValue: PaginationContextProps = {
         page: pagedData?.page || 1,

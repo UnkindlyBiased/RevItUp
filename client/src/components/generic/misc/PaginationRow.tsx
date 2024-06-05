@@ -8,10 +8,12 @@ function PaginationRow() {
         <Pagination className="size-fit">
             <PaginationContent>
                 { context.page > 1 && <>
-                    <PaginationItem onClick={() => context.setSearchParams({ 
+                    <PaginationItem onClick={() => {context.setSearchParams({ 
                         page: (context.page - 1).toString(),
                         take: context.take.toString()
-                    })} >
+                    })
+                        context.query && context.setSearchParams({ query: context.query })
+                    }} >
                         <PaginationPrevious />
                     </PaginationItem>
                     <PaginationItem>
@@ -22,10 +24,12 @@ function PaginationRow() {
                     <PaginationLink children={context.page} />
                 </PaginationItem>
                 { context.page < context.maxPage && <>
-                    <PaginationItem onClick={() => context.setSearchParams({ 
+                    <PaginationItem onClick={() => { context.setSearchParams({ 
                         page: (context.page + 1).toString(),
                         take: context.take.toString()
-                    })}>
+                    })
+                        context.query && context.setSearchParams({ query: context.query })
+                    }}>
                         <PaginationNext />
                     </PaginationItem>
                 </> }

@@ -19,14 +19,14 @@ class PgThreadRepository implements IThreadRepository {
 
     async getThreads(): Promise<ThreadModel[]> {
         const entities = await this.threadRep.find({
-            relations: ['author', 'author.country']
+            relations: ['author', 'author.country', 'threadCategory']
         })
         return entities.map(thread => ThreadMapper.toDataModel(thread))
     }
     async getThreadByLink(link: string): Promise<ThreadModel> {
         const entity = await this.threadRep.findOne({
             where: { threadLink: link },
-            relations: ['author', 'author.country']
+            relations: ['author', 'author.country', 'threadCategory']
         })
         if (!entity) {
             throw ApiError.NotFound('Thread with such link was not found')
