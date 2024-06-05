@@ -8,6 +8,8 @@ enum AppRoutes {
     POSTS_SEARCH = '/news/search',
     OPENED_POST = '/news/:postLink',
 
+    THREADS = '/threads',
+
     CATEGORIES = '/categories',
     OPENED_CATEGORY = '/categories/:code',
 

@@ -15,14 +15,14 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         }
     }
 
-    mapUserModelToUserShortDto(model: UserModel): UserShortDto {
+    toUserShortDto(model: UserModel): UserShortDto {
         return {
             id: model.id,
             username: model.username,
-            country: CountryMapper.mapCountryToDto(model.country)
+            country: CountryMapper.toDto(model.country)
         }
     }
-    mapUserModelToUserCreateDto(model: UserModel): UserCreateDto {
+    toUserCreateDto(model: UserModel): UserCreateDto {
         return {
             username: model.username,
             password: model.password,
@@ -31,7 +31,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             countryId: model.country.id
         }
     }
-    mapUserModelToUserEditDto(model: UserModel): UserEditDto {
+    toUserEditDto(model: UserModel): UserEditDto {
         return {
             username: model.username,
             password: model.password,
@@ -41,7 +41,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             activationLink: model.activationLink
         }
     }
-    mapUserModelToUserDetailedDto(model: UserModel): UserDetailedDto {
+    toUserDetailedDto(model: UserModel): UserDetailedDto {
         return {
             id: model.id,
             username: model.username,
@@ -52,7 +52,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             country: model.country
         }
     }
-    mapUserModelToUserTokenDto(model: UserModel): UserTokenDto {
+    toUserTokenDto(model: UserModel): UserTokenDto {
         return {
             id: model.id,
             username: model.username,

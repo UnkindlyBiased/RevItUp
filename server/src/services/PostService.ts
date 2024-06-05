@@ -21,7 +21,7 @@ class PostService {
 
     async getPosts(options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPosts(options)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     async getPostById(id: string): Promise<PostLightModel> {
         return this.repository.getPostById(id)
@@ -39,23 +39,23 @@ class PostService {
     }
     async getRandomPost(): Promise<PostShortDto> {
         const randomPost = await this.repository.getRandomPost()
-        return PostMapper.mapPostToPostShortDto(randomPost)
+        return PostMapper.toPostShortDto(randomPost)
     }
     async getPostsByCategoryCode(code: string, options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPostsByCategoryCode(code, options)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     async getPostsByAuthorship(authorId: number, options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPostsByAuthorship(authorId, options)
 
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     async getPagesAmount(take: number) {
         return this.repository.getPagesAmount(take)
     }
     async search(inputStr: string): Promise<PostPreviewDto[]> {
         const posts = await this.repository.search(inputStr)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     create = async (candidate: PostInputWithImageDto): Promise<PostLightModel> => {
         candidate.postLink = PostThreadHelper.putDashes(candidate.postTitle)

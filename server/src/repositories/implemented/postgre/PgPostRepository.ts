@@ -19,6 +19,11 @@ class PgPostRepository implements IPostRepository {
     }
 
     async getPosts(options: DataFindOptions): Promise<PostModel[]> {
+        console.log({
+            take: options.take,
+            skip: options.take * (options.page - 1),
+        })
+
         const entities = await this.postRep.find({
             take: options.take,
             skip: options.take * (options.page - 1),
@@ -66,6 +71,7 @@ class PgPostRepository implements IPostRepository {
         const post = await this.postRep
             .createQueryBuilder('post')
             .orderBy('RANDOM()')
+            .leftJoinAndSelect('post.category', 'category')
             .getOne()
             .then(post => post)
         if (!post) {
@@ -102,7 +108,9 @@ class PgPostRepository implements IPostRepository {
         const allEntities = await this.postRep.find({
             select: { id: true }
         })
-        const pagesAmount = Math.floor(allEntities.length / take)
+        const pagesAmount = Math.ceil(allEntities.length / take)
+
+        console.log(pagesAmount)
 
         return pagesAmount !== 0 ? pagesAmount : 1
     }

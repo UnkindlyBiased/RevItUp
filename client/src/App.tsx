@@ -20,6 +20,8 @@ const PostSearchPage = lazy(() => import("./pages/posts/PostSearchPage"))
 const CategoriesPage = lazy(() => import("./pages/categories/CategoriesPage"))
 const CategoryDetailedPage = lazy(() => import("./pages/categories/CategoryDetailedPage"))
 
+const ThreadsPage = lazy(() => import("./pages/threads/ThreadsPage"))
+
 const LoggedUserPage = lazy(() => import("./pages/users/defined/LoggedUserPage"))
 const UserSavedPostsPage = lazy(() => import("./pages/users/UserSavedPosts"))
 const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPage"))
@@ -28,7 +30,14 @@ const UserWrittenPostsPage = lazy(() => import("./pages/posts/UserWrittenPostsPa
  * The main app component
  */
 function App(): React.ReactElement {
-    const queryClient = new QueryClient()
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                retry: false,
+                refetchOnWindowFocus: false
+            }
+        }
+    })
 
     const browserRouter = createBrowserRouter([{
         element: <Container />,
@@ -69,6 +78,10 @@ function App(): React.ReactElement {
             {
                 path: AppRoutes.OPENED_CATEGORY,
                 element: <Suspense children={<CategoryDetailedPage />} />
+            },
+            {
+                path: AppRoutes.THREADS,
+                element: <Suspense children={<ThreadsPage />} />
             },
             {
                 path: AppRoutes.YOUR_PROFILE,

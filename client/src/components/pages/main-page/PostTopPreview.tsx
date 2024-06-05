@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import PostPreview from "@/types/data/posts/PostPreview";
 import MainTitle from "../posts/MainTitle";
 import CategoryWithLink from "@/components/generic/category/CategoryLink";
-import PostStatistics from "../posts/PostStatistics";
+import ReadableStats from "../../generic/misc/ReadableStats";
 import SuspendedImage from "@/components/generic/misc/SuspendedImage";
 
 function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
@@ -16,7 +16,7 @@ function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
                 } />
             <div className="flex items-center size-fit space-x-4">
                 <CategoryWithLink category={post.category} isLinkable />
-                <PostStatistics views={post.views} />
+                <ReadableStats views={post.views} />
             </div>
             <Link to={`/news/${post.postLink}`}>
                 <MainTitle className="text-6xl">{post.postTitle}</MainTitle>

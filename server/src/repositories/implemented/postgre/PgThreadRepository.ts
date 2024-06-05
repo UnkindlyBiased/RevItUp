@@ -8,6 +8,7 @@ import ThreadMapper from "../../../models/mappers/ThreadMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
 import ThreadInputDto from "../../../models/dto/threads/ThreadInputDto";
 import ThreadUpdateDto from "../../../models/dto/threads/ThreadUpdateDto";
+import ThreadLightModel from "../../../models/dto/threads/ThreadLightModel";
 
 class PgThreadRepository implements IThreadRepository {
     private threadRep: Repository<ThreadEntity>
@@ -33,7 +34,7 @@ class PgThreadRepository implements IThreadRepository {
 
         return ThreadMapper.toDataModel(entity)
     }
-    async create(input: ThreadInputDto): Promise<ThreadModel> {
+    async create(input: ThreadInputDto): Promise<ThreadLightModel> {
         const candidate = await this.threadRep.findOne({
             where: [
                 { threadTitle: input.threadLink },
@@ -50,20 +51,15 @@ class PgThreadRepository implements IThreadRepository {
         })
         await this.threadRep.insert(entity)
 
-        return ThreadMapper.toDataModel(entity)
-    }
-    async registerView(id: string): Promise<void> {
-        const entity = await this.threadRep.findOne({
-            where: { id },
-            select: { id: true, views: true }
-        })
-        if (!entity) {
-            throw ApiError.NotFound('Thread with such ID was not found')
+        const preloaded = await this.threadRep.preload(entity)
+
+        if (!preloaded) {
+            throw ApiError.NotFound("Such thread doesn't exist")
         }
 
-        await this.threadRep.update(id, { views: ++entity.views })
+        return ThreadMapper.toLigthDataModel(preloaded)
     }
-    async update(input: ThreadUpdateDto): Promise<ThreadModel> {
+    async update(input: ThreadUpdateDto): Promise<ThreadLightModel> {
         const candidate = await this.threadRep.findOne({
             where: { id: input.id },
             select: { id: true }
@@ -72,10 +68,15 @@ class PgThreadRepository implements IThreadRepository {
             throw ApiError.NotFound('Thread with such ID was not found')
         }
 
-        const entity = this.threadRep.create(input)
+        delete input.authorId
+        await this.threadRep.update(input.id, input)
 
-        await this.threadRep.update(entity.id, entity)
-        return ThreadMapper.toDataModel(entity)
+        const entity = await this.threadRep.preload(input)
+        if (!entity) {
+            throw ApiError.NotFound("Such thread doesn't exist")
+        }
+
+        return ThreadMapper.toLigthDataModel(entity)
     }
     async delete(id: string): Promise<void> {
         const entity = await this.threadRep.findOne({
@@ -87,6 +88,17 @@ class PgThreadRepository implements IThreadRepository {
         }
 
         await this.threadRep.remove(entity)
+    }
+    async registerView(id: string): Promise<void> {
+        const entity = await this.threadRep.findOne({
+            where: { id },
+            select: { id: true, views: true }
+        })
+        if (!entity) {
+            throw ApiError.NotFound('Thread with such ID was not found')
+        }
+
+        await this.threadRep.update(id, { views: ++entity.views })
     }
 }
 

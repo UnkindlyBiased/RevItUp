@@ -4,12 +4,16 @@ import ThreadInputDto from "../models/dto/threads/ThreadInputDto";
 import IThreadRepository from "../repositories/IThreadRepository";
 import ThreadHelper from '../../utils/helpers/ThreadHelper'
 import ThreadUpdateDto from "../models/dto/threads/ThreadUpdateDto";
+import ThreadMapper from "../models/mappers/ThreadMapper";
+import ThreadShortDto from "../models/dto/threads/ThreadShortDto";
+import ThreadLightModel from "../models/dto/threads/ThreadLightModel";
 
 class ThreadService {
     constructor(private repository: IThreadRepository) {}
 
-    async getThreads(): Promise<ThreadModel[]> {
-        return this.repository.getThreads()
+    async getThreads(): Promise<ThreadShortDto[]> {
+        const threads = await this.repository.getThreads();
+        return threads.map(thread => ThreadMapper.toThreadShortDto(thread));
     }
     async getThreadByLink(link: string): Promise<ThreadModel> {
         const cachedThread = await cacheClient.get(`thread-${link}`)
@@ -22,13 +26,13 @@ class ThreadService {
         
         return thread
     }
-    async create(input: ThreadInputDto) {
+    async create(input: ThreadInputDto): Promise<ThreadLightModel> {
         ThreadHelper.trimData(input)
         input.threadLink = ThreadHelper.putDashes(input.threadTitle)
 
         return this.repository.create(input)
     }
-    async update(input: ThreadUpdateDto) {
+    async update(input: ThreadUpdateDto): Promise<ThreadLightModel> {
         ThreadHelper.trimData(input)
         input.threadLink = ThreadHelper.putDashes(input.threadTitle)
 

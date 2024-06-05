@@ -14,7 +14,7 @@ import DateSpan from "@/components/generic/misc/DateSpan"
 import CategoryWithLink from "@/components/generic/category/CategoryLink"
 import { RemoveSavedButton, SaveButton } from "@/components/pages/posts/saved/SaveButtons"
 import SuspendedImage from "@/components/generic/misc/SuspendedImage"
-import PostStatistics from "@/components/pages/posts/PostStatistics"
+import ReadableStats from "@/components/generic/misc/ReadableStats"
 
 function PostDetailedPage(): React.ReactNode {
     const { postLink } = useParams()
@@ -43,7 +43,7 @@ function PostDetailedPage(): React.ReactNode {
                 <div className="flex items-center uppercase mb-2 space-x-4">
                     <CategoryWithLink category={post.category} isLinkable / >
                     <DateSpan date={post.creationDate} />
-                    <PostStatistics views={post.views} />
+                    <ReadableStats views={post.views} />
                 </div>
                 <MainTitle className="mb-3 text-7xl w-[90%]">{post.postTitle}</MainTitle>
                 <span className="text-2xl font-medium mb-5">{post.previewText}</span>

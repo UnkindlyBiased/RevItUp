@@ -7,14 +7,12 @@ import useThemedToast from "./useThemedToast";
 
 const useGetPosts = (findOptions: string = "") =>  useQuery({
     queryKey: ['posts-all', findOptions],
-    queryFn: () => PostSerivce.getPosts(findOptions),
-    retry: 1
+    queryFn: () => PostSerivce.getPosts(findOptions)
 })
 
 const useGetPostByLink = (link: string) => useSuspenseQuery({
     queryKey: ['post-detailed', link],
-    queryFn: () => PostSerivce.getPostByLink(link),
-    refetchOnWindowFocus: false
+    queryFn: () => PostSerivce.getPostByLink(link)
 })
 
 const useGetPostById = (postId: string | null) => useQuery({
@@ -25,8 +23,7 @@ const useGetPostById = (postId: string | null) => useQuery({
 
 const useGetRandomPost = () => useQuery({
     queryKey: ['random-post'],
-    queryFn: () => PostSerivce.getRandomPost(),
-    refetchOnWindowFocus: false
+    queryFn: () => PostSerivce.getRandomPost()
 })
 
 const useGetPostsByAuthorship = (authorId: number, options: string = "") => useQuery({
@@ -94,7 +91,6 @@ const useCheckByTitle = (title: string) => useQuery({
     queryKey: ['title-check', title],
     queryFn: () => PostSerivce.checkIfExistsByTitle(title),
     enabled: !!title && title.length >= 15,
-    refetchOnWindowFocus: false,
     staleTime: 3000
 })
 

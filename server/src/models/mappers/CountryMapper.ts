@@ -10,7 +10,7 @@ class CountryMapper implements IDataMapper<CountryModel, CountryEntity> {
         }
     }
     
-    mapCountryToDto(model: CountryModel): CountryDto {
+    toDto(model: CountryModel): CountryDto {
         return {
             name: model.name,
             flagImgLink: model.flagImgLink

@@ -9,7 +9,7 @@ class CommentMapper implements IDataMapper<CommentModel, CommentEntity> {
         return {
             id: entity.id,
             text: entity.text,
-            user: UserMapper.mapUserModelToUserShortDto(entity.user),
+            user: UserMapper.toUserShortDto(entity.user),
             creationDate: entity.creationDate,
             repliedToId: entity.repliedTo?.id || null
         }

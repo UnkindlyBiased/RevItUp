@@ -5,7 +5,7 @@ type Category = {
     logo: string
     categoryCode: string
     biography: string | null
-    creationDate: number
+    сreationDate: number
 }
 
 export default Category

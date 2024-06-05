@@ -5,12 +5,10 @@ import HeaderNavLink from "./inner/HeaderNavLink"
 import Logo from "../../generic/misc/Logo"
 import ThemeSwitch from "./inner/ThemeSwitch"
 import UserDropdown from "./inner/DropdownMenu"
-import useUserStore from "@/store/UserStore"
 import AppRoutes from "@/utils/enums/AppRoutes"
 
 function Header(): React.ReactElement {  
     const schema = useGetSchema()
-    const user = useUserStore(state => state.user)
 
     return (
         <header className={cn('h-16 px-8 sticky text-white flex items-center justify-between space-x-8', schema.primaryBgColor)}>
@@ -19,10 +17,9 @@ function Header(): React.ReactElement {
                 <div className="hidden lg:flex lg:items-center lg:space-x-7">
                     <HeaderNavLink link={AppRoutes.POSTS}>News</HeaderNavLink>
                     <HeaderNavLink link='/sdfsdf'>Events</HeaderNavLink>
-                    <HeaderNavLink link='/asdasd'>Threads</HeaderNavLink>
+                    <HeaderNavLink link={AppRoutes.THREADS}>Threads</HeaderNavLink>
                     <HeaderNavLink link='/sdasd'>Drivers</HeaderNavLink>
                     <HeaderNavLink link={AppRoutes.CATEGORIES}>Categories</HeaderNavLink>
-                    { user?.role == 'admin' && <HeaderNavLink link={AppRoutes.ADMIN}>Admin panel</HeaderNavLink> }
                 </div>
             </div>
             <div className="flex items-center space-x-5">

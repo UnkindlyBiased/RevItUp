@@ -38,15 +38,15 @@ class UserService {
         }
 
         return users.map(user => {
-            return UserMapper.mapUserModelToUserShortDto(user)
+            return UserMapper.toUserShortDto(user)
         })
     }
     async getUserByName(username: string): Promise<UserDetailedDto> {
         const user = await this.repository.getUserByName(username)
-        return UserMapper.mapUserModelToUserDetailedDto(user)
+        return UserMapper.toUserDetailedDto(user)
     }
     async getUserById(id: number): Promise<UserDetailedDto> {
-        return UserMapper.mapUserModelToUserDetailedDto(
+        return UserMapper.toUserDetailedDto(
             await this.repository.getUserById(id)
         )
     }
@@ -81,7 +81,7 @@ class UserService {
         }
 
         const updatedUser = await this.repository.update(id, updateData)
-        return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
+        return UserMapper.toUserDetailedDto(updatedUser)
     }
     async delete(id: number, password: string): Promise<void> {
         const userToRemove = await this.repository.getUserById(id)
@@ -111,7 +111,7 @@ class UserService {
     async activate(activationLink: string): Promise<UserEditDto> {
         const user = await this.repository.getUserByActivationLink(activationLink)
 
-        const dto: UserEditDto = UserMapper.mapUserModelToUserEditDto(user)
+        const dto: UserEditDto = UserMapper.toUserEditDto(user)
 
         if (dto.activationLink) {
             dto.isActivated = true
@@ -144,7 +144,7 @@ class UserService {
     }
 
     private generateDtoWithTokens = async (user: UserModel): Promise<UserCreateOutputDto> => {
-        const dto: UserTokenDto = UserMapper.mapUserModelToUserTokenDto(user)
+        const dto: UserTokenDto = UserMapper.toUserTokenDto(user)
 
         const tokens = TokenHelper.createTokenPair(dto)
         await this.tokenService.saveToken(dto.id, tokens.refreshToken)

@@ -14,7 +14,7 @@ class SaverService {
 
     getUserSavedPosts = async (userId: number): Promise<PostPreviewDto[]> => {
         const savedPostInfo = await this.repository.getByUserId(userId)
-        const postsPromises = savedPostInfo.posts.map(async (post) => PostMapper.mapPostToPostPreviewDto(
+        const postsPromises = savedPostInfo.posts.map(async (post) => PostMapper.toPostPreviewDto(
             await this.postService.getPostById(post)
         ))
 

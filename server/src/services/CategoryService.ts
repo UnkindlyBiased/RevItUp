@@ -9,14 +9,14 @@ class CategoryService {
 
     async getCategories(): Promise<CategoryShortDto[]> {
         const categories = await this.repository.getCategories();
-        return categories.map(category => CategoryMapper.mapModelToCategoryShortDto(category));
+        return categories.map(category => CategoryMapper.toCategoryShortDto(category));
     }
     async getByCategoryCode(code: string): Promise<CategoryModel> {
         return this.repository.getByCategoryCode(code)
     }
     async getCategoriesByPostsLengthSorted(): Promise<CategoryShortDto[]> {
         const categories = await this.repository.getCategoriesByPostsLengthSorted()
-        return categories.map(category => CategoryMapper.mapModelToCategoryShortDto(category))
+        return categories.map(category => CategoryMapper.toCategoryShortDto(category))
     }
     async create(inputData: CategoryCreateDto): Promise<CategoryModel> {
         return this.repository.create(inputData)
