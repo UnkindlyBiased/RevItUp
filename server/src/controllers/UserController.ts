@@ -4,7 +4,9 @@ import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
 import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
-import { RequestWithBody } from "../../utils/types/DifferentiatedRequests"
+import { RequestWithBody, RequestWithParams } from "../../utils/types/DifferentiatedRequests"
+import UserCreateDto from "../models/dto/users/UserCreateDto"
+import UserEditDto from "../models/dto/users/UserEditDto"
 
 class UserController {
     private readonly service: UserService
@@ -21,35 +23,27 @@ class UserController {
             next(e)
         }
     }
-    getUserByName = async (req: Request, res: Response, next: NextFunction) => {
+    getUserByName = async (req: RequestWithParams<{ username: string }>, res: Response, next: NextFunction) => {
         try {
-            const { username } = req.params
-            const user = await this.service.getUserByName(username)
+            const user = await this.service.getUserByName(req.body.username)
 
             return res.send(user)
         } catch (e) {
             next(e)
         }
     }
-    getUserById = async (req: Request, res: Response, next: NextFunction) => {
+    getUserById = async (req: RequestWithParams<{ id: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.params
-            const user = await this.service.getUserById(Number(id))
+            const user = await this.service.getUserById(req.params.id)
 
             return res.send(user)
         } catch(e) {
             next(e)
         }
     }
-    create = async (req: Request, res: Response, next: NextFunction) => {
+    create = async (req: RequestWithBody<UserCreateDto>, res: Response, next: NextFunction) => {
         try {
-            const { username, password, emailAddress, countryId } = req.body
-            const user = await this.service.create({
-                username,
-                password,
-                emailAddress,
-                countryId: Number(countryId)
-            })
+            const user = await this.service.create(req.body)
 
             TokenHelper.putCookie(user.tokens.refreshToken, res)
             res.status(HttpStatusCodes.UPLOADED).send(user)
@@ -57,15 +51,9 @@ class UserController {
             next(e)
         }
     }
-    update = async (req: Request, res: Response, next: NextFunction) => {
+    update = async (req: RequestWithBody<UserEditDto & { id: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id, username, password, biography, emailAddress } = req.body
-            const updatedUser = await this.service.update(Number(id), {
-                username,
-                password,
-                biography,
-                emailAddress
-            })
+            const updatedUser = await this.service.update(req.body.id, req.body)
             res.status(HttpStatusCodes.UPLOADED).send(updatedUser)
         } catch(e) {
             next(e)
@@ -80,10 +68,9 @@ class UserController {
             next(e)
         }
     }
-    login = async (req: Request, res: Response, next: NextFunction) => {
+    login = async (req: RequestWithBody<{ username: string, password: string }>, res: Response, next: NextFunction) => {
         try {
-            const { username, password } = req.body
-            const userData = await this.service.login(username, password)
+            const userData = await this.service.login(req.body.username, req.body.password)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)
@@ -105,10 +92,9 @@ class UserController {
             next(e)
         }
     }
-    activate = async (req: Request, res: Response, next: NextFunction) => {
+    activate = async (req: RequestWithParams<{ link: string }>, res: Response, next: NextFunction) => {
         try {
-            const { link } = req.params
-            await this.service.activate(link)
+            await this.service.activate(req.params.link)
 
             return res.redirect(process.env.CLIENT_URL as string)
         } catch(e) {

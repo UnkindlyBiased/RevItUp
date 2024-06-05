@@ -32,8 +32,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(candidate)
     }
     async create(userId: number): Promise<SavedPostsModel> {
-        const entity = this.savedRep.create({ 
-            posts: [],
+        const entity = this.savedRep.create({
             user: { id: userId },
         })
 
@@ -47,7 +46,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         }
 
         userPosts.posts.push(postId)
-        this.savedRep.update(userPosts.id,userPosts)
+        this.savedRep.update(userPosts.id, userPosts)
 
         return SavedPostsMapper.toDataModel(userPosts)
     }

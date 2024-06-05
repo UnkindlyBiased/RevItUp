@@ -8,6 +8,8 @@ import { RequestWithBody, RequestWithQuery } from "../../utils/types/Differentia
 import DataFindOptions from "../../utils/types/DataFindOptions";
 import PgPostRepository from "../repositories/implemented/postgre/PgPostRepository";
 import PgSavedPostsRepository from "../repositories/implemented/postgre/PgSavedPostsRepository";
+import { PostInputDto } from "../models/dto/posts/PostInputDto";
+import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 
 class PostController {
     private readonly postSerivce: PostService
@@ -85,10 +87,7 @@ class PostController {
         try {
             const { authorId } = req.params
 
-            const posts = await this.postSerivce.getPostsByAuthorship(Number(authorId), {
-                take: Number(req.query.take) || 5,
-                page: Number(req.query.page) || 1
-            })
+            const posts = await this.postSerivce.getPostsByAuthorship(Number(authorId))
             return res.send(posts)
         } catch(e) {
             next(e)
@@ -106,55 +105,44 @@ class PostController {
             next(e)
         }
     }
-    create = async (req: Request, res: Response, next: NextFunction) => {
+    create = async (req: RequestWithBody<PostInputDto>, res: Response, next: NextFunction) => {
         try {
-            const { postTitle, previewText, text, categoryId } = req.body
-
             const inputImage = req.file
             if (!inputImage) {
                 throw ApiError.MissingParameters("Image file was not given")
             }
 
             const post = await this.postSerivce.create({
-                postTitle,
-                previewText,
-                text,
+                ...req.body,
                 image: inputImage,
                 authorId: req.user.id,
-                categoryId: Number(categoryId)
             })
             res.send(post)
         } catch(e) {
             next(e)
         }
     }
-    update = async (req: Request, res: Response, next: NextFunction) => {
+    update = async (req: RequestWithBody<PostUpdateDto & { id: string, authorId: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id, postTitle, previewText, text, postLink, authorId, categoryId } = req.body
-            if (req.user.id !== Number(authorId)) {
+            if (req.user.id !== req.body.authorId) {
                 throw ApiError.Forbidden("The update can't be done because you're not the author of this article")
             }
 
             const inputImage = req.file
-
-            const updatedPost = await this.postSerivce.update(id, {
-                postTitle,
-                previewText,
-                text,
-                postLink,
+            const updatedPost = await this.postSerivce.update(req.body.id, {
+                ...req.body,
                 userId: req.user.id,
-                categoryId: Number(categoryId),
                 image: inputImage
             })
+            
             return res.send(updatedPost)
         } catch(e) {
             next(e)
         }
     }
-    delete = async (req: Request, res: Response, next: NextFunction) => {
+    delete = async (req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) => {
         try {
-            const { postId } = req.body
-            const post = await this.postSerivce.delete(postId)
+            const post = await this.postSerivce.delete(req.body.postId)
 
             return res.status(HttpStatusCodes.DELETED).send(post)
         } catch(e) {
@@ -170,12 +158,11 @@ class PostController {
             next(e)
         }
     }
-    savePost = async (req: Request, res: Response, next: NextFunction) => {
+    savePost = async (req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) => {
         try {
             const user = req.user
-            const { postId } = req.body
 
-            const userPosts = await this.saverService.savePost(postId, user.id)
+            const userPosts = await this.saverService.savePost(req.body.postId, user.id)
             return res.send(userPosts)
         } catch(e) {
             next(e)

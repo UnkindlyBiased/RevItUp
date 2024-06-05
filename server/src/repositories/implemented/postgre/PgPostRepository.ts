@@ -19,11 +19,6 @@ class PgPostRepository implements IPostRepository {
     }
 
     async getPosts(options: DataFindOptions): Promise<PostModel[]> {
-        console.log({
-            take: options.take,
-            skip: options.take * (options.page - 1),
-        })
-
         const entities = await this.postRep.find({
             take: options.take,
             skip: options.take * (options.page - 1),
@@ -36,10 +31,6 @@ class PgPostRepository implements IPostRepository {
         return entities.map(post => PostMapper.toDataModel(post))
     }
     async getPostById(id: string): Promise<PostLightModel> {
-        if (!id) {
-            throw ApiError.MissingParameters("No ID were given")
-        }
-
         const entity = await this.postRep.findOne({
             where: { id },
             relations: ['author', 'author.country', 'category']
@@ -51,10 +42,6 @@ class PgPostRepository implements IPostRepository {
         return PostMapper.toLightDataModel(entity)
     }
     async getPostByLink(link: string): Promise<PostModel> {
-        if (!link) {
-            throw ApiError.MissingParameters("No link was given")
-        }
-
         const entity = await this.postRep.findOne({
             where: {
                 postLink: link
@@ -80,15 +67,12 @@ class PgPostRepository implements IPostRepository {
 
         return PostMapper.toLightDataModel(post)
     }
-    async getPostsByAuthorship(authorId: number, options: DataFindOptions): Promise<PostModel[]> {
+    async getPostsByAuthorship(authorId: number): Promise<PostModel[]> {
         const entities = await this.postRep.find({
             where: {
-                author: {
-                    id: authorId
-                }
+                author: { id: authorId }
             },
-            relations: ['author', 'author.country', 'category'],
-            take: options.take
+            relations: ['author', 'author.country', 'category']
         })
 
         return entities.map(post => PostMapper.toDataModel(post))
@@ -110,8 +94,6 @@ class PgPostRepository implements IPostRepository {
         })
         const pagesAmount = Math.ceil(allEntities.length / take)
 
-        console.log(pagesAmount)
-
         return pagesAmount !== 0 ? pagesAmount : 1
     }
     async search(searchStr: string): Promise<PostModel[]> {
@@ -125,8 +107,11 @@ class PgPostRepository implements IPostRepository {
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async create(input: PostInputDto): Promise<PostLightModel> {
-        const candidate = await this.postRep.findOneBy({
-            postTitle: input.postTitle
+        const candidate = await this.postRep.findOne({
+            where: {
+                postTitle: input.postTitle,
+            },
+            select: { id: true }
         })
         if (candidate) {
             throw ApiError.Conflict("Post with this title already exists")
@@ -143,15 +128,15 @@ class PgPostRepository implements IPostRepository {
         return PostMapper.toLightDataModel(entity)
     }
     async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
+        delete input.image
+        delete input.userId
+
         await this.postRep.update(postId, {
             postTitle: input.postTitle,
             previewText: input.previewText,
             text: input.text,
-            postLink: input.postLink,
             imageLink: input.imageLink,
-            category: {
-                id: input.categoryId
-            }
+            category: { id: input.categoryId }
         })
 
         const entity = await this.postRep.preload({ id: postId })
@@ -162,10 +147,6 @@ class PgPostRepository implements IPostRepository {
         return PostMapper.toLightDataModel(entity)
     }
     async delete(id: string): Promise<PostLightModel> {
-        if (!id) {
-            throw ApiError.MissingParameters("No ID were given")
-        }
-        
         const entity = await this.postRep.findOneBy({ id })
         if (!entity) {
             throw ApiError.NotFound("Such post doesn't exist")

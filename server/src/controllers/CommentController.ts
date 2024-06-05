@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { validationResult } from "express-validator";
 
 import CommentService from "../services/CommentService";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import PgCommentRepository from "../repositories/implemented/postgre/PgCommentRepository";
+import { RequestWithBody } from "../../utils/types/DifferentiatedRequests";
+import CommentInputDto from "../models/dto/comments/CommentInputDto";
 
 class CommentController {
     private readonly service: CommentService
@@ -30,20 +31,14 @@ class CommentController {
             next(e)
         }
     }
-    create = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const result = validationResult(req)
-            if (!result.isEmpty()) {
-                return res.status(HttpStatusCodes.BAD_REQUEST).send({
-                    message: "Validation of body has failed",
-                    errorStack: result
-                })
-            }
-            
-            const { text, repliedToId, postId } = req.body
+    create = async (req: RequestWithBody<CommentInputDto>, res: Response, next: NextFunction) => {
+        try {            
             const user = req.user
-
-            const comment = await this.service.createPostComment({ text, userId: user.id, repliedToId, postId })
+            const comment = await this.service.createPostComment({
+                ...req.body,
+                userId: user.id,
+            })
+            
             return res.status(HttpStatusCodes.UPLOADED).send(comment)
         } catch(e) {
             next(e)
