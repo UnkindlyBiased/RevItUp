@@ -21,8 +21,7 @@ class ThreadMapper implements IDataMapper<ThreadModel, ThreadEntity> {
             threadLink: entity.threadLink,
             threadText: entity.threadText,
             views: entity.views,
-            creationDate: entity.creationDate,
-            threadCategory: ThreadCategoryMapper.toDto(entity.threadCategory)
+            creationDate: entity.creationDate
         }
     }
     toThreadShortDto(model: ThreadModel): ThreadShortDto {

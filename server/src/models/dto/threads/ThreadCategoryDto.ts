@@ -1,5 +1,5 @@
 import ThreadCategoryModel from "../../domain/ThreadCategory";
 
-type ThreadCategoryDto = Omit<ThreadCategoryModel, 'id'>
+type ThreadCategoryDto = Pick<ThreadCategoryModel, 'threadCategoryName' | 'threadCategoryCode'>
 
 export default ThreadCategoryDto

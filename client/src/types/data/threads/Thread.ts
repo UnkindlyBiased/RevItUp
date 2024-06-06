@@ -1,4 +1,5 @@
 import UserShort from "../users/UserShort"
+import ThreadCategory from "./categories/ThreadCategory"
 
 type Thread = {
     id: string
@@ -8,6 +9,7 @@ type Thread = {
     creationDate: Date
     views: number
     author: UserShort
+    threadCategory: ThreadCategory
 }
 
 export default Thread

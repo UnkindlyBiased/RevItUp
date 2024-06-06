@@ -6,6 +6,7 @@ import ThreadUpdateDto from "../models/dto/threads/ThreadUpdateDto";
 export default interface IThreadRepository {
     getThreads: () => Promise<ThreadModel[]>
     getThreadByLink: (link: string) => Promise<ThreadModel>
+    getMaxPage: (take: number, condition?: Record<string, any>) => Promise<number>
     create: (input: ThreadInputDto) => Promise<ThreadLightModel>
     update: (input: ThreadUpdateDto) => Promise<ThreadLightModel>
     delete: (id: string) => Promise<void>

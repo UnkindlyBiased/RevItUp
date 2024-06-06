@@ -33,6 +33,7 @@ class ThreadController {
     }
     create = async (req: RequestWithBody<ThreadInputDto>, res: Response, next: NextFunction) => {
         try {
+            console.log(req.body)
             const thread = await this.service.create({
                 ...req.body,
                 authorId: req.user.id

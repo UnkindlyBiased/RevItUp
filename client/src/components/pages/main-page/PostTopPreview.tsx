@@ -6,6 +6,7 @@ import MainTitle from "../posts/MainTitle";
 import CategoryWithLink from "@/components/generic/category/CategoryLink";
 import ReadableStats from "../../generic/misc/ReadableStats";
 import SuspendedImage from "@/components/generic/misc/SuspendedImage";
+import AppRoutes from "@/utils/enums/AppRoutes";
 
 function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
     return (
@@ -18,7 +19,7 @@ function PostTopPreview({ post }: { post: PostPreview }): React.ReactElement {
                 <CategoryWithLink category={post.category} isLinkable />
                 <ReadableStats views={post.views} />
             </div>
-            <Link to={`/news/${post.postLink}`}>
+            <Link to={AppRoutes.OPENED_POST.replace(':postLink', post.postLink)}>
                 <MainTitle className="text-6xl">{post.postTitle}</MainTitle>
             </Link>
             <span className="text-lg">{post.previewText}</span>

@@ -19,8 +19,8 @@ function ContentSearch({ title, onSearch }: ContentSearchProps): React.ReactElem
     }
 
     return (
-        <div className={cn("flex flex-col text-white p-6 rounded-lg space-y-3 size-fit", schema.primaryBgColor)}>
-            <span className="text-xl" children={title} />
+        <div className={cn("flex flex-col p-6 rounded-lg space-y-3 size-fit", schema.primaryBgColor)}>
+            <span className="text-xl text-white" children={title} />
             <Input 
                 className="w-60"
                 placeholder="Write something here..." 

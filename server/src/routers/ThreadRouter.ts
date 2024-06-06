@@ -15,4 +15,6 @@ ThreadRouter.put('/', authMiddleware, threadValidation, validationResultMiddlewa
 ThreadRouter.patch('/', ThreadController.registerView)
 ThreadRouter.delete('/', authMiddleware, ThreadController.delete)
 
+ThreadRouter.get('thread-categories')
+
 export default ThreadRouter

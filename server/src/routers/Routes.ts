@@ -7,6 +7,7 @@ import PostRouter from './PostRouter'
 import CommentRouter from './CommentRouter'
 import CategoryRouter from './CategoryRouter'
 import ThreadRouter from './ThreadRouter'
+import ThreadCategoryRouter from './ThreadCategoryRouter'
 
 const AppRouter = Router()
 
@@ -17,5 +18,6 @@ AppRouter.use('/posts', PostRouter)
 AppRouter.use('/comments', CommentRouter)
 AppRouter.use('/categories', CategoryRouter)
 AppRouter.use('/threads', ThreadRouter)
+AppRouter.use('/thread-categories', ThreadCategoryRouter)
 
 export default AppRouter

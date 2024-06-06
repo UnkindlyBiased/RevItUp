@@ -34,7 +34,7 @@ export default class ThreadEntity {
     @ManyToOne(() => ThreadCategoryEntity, {
         cascade: true,
         onDelete: 'CASCADE',
-        nullable: true
+        nullable: false
     })
     @JoinColumn()
     threadCategory: ThreadCategoryEntity

@@ -8,6 +8,9 @@ export default class ThreadCategoryEntity {
     @Column({ unique: true })
     threadCategoryName: string
 
+    @Column()
+    threadCategoryDescription: string
+
     @Column({ unique: true })
     threadCategoryCode: string
 

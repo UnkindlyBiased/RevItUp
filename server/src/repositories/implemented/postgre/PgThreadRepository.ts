@@ -34,6 +34,15 @@ class PgThreadRepository implements IThreadRepository {
 
         return ThreadMapper.toDataModel(entity)
     }
+    async getMaxPage(take: number, condition?: Record<string, any>) {
+        const entities = await this.threadRep.find({
+            where: condition,
+            select: { id: true }
+        })
+
+        const maxPage = Math.ceil(entities.length / take)
+        return maxPage
+    }
     async create(input: ThreadInputDto): Promise<ThreadLightModel> {
         const candidate = await this.threadRep.findOne({
             where: [
@@ -47,7 +56,8 @@ class PgThreadRepository implements IThreadRepository {
 
         const entity = this.threadRep.create({
             ...input,
-            author: { id: input.authorId }
+            author: { id: input.authorId },
+            threadCategory: { id: input.threadCategoryId }
         })
         await this.threadRep.insert(entity)
 
@@ -68,8 +78,14 @@ class PgThreadRepository implements IThreadRepository {
             throw ApiError.NotFound('Thread with such ID was not found')
         }
 
+        const threadCategoryId = input.threadCategoryId
+        
+        delete input.threadCategoryId
         delete input.authorId
-        await this.threadRep.update(input.id, input)
+        await this.threadRep.update(input.id, {
+            ...input,
+            threadCategory: { id: threadCategoryId }
+        })
 
         const entity = await this.threadRep.preload(input)
         if (!entity) {
