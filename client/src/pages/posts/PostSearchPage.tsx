@@ -1,6 +1,6 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
 import { useSearchParams } from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import TwoLine from "@/components/generic/misc/TwoLine"
 import PostSearch from "@/components/pages/posts/PostSearch"
@@ -10,19 +10,15 @@ import Loading from "@/components/generic/misc/Loading"
 import NotFound from "@/components/generic/misc/NotFound"
 import PaginationContextProps from "@/types/page/PaginationProps"
 import { PaginationProvider } from "@/providers/PaginationProvider"
-import PaginationRow from "@/components/generic/misc/PaginationRow"
+import PaginationRow from "@/components/generic/misc/pagination/PaginationRow"
 import splitRequests from "@/utils/HelperFuncs"
-import TakeButton from "@/components/generic/misc/input/TakeButton"
+import TakeButtons from "@/components/generic/misc/pagination/TakeButtons"
 
 function PostSearchPage(): React.ReactElement {
     useDocumentTitle('REVITUP: Search posts')
 
-    const [take, setTake] = useState('5')
-    const takeArr = ['5', '10', '15']
-
     const [searchParams, setSearchParams] = useSearchParams({
-        page: '1',
-        take
+        page: '1', take: '5'
     })
     const query = searchParams.get('query') || ''
 
@@ -33,17 +29,20 @@ function PostSearchPage(): React.ReactElement {
     ], '&'))
 
     useEffect(() => {
-        const currentPage = searchParams.get('page') || '1';
+        const currentPage = searchParams.get('page') || '1'
 
-        if ((searchedData && Number(currentPage) > searchedData.maxPage) || 
-                (take !== searchParams.get('take'))) {
-            setSearchParams({ page: '1', take, query })
+        if (searchedData && (Number(currentPage) > searchedData.maxPage)) {
+            setSearchParams({
+                page: '1',
+                take: searchParams.get('take') || '1',
+                query
+            })
         }
-    }, [take, query, setSearchParams, searchParams, searchedData])
+    }, [query, searchParams, setSearchParams, searchedData])
 
     const providerValue: PaginationContextProps = {
         page: searchedData?.page || 1,
-        take: Number(searchParams.get('take') || take),
+        take: searchParams.get('take') || '5',
         query,
         maxPage: searchedData?.maxPage || 1,
         setSearchParams,
@@ -55,19 +54,8 @@ function PostSearchPage(): React.ReactElement {
                 <TwoLine title="Post search result" description={`Search query: ${query}`} enlargedDesc />
                 <div className="flex flex-col space-y-4">
                     <PostSearch />
-                    <div className="flex space-x-2 justify-between items-center">
-                        <span className="text-lg" children='Take amount ->' />
-                        <div className="space-x-3">
-                            {takeArr.map((takeNum, i) => (
-                                <TakeButton 
-                                    className="size-10 rounded-md"
-                                    children={takeNum}
-                                    isChosen={take === takeNum}
-                                    key={i}
-                                    onClick={() => setTake(takeNum)} />
-                            ))}
-                        </div>
-                    </div>
+                    <TakeButtons searchParams={searchParams}
+                        setSearchParams={setSearchParams} query={query} />
                 </div>
             </div>
             { searchedData ? <>

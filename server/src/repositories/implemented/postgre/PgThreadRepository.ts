@@ -9,6 +9,7 @@ import { ApiError } from "../../../../utils/errors/ApiError";
 import ThreadInputDto from "../../../models/dto/threads/ThreadInputDto";
 import ThreadUpdateDto from "../../../models/dto/threads/ThreadUpdateDto";
 import ThreadLightModel from "../../../models/dto/threads/ThreadLightModel";
+import DataFindOptions from "../../../../utils/types/DataFindOptions";
 
 class PgThreadRepository implements IThreadRepository {
     private threadRep: Repository<ThreadEntity>
@@ -17,8 +18,10 @@ class PgThreadRepository implements IThreadRepository {
         this.threadRep = PgDataSource.getRepository(ThreadEntity)
     }
 
-    async getThreads(): Promise<ThreadModel[]> {
+    async getThreads(options: DataFindOptions): Promise<ThreadModel[]> {
         const entities = await this.threadRep.find({
+            take: options.take,
+            skip: options.take * (options.page - 1),
             relations: ['author', 'author.country', 'threadCategory']
         })
         return entities.map(thread => ThreadMapper.toDataModel(thread))
@@ -34,7 +37,7 @@ class PgThreadRepository implements IThreadRepository {
 
         return ThreadMapper.toDataModel(entity)
     }
-    async getMaxPage(take: number, condition?: Record<string, any>) {
+    async getPagesAmount(take: number, condition?: Record<string, any>): Promise<number> {
         const entities = await this.threadRep.find({
             where: condition,
             select: { id: true }

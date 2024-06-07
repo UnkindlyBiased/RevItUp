@@ -1,4 +1,5 @@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
+
 import usePaginationContext from "@/hooks/usePaginationContext"
 
 function PaginationRow() {
@@ -8,12 +9,11 @@ function PaginationRow() {
         <Pagination className="size-fit">
             <PaginationContent>
                 { context.page > 1 && <>
-                    <PaginationItem onClick={() => {context.setSearchParams({ 
-                        page: (context.page - 1).toString(),
-                        take: context.take.toString()
-                    })
-                        context.query && context.setSearchParams({ query: context.query })
-                    }} >
+                    <PaginationItem onClick={() => context.setSearchParams([
+                            context.query && ['query', context.query] || ['', ''],
+                            ['page', (context.page - 1).toString()],
+                            ['take', context.take.toString()]
+                        ])} >
                         <PaginationPrevious />
                     </PaginationItem>
                     <PaginationItem>
@@ -24,12 +24,14 @@ function PaginationRow() {
                     <PaginationLink children={context.page} />
                 </PaginationItem>
                 { context.page < context.maxPage && <>
-                    <PaginationItem onClick={() => { context.setSearchParams({ 
-                        page: (context.page + 1).toString(),
-                        take: context.take.toString()
-                    })
-                        context.query && context.setSearchParams({ query: context.query })
-                    }}>
+                    <PaginationItem>
+                        <PaginationLink children={context.page + 1} / >
+                    </PaginationItem>
+                    <PaginationItem onClick={() => context.setSearchParams([
+                            context.query && ['query', context.query] || ['', ''],
+                            ['page', (context.page + 1).toString()],
+                            ['take', context.take.toString()],
+                        ])} >
                         <PaginationNext />
                     </PaginationItem>
                 </> }

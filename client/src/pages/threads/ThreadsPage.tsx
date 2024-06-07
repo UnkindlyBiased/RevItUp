@@ -1,4 +1,6 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
+import { useEffect } from "react"
+import { useSearchParams } from "react-router-dom"
 
 import Loading from "@/components/generic/misc/Loading"
 import TwoLine from "@/components/generic/misc/TwoLine"
@@ -7,12 +9,42 @@ import { useGetThreads } from "@/hooks/useThreads"
 import OrFiller from "@/components/pages/threads/OrFiller"
 import { useGetThreadCategories } from "@/hooks/useThreadCategories"
 import ThreadCategoryLink from "@/components/pages/threads/categories/ThreadCategoryLink"
+import splitRequests from "@/utils/HelperFuncs"
+import PaginationContextProps from "@/types/page/PaginationProps"
+import { PaginationProvider } from "@/providers/PaginationProvider"
+import PaginationRow from "@/components/generic/misc/pagination/PaginationRow"
+
 
 function ThreadsPage(): React.ReactElement {
     useDocumentTitle('REVITUP: Threads')
 
-    const { data: threads } = useGetThreads()
+    const [searchParams, setSearchParams] = useSearchParams({
+        page: '1', take: '5'
+    })
+
+    const { data: pagedData } = useGetThreads(splitRequests([
+        { key: 'page', value: searchParams.get('page') },
+        { key: 'take', value: searchParams.get('take') }
+    ], '&'))
     const { data: threadCategories } = useGetThreadCategories()
+
+    useEffect(() => {
+        const currentPage = searchParams.get('page') || '1';
+
+        if (pagedData && Number(currentPage) > pagedData.maxPage) {
+            setSearchParams({ 
+                page: '1', 
+                take: searchParams.get('take') || '1'
+            })
+        }
+    }, [searchParams, setSearchParams, pagedData])
+
+    const providerValue: PaginationContextProps = {
+        page: pagedData?.page || 1,
+        take: searchParams.get('take') || '5',
+        maxPage: pagedData?.maxPage || 1,
+        setSearchParams
+    }
 
     return (
         <div className="flex flex-col h-full space-y-4">
@@ -25,12 +57,19 @@ function ThreadsPage(): React.ReactElement {
                     ))}
                 </div> : <Loading /> }
             </div>
-            <OrFiller />
-            <div className="flex flex-col space-y-2">
-                { threads ? threads.threads.map(((thread, i) => (
-                    <ThreadComp thread={thread} key={i} />
-                ))) : <Loading /> }
+            <div>
+                <OrFiller />
             </div>
+            <PaginationProvider value={providerValue}>
+                <div className="flex flex-col space-y-4 items-center">
+                    <div className="flex flex-col space-y-2 w-full">
+                        { pagedData ? pagedData.threads.map(((thread, i) => (
+                            <ThreadComp thread={thread} key={i} />
+                        ))) : <Loading /> }
+                    </div>
+                    <PaginationRow />
+                </div>
+            </PaginationProvider>
         </div>
     )
 }

@@ -13,11 +13,11 @@ import { PostInputDto } from "../models/dto/posts/PostInputDto";
 import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 
 class PostController {
-    private readonly postSerivce: PostService
+    private readonly postService: PostService
     private readonly saverService: SaverService
 
     constructor() {
-        this.postSerivce = new PostService(new PgPostRepository())
+        this.postService = new PostService(new PgPostRepository())
         this.saverService = new SaverService(new PgSavedPostsRepository())
     }
 
@@ -27,12 +27,8 @@ class PostController {
                 throw ApiError.BadRequest('Wrong TAKE value')
             }
 
-            const maxPage = await this.postSerivce.getPagesAmount(req.query.take)
-            if (req.query.page > maxPage || req.query.page < 1) {
-                throw ApiError.BadRequest("Wrong PAGE value")
-            }
-
-            const posts = await this.postSerivce.getPosts({
+            const maxPage = await this.postService.getPagesAmount(req.query.take)
+            const posts = await this.postService.getPosts({
                 page: req.query.page || 1,
                 take: req.query.take,
             })
@@ -47,7 +43,7 @@ class PostController {
     getPostById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params
-            const post = await this.postSerivce.getPostById(id)
+            const post = await this.postService.getPostById(id)
 
             return res.send(post)
         } catch(e) {
@@ -57,7 +53,7 @@ class PostController {
     getPostByLink = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { link } = req.params
-            const post = await this.postSerivce.getPostByLink(link)
+            const post = await this.postService.getPostByLink(link)
 
             return res.send(post)
         } catch(e) {
@@ -66,7 +62,7 @@ class PostController {
     }
     getRandomPost = async (_req: Request, res: Response, next: NextFunction) => {
         try {
-            const post = await this.postSerivce.getRandomPost()
+            const post = await this.postService.getRandomPost()
             return res.send(post)
         } catch (e) {
             next(e)
@@ -76,7 +72,7 @@ class PostController {
         try {
             const { code } = req.params
 
-            const posts = await this.postSerivce.getPostsByCategoryCode(code, {
+            const posts = await this.postService.getPostsByCategoryCode(code, {
                 take: Number(req.query.take) || 5,
                 page: Number(req.query.page) || 1
             })
@@ -89,7 +85,7 @@ class PostController {
         try {
             const { authorId } = req.params
 
-            const posts = await this.postSerivce.getPostsByAuthorship(Number(authorId))
+            const posts = await this.postService.getPostsByAuthorship(Number(authorId))
             return res.send(posts)
         } catch(e) {
             next(e)
@@ -97,19 +93,12 @@ class PostController {
     }
     search = async (req: RequestWithQuery<{ query: string } & DataFindOptions>, res: Response, next: NextFunction) => {
         try {
-            if (!req.query.query) {
-                throw ApiError.MissingParameters("No search parameters were given")
-            }
             if (req.query.take < 1) {
                 throw ApiError.BadRequest('Wrong TAKE value')
             }
 
-            const maxPage = await this.postSerivce.getPagesAmount(req.query.take, { 'postTitle': ILike(`%${req.query.query}%`) })
-            if (req.query.page > maxPage || req.query.page < 1) {
-                throw ApiError.BadRequest("Wrong PAGE value")
-            }
-
-            const searchedPosts = await this.postSerivce.search(req.query.query, {
+            const maxPage = await this.postService.getPagesAmount(req.query.take, { 'postTitle': ILike(`%${req.query.query}%`) })
+            const searchedPosts = await this.postService.search(req.query.query, {
                 ...req.query
             })
 
@@ -125,7 +114,7 @@ class PostController {
                 throw ApiError.MissingParameters("Image file was not given")
             }
 
-            const post = await this.postSerivce.create({
+            const post = await this.postService.create({
                 ...req.body,
                 image: inputImage,
                 authorId: req.user.id,
@@ -142,7 +131,7 @@ class PostController {
             }
 
             const inputImage = req.file
-            const updatedPost = await this.postSerivce.update(req.body.id, {
+            const updatedPost = await this.postService.update(req.body.id, {
                 ...req.body,
                 userId: req.user.id,
                 image: inputImage
@@ -155,7 +144,7 @@ class PostController {
     }
     delete = async (req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) => {
         try {
-            const post = await this.postSerivce.delete(req.body.postId)
+            const post = await this.postService.delete(req.body.postId)
 
             return res.status(HttpStatusCodes.DELETED).send(post)
         } catch(e) {
@@ -203,7 +192,7 @@ class PostController {
     }
     registerView = async (req: RequestWithBody<{ postId: string }>, res: Response, next: NextFunction) => {
         try {
-            await this.postSerivce.registerView(req.body.postId)
+            await this.postService.registerView(req.body.postId)
             return res.status(HttpStatusCodes.UPLOADED).send({ message: 'View added successfully' })
         } catch(e) {
             next(e)
@@ -211,7 +200,7 @@ class PostController {
     }
     checkIfExistsByTitle = async (req: RequestWithBody<{ title: string }>, res: Response, next: NextFunction) => {
         try {
-            const response = await this.postSerivce.checkIfExistsByTitle(req.body.title)
+            const response = await this.postService.checkIfExistsByTitle(req.body.title)
             return res.send({ response })
         } catch(e) {
             next(e)

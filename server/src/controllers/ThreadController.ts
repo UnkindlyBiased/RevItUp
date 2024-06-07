@@ -1,12 +1,13 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 
 import PgThreadRepository from "../repositories/implemented/postgre/PgThreadRepository"
 import ThreadService from "../services/ThreadService"
-import { RequestWithBody, RequestWithParams } from "../../utils/types/DifferentiatedRequests";
+import { RequestWithBody, RequestWithParams, RequestWithQuery } from "../../utils/types/DifferentiatedRequests";
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes";
 import ThreadInputDto from "../models/dto/threads/ThreadInputDto";
 import ThreadUpdateDto from "../models/dto/threads/ThreadUpdateDto";
 import { ApiError } from "../../utils/errors/ApiError";
+import DataFindOptions from "../../utils/types/DataFindOptions";
 
 class ThreadController {
     private readonly service: ThreadService
@@ -15,10 +16,16 @@ class ThreadController {
         this.service = new ThreadService(new PgThreadRepository())
     }
 
-    getThreads = async (_req: Request, res: Response, next: NextFunction) => {
+    getThreads = async (req: RequestWithQuery<DataFindOptions>, res: Response, next: NextFunction) => {
         try {
-            const threads = await this.service.getThreads()
-            return res.send({ threads })
+            if (req.query.take < 1) {
+                throw ApiError.BadRequest('Wrong TAKE value')
+            }
+
+            const maxPage = await this.service.getPagesAmount(req.query.take)
+            const threads = await this.service.getThreads({ ...req.query })
+
+            return res.send({ threads, page: Number(req.query.page), maxPage })
         } catch(e) {
             next(e)
         }

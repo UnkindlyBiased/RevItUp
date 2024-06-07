@@ -1,9 +1,9 @@
 import ThreadService from "@/services/ThreadService";
 import { useQuery } from "@tanstack/react-query";
 
-const useGetThreads = () => useQuery({
+const useGetThreads = (options?: string) => useQuery({
     queryKey: ['threads'],
-    queryFn: () => ThreadService.getThreads()
+    queryFn: () => ThreadService.getThreads(options)
 })
 
 export {
