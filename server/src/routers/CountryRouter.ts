@@ -1,4 +1,5 @@
 import { Router } from 'express'
+
 import CountryController from '../controllers/CountryController'
 import { cacheMiddleware } from '../../utils/middlewares/cache/CacheMiddleware'
 

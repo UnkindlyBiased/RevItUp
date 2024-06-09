@@ -2,7 +2,6 @@ import { Repository } from "typeorm";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import SavedPostsMapper from "../../../models/mappers/SavedPostsMapper";
 import SavedPostsModel from "../../../models/domain/SavedPosts";
-import { ApiError } from "../../../../utils/errors/ApiError";
 import ISavedPostsRepository from "../../ISavedPostsRepository";
 import SavedPostsEntity from "../../../models/entity/postgre/SavedPostsEntity";
 
@@ -31,6 +30,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
     async create(userId: number): Promise<SavedPostsModel> {
         const entity = this.savedRep.create({
             user: { id: userId },
+            posts: []
         })
 
         await this.savedRep.insert(entity)

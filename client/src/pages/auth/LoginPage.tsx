@@ -1,6 +1,6 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
 
-import LoginForm from "@/components/pages/login-page/LoginForm"
+import LoginForm from "@/components/pages/auth/LoginForm"
 import useUserStore from "@/store/UserStore"
 
 function LoginPage(): React.ReactNode {

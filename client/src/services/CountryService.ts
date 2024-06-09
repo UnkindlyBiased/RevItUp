@@ -5,12 +5,10 @@ class CountryService {
     private ROUTE_PREFIX: string = '/countries'
 
     async getCountries(): Promise<Country[]> {
-        const countries = (await api.get<Country[]>(this.ROUTE_PREFIX)).data
-        return countries
+        return (await api.get<Country[]>(this.ROUTE_PREFIX)).data
     }
     async getCountryByCode(code: string): Promise<Country> {
-        const country = (await api.get<Country>(`${this.ROUTE_PREFIX}/${code}`)).data
-        return country
+        return (await api.get<Country>(`${this.ROUTE_PREFIX}/${code}`)).data
     }
 }
 

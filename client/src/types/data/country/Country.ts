@@ -1,5 +1,5 @@
 export default interface Country {
-    id: number, 
+    id: string, 
     name: string,
     countryCode: string, 
     flagImgLink: string

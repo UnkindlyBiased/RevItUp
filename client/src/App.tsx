@@ -7,6 +7,7 @@ import ErrorPage from "./pages/ErrorPage"
 import AuthProvider from "./providers/AuthProvider"
 import { ThemeProvider } from "./providers/ThemeProvider"
 import AppRoutes from "./utils/enums/AppRoutes"
+import { toast } from "./components/ui/use-toast"
 
 const MainPage = lazy(() => import("./pages/MainPage"))
 const AdminPage = lazy(() => import("./pages/admin/AdminPanel"))
@@ -36,6 +37,15 @@ function App(): React.ReactElement {
             queries: {
                 retry: false,
                 refetchOnWindowFocus: false
+            },
+            mutations: {
+                onError: () => toast(
+                    { 
+                        title: 'Uh-oh...', 
+                        description: 'Some sort of error happened', 
+                        variant: 'destructive'
+                    }
+                )
             }
         }
     })

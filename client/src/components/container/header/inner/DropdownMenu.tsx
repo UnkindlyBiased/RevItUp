@@ -21,10 +21,10 @@ function UserDropdown(): React.ReactElement {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-8">
                 { !user && <>
-                    <DropdownMenuItem className='cursor-pointer'>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate(AppRoutes.REGISTER)}>
                         Register
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate('/login')}>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate(AppRoutes.LOGIN)}>
                         Login
                     </DropdownMenuItem>
                 </> }
