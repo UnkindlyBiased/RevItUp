@@ -1,4 +1,5 @@
 import { SetURLSearchParams } from "react-router-dom"
+
 import TakeButton from "../input/TakeButton"
 
 type TakeButtonsProps = {
@@ -7,6 +8,10 @@ type TakeButtonsProps = {
     query?: string
 }
 
+// [
+//     ['page', searchParams.get("page") || '1'],
+//     ['take', takeNum],
+//     query && ['query', query] || ['', '']
 
 
 function TakeButtons({ searchParams, setSearchParams, query }: TakeButtonsProps) {
@@ -22,9 +27,9 @@ function TakeButtons({ searchParams, setSearchParams, query }: TakeButtonsProps)
                         children={takeNum}
                         isChosen={searchParams.get('take') === takeNum}
                         onClick={() => setSearchParams([
-                            query && ['query', query] || ['', ''],
                             ['page', searchParams.get("page") || '1'],
-                            ['take', takeNum]
+                            ['take', takeNum],
+                            query && ['query', query] || ['', '']
                         ])} />
                 ))}
             </div>

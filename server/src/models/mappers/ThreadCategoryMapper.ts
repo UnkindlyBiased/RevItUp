@@ -12,7 +12,8 @@ class ThreadCategoryMapper implements IDataMapper<ThreadCategoryModel, ThreadCat
     toDto(model: ThreadCategoryModel): ThreadCategoryDto {
         return {
             threadCategoryCode: model.threadCategoryCode,
-            threadCategoryName: model.threadCategoryName
+            threadCategoryName: model.threadCategoryName,
+            threadCategoryColor: model.threadCategoryColor
         }
     }
 }

@@ -21,6 +21,7 @@ const CategoriesPage = lazy(() => import("./pages/categories/CategoriesPage"))
 const CategoryDetailedPage = lazy(() => import("./pages/categories/CategoryDetailedPage"))
 
 const ThreadsPage = lazy(() => import("./pages/threads/ThreadsPage"))
+const ThreadDetailedPage = lazy(() => import("./pages/threads/ThreadDetailedPage"))
 
 const LoggedUserPage = lazy(() => import("./pages/users/defined/LoggedUserPage"))
 const UserSavedPostsPage = lazy(() => import("./pages/users/UserSavedPosts"))
@@ -82,6 +83,10 @@ function App(): React.ReactElement {
             {
                 path: AppRoutes.THREADS,
                 element: <Suspense children={<ThreadsPage />} />
+            },
+            {
+                path: AppRoutes.OPENED_THREAD,
+                element: <Suspense children={<ThreadDetailedPage />} />
             },
             {
                 path: AppRoutes.YOUR_PROFILE,

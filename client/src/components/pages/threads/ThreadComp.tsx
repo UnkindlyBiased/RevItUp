@@ -9,7 +9,7 @@ function ThreadComp({ thread }: { thread: ThreadShort }): React.ReactElement {
     return (
         <div className="flex justify-between items-center px-3 py-2 border-2 rounded-lg">
             <div className="flex flex-col h-fit w-96 space-y-1">
-                <Link to={AppRoutes.THREADS + `/${thread.threadLink}`} className="text-xl font-medium">
+                <Link to={AppRoutes.OPENED_THREAD.replace(':link', thread.threadLink)} className="text-xl font-medium">
                     {thread.threadTitle}
                 </Link>
                 <div className="flex size-fit space-x-3">

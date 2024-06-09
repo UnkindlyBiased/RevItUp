@@ -22,32 +22,31 @@ class PgThreadRepository implements IThreadRepository {
         const entities = await this.threadRep.find({
             take: options.take,
             skip: options.take * (options.page - 1),
-            relations: ['author', 'author.country', 'threadCategory']
+            relations: ['author', 'author.country', 'threadCategory'],
+            order: { 
+                creationDate: 'DESC'
+            }
         })
         return entities.map(thread => ThreadMapper.toDataModel(thread))
     }
     async getThreadByLink(link: string): Promise<ThreadModel> {
-        const entity = await this.threadRep.findOne({
+        const entity = await this.threadRep.findOneOrFail({
             where: { threadLink: link },
             relations: ['author', 'author.country', 'threadCategory']
         })
-        if (!entity) {
-            throw ApiError.NotFound('Thread with such link was not found')
-        }
 
         return ThreadMapper.toDataModel(entity)
     }
     async getPagesAmount(take: number, condition?: Record<string, any>): Promise<number> {
-        const entities = await this.threadRep.find({
-            where: condition,
-            select: { id: true }
+        const entities = await this.threadRep.count({
+            where: condition
         })
 
-        const maxPage = Math.ceil(entities.length / take)
+        const maxPage = Math.ceil(entities / take)
         return maxPage
     }
     async create(input: ThreadInputDto): Promise<ThreadLightModel> {
-        const candidate = await this.threadRep.findOne({
+        const candidate = await this.threadRep.exists({
             where: [
                 { threadTitle: input.threadLink },
                 { threadLink: input.threadLink },
@@ -65,7 +64,6 @@ class PgThreadRepository implements IThreadRepository {
         await this.threadRep.insert(entity)
 
         const preloaded = await this.threadRep.preload(entity)
-
         if (!preloaded) {
             throw ApiError.NotFound("Such thread doesn't exist")
         }
@@ -73,10 +71,7 @@ class PgThreadRepository implements IThreadRepository {
         return ThreadMapper.toLigthDataModel(preloaded)
     }
     async update(input: ThreadUpdateDto): Promise<ThreadLightModel> {
-        const candidate = await this.threadRep.findOne({
-            where: { id: input.id },
-            select: { id: true }
-        })
+        const candidate = await this.threadRep.existsBy({ id: input.id })
         if (!candidate) {
             throw ApiError.NotFound('Thread with such ID was not found')
         }
@@ -109,15 +104,12 @@ class PgThreadRepository implements IThreadRepository {
         await this.threadRep.remove(entity)
     }
     async registerView(id: string): Promise<void> {
-        const entity = await this.threadRep.findOne({
-            where: { id },
-            select: { id: true, views: true }
-        })
-        if (!entity) {
+        const isEntityExist = await this.threadRep.existsBy({ id })
+        if (!isEntityExist) {
             throw ApiError.NotFound('Thread with such ID was not found')
         }
 
-        await this.threadRep.update(id, { views: ++entity.views })
+        await this.threadRep.increment({ id }, 'views', 1)
     }
 }
 

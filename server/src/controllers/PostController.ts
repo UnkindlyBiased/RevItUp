@@ -29,7 +29,7 @@ class PostController {
 
             const maxPage = await this.postService.getPagesAmount(req.query.take)
             const posts = await this.postService.getPosts({
-                page: req.query.page || 1,
+                page: req.query.page,
                 take: req.query.take,
             })
 

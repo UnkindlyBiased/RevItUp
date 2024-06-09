@@ -5,7 +5,6 @@ import ThreadCategoryEntity from "../../../models/entity/postgre/ThreadCategoryE
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import ThreadCategoryModel from "../../../models/domain/ThreadCategory";
 import ThreadCategoryMapper from "../../../models/mappers/ThreadCategoryMapper";
-import { ApiError } from "../../../../utils/errors/ApiError";
 
 class PgThreadCategoryRepository implements IThreadCategoryRepository {
     private readonly threadCatRep: Repository<ThreadCategoryEntity>
@@ -19,11 +18,7 @@ class PgThreadCategoryRepository implements IThreadCategoryRepository {
         return entities.map(threadCat => ThreadCategoryMapper.toDataModel(threadCat))
     }
     async getThreadCategoryByCode(code: string): Promise<ThreadCategoryModel> {
-        const entity = await this.threadCatRep.findOneBy({ threadCategoryCode: code })
-        if (!entity) {
-            throw ApiError.NotFound('Such thread category does not exist')
-        }
-
+        const entity = await this.threadCatRep.findOneByOrFail({ threadCategoryCode: code })
         return ThreadCategoryMapper.toDataModel(entity)
     }
 }

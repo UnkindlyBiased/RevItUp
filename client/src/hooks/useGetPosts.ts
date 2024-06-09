@@ -5,7 +5,7 @@ import useUserStore from "@/store/UserStore";
 import PostInput from "@/types/data/posts/PostInput";
 import useThemedToast from "./useThemedToast";
 
-const useGetPosts = (findOptions: string = "") =>  useQuery({
+const useGetPosts = (findOptions?: string) =>  useQuery({
     queryKey: ['posts-all', findOptions],
     queryFn: () => PostSerivce.getPosts(findOptions)
 })

@@ -14,7 +14,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
     }
 
     async getByUserId(userId: number): Promise<SavedPostsModel> {
-        const candidate = await this.savedRep.findOne({
+        const candidate = await this.savedRep.findOneOrFail({
             where: {
                 user: { id: userId }
             },
@@ -25,9 +25,6 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
             },
             relations: ['user']
         })
-        if (!candidate) {
-            throw ApiError.NotFound("User with this ID was not found")
-        }
 
         return SavedPostsMapper.toDataModel(candidate)
     }
@@ -40,10 +37,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(entity)
     }
     async savePost(postId: string, userId: number): Promise<SavedPostsModel> {
-        const userPosts = await this.savedRep.findOneBy({ user: { id: userId } })
-        if (!userPosts) {
-            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
-        }
+        const userPosts = await this.savedRep.findOneByOrFail({ user: { id: userId } })
 
         userPosts.posts.push(postId)
         this.savedRep.update(userPosts.id, userPosts)
@@ -51,10 +45,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(userPosts)
     }
     async removePost(postId: string, userId: number): Promise<SavedPostsModel> {
-        const userPosts = await this.savedRep.findOneBy({ user: { id: userId } })
-        if (!userPosts) {
-            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
-        }
+        const userPosts = await this.savedRep.findOneByOrFail({ user: { id: userId } })
 
         userPosts.posts = userPosts.posts.filter(id => id !== postId)
         this.savedRep.update(userPosts.id, userPosts)
@@ -62,10 +53,7 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(userPosts)
     }
     async checkIfSaved(postId: string, userId: number): Promise<boolean> {
-        const userPosts = await this.savedRep.findOneBy({ user: { id: userId } })
-        if (!userPosts) {
-            throw ApiError.NotFound("This user doesn't exist or he has not his bucket")
-        }
+        const userPosts = await this.savedRep.findOneByOrFail({ user: { id: userId } })
 
         return userPosts.posts.includes(postId)
     }

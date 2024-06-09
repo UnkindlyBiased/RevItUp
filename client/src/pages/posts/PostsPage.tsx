@@ -25,17 +25,17 @@ function PostsPage(): React.ReactNode {
     })
 
     const { data: pagedData } = useGetPosts(splitRequests([
-        { key: 'page', value: searchParams.get('page') },
-        { key: 'take', value: searchParams.get("take") }
+        { key: 'page', value: searchParams.get('page') || '1' },
+        { key: 'take', value: searchParams.get('take') || '5' }
     ], '&'))
 
     useEffect(() => {
-        const currentPage = searchParams.get('page') || '1'
+        const currentPage = searchParams.get('page')
 
-        if (pagedData && (Number(currentPage) > pagedData.maxPage)) {
+        if (pagedData && (Number(currentPage) > pagedData.maxPage) || !currentPage) {
             setSearchParams({ 
                 page: '1',
-                take: searchParams.get('take') || '1'
+                take: searchParams.get('take') || '5'
             })
         }
     }, [searchParams, setSearchParams, pagedData])

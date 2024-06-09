@@ -24,8 +24,8 @@ function PostSearchPage(): React.ReactElement {
 
     const { data: searchedData } = useSearchPosts(splitRequests([
         { key: 'query', value: searchParams.get('query') || '' },
-        { key: 'page', value: searchParams.get('page') },
-        { key: 'take', value: searchParams.get("take") }
+        { key: 'page', value: searchParams.get('page') || '1' },
+        { key: 'take', value: searchParams.get("take") || '5' }
     ], '&'))
 
     useEffect(() => {

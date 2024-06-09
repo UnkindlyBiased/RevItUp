@@ -1,5 +1,6 @@
-import { Repository } from "typeorm";
-import PostCommentEntity from "../../../models/entity/postgre/CommentEntity";
+import { TreeRepository } from "typeorm";
+
+import CommentEntity from "../../../models/entity/postgre/CommentEntity";
 import ICommentRepository from "../../ICommentRepository";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import { ApiError } from "../../../../utils/errors/ApiError";
@@ -7,57 +8,37 @@ import CommentInputDto from "../../../models/dto/comments/CommentInputDto";
 import CommentModel from "../../../models/domain/Comment";
 import CommentMapper from "../../../models/mappers/CommentMapper";
 import CommentShortDto from "../../../models/dto/comments/CommentShortDto";
+import { ReadableTypes, Condition }  from "../../../../utils/types/ReadableTypes";
 
 class PgCommentRepository implements ICommentRepository {
-    private commentRep: Repository<PostCommentEntity>
+    private commentRep: TreeRepository<CommentEntity>
 
     constructor() {
-        this.commentRep = PgDataSource.getRepository(PostCommentEntity)
+        this.commentRep = PgDataSource.getTreeRepository(CommentEntity)
     }
 
-    // ! Too much data
     async getComments(): Promise<CommentModel[]> {
-        const entities = await this.commentRep.find({
-            relations: ['user', 'user.country', 'repliedTo'],
-            order: {
-                creationDate: 'ASC'
-            },
-            select: {
-                user: {
-                    id: true,
-                    username: true,
-                    country: {
-                        name: true,
-                        flagImgLink: true
-                    }
-                },
-                repliedTo: { id: true }
-            }
+        const entities = await this.commentRep.findTrees({
+            relations: ['user', 'user.country']
         })
-        if (!entities || !entities.length) {
-            throw ApiError.NotFound("No comments for this post or thread were found")
-        }
 
         return entities.map(entity => CommentMapper.toDataModel(entity))
     }
-    async getCommentsForPost(postId: string) {
-        if (!postId) {
-            throw ApiError.NotFound("No ID was not provided")
-        }
+    async getCommentsByCondition(condition: Condition) {
+        const entries = Object.entries(condition)[0]
 
-        const entities = await this.commentRep.find({
-            where: { post: { id: postId } },
-            relations: ['user', 'user.country', 'repliedTo'],
-            order: { creationDate: 'ASC' }
-        })
+        const entities = await this.commentRep.findTrees({
+            relations: ['user', 'user.country', entries[0]]
+        }).then(tree => tree.filter(el => 
+            el[entries[0] as ReadableTypes] && el[entries[0] as ReadableTypes].id === entries[1]))
 
-        return entities.map(entity => CommentMapper.toDataModel(entity))
+        return entities.map(com => CommentMapper.toDataModel(com))
     }
     async createPostComment(data: CommentInputDto): Promise<CommentShortDto> {
         const entity = this.commentRep.create({ 
             text: data.text,
             user: { id: data.userId },
-            repliedTo: { id: data.repliedToId?.valueOf() },
+            parent: { id: data.repliedToId?.valueOf() },
             post: { id: data.postId }
         })
 
@@ -69,6 +50,31 @@ class PgCommentRepository implements ICommentRepository {
         }
 
         return CommentMapper.toShortDto(preloadedEntity)
+    }
+    async createThreadComment(data: CommentInputDto): Promise<CommentShortDto> {
+        const entity = this.commentRep.create({ 
+            text: data.text,
+            user: { id: data.userId },
+            parent: { id: data.repliedToId?.valueOf() },
+            thread: { id: data.threadId }
+        })
+
+        await this.commentRep.insert(entity)
+
+        const preloadedEntity = await this.commentRep.preload({ id: entity.id })
+        if (!preloadedEntity) {
+            throw ApiError.NotFound("Comment addition was not successfull")
+        }
+
+        return CommentMapper.toShortDto(preloadedEntity)
+    }
+    async delete(id: string): Promise<void> {
+        const isEntityExist = this.commentRep.existsBy({ id })
+        if (!isEntityExist) {
+            throw ApiError.NotFound("This comment doesn't exist")
+        }
+
+        await this.commentRep.delete({ id })
     }
 }
 

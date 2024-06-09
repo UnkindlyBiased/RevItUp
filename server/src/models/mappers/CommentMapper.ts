@@ -11,14 +11,16 @@ class CommentMapper implements IDataMapper<CommentModel, CommentEntity> {
             text: entity.text,
             user: UserMapper.toUserShortDto(entity.user),
             creationDate: entity.creationDate,
-            repliedToId: entity.repliedTo?.id || null
+            children: entity.children.length ? 
+                entity.children.map(child => this.toDataModel(child)) : null,
         }
     }
-    toShortDto(entity: CommentEntity): CommentShortDto {
+    toShortDto(entity: CommentModel): CommentShortDto {
         return {
             id: entity.id,
             text: entity.text,
-            creationDate: entity.creationDate
+            creationDate: entity.creationDate,
+            children: entity.children
         }
     }
 }

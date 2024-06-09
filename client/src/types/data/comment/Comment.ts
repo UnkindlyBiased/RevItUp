@@ -1,11 +1,11 @@
 import UserShort from "../users/UserShort"
 
 type Comment = {
-    id: number
+    id: string
     text: string
     user: UserShort
     creationDate: Date
-    repliedTo: number | null
+    children: Comment[] | null
 }
 
 export default Comment

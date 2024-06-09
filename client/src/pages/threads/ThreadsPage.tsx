@@ -13,6 +13,7 @@ import splitRequests from "@/utils/HelperFuncs"
 import PaginationContextProps from "@/types/page/PaginationProps"
 import { PaginationProvider } from "@/providers/PaginationProvider"
 import PaginationRow from "@/components/generic/misc/pagination/PaginationRow"
+import { AddThread } from "@/components/pages/threads/authored/ThreadDefaultActions"
 
 
 function ThreadsPage(): React.ReactElement {
@@ -23,18 +24,18 @@ function ThreadsPage(): React.ReactElement {
     })
 
     const { data: pagedData } = useGetThreads(splitRequests([
-        { key: 'page', value: searchParams.get('page') },
-        { key: 'take', value: searchParams.get('take') }
+        { key: 'page', value: searchParams.get('page') || '1' },
+        { key: 'take', value: searchParams.get('take') || '5' }
     ], '&'))
     const { data: threadCategories } = useGetThreadCategories()
 
     useEffect(() => {
-        const currentPage = searchParams.get('page') || '1';
+        const currentPage = searchParams.get('page')
 
         if (pagedData && Number(currentPage) > pagedData.maxPage) {
             setSearchParams({ 
                 page: '1', 
-                take: searchParams.get('take') || '1'
+                take: searchParams.get('take') || '5'
             })
         }
     }, [searchParams, setSearchParams, pagedData])
@@ -47,8 +48,11 @@ function ThreadsPage(): React.ReactElement {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-4">
-            <TwoLine title="Threads" description="Where you can talk on anything (after reading rules)" />
+        <div className="flex flex-col h-full space-y-5">
+            <div className="flex justify-between items-center">
+                <TwoLine title="Threads" description="Where you can talk on anything (after reading rules)" />
+                <AddThread />
+            </div>
             <div className="flex flex-col space-y-7">
                 <span className="text-center text-7xl font-bold">Choose a category below...</span>
                 { threadCategories ? <div className="grid grid-cols-3 gap-3">

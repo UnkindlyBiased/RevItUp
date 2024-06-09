@@ -10,7 +10,7 @@ class CommentService {
         return comments
     }
     async createComment(input: CommentInput) {
-        const comment = (await api.post<CommentInput>('/comments', input)).data
+        const comment = (await api.post<CommentInput>(this.API_PREFIX + '/post', input)).data
         return comment
     }
 }

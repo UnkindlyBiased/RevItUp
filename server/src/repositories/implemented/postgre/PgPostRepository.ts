@@ -89,11 +89,10 @@ class PgPostRepository implements IPostRepository {
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async getPagesAmount(take: number, condition?: Record<string, any>): Promise<number> {
-        const allEntities = await this.postRep.find({
-            select: { id: true },
+        const allEntities = await this.postRep.count({
             where: condition
         })
-        const pagesAmount = Math.ceil(allEntities.length / take)
+        const pagesAmount = Math.ceil(allEntities / take)
 
         return pagesAmount !== 0 ? pagesAmount : 1
     }
@@ -113,13 +112,10 @@ class PgPostRepository implements IPostRepository {
         return entities.map(entity => PostMapper.toDataModel(entity))
     }
     async create(input: PostInputDto): Promise<PostLightModel> {
-        const candidate = await this.postRep.findOne({
-            where: {
-                postTitle: input.postTitle,
-            },
-            select: { id: true }
+        const isCandidateExist = await this.postRep.existsBy({
+            postTitle: input.postTitle
         })
-        if (candidate) {
+        if (isCandidateExist) {
             throw ApiError.Conflict("Post with this title already exists")
         }
 
@@ -162,26 +158,19 @@ class PgPostRepository implements IPostRepository {
         return PostMapper.toLightDataModel(entity)
     }
     async registerView(id: string): Promise<void> {
-        const entity = await this.postRep.findOne({
-            select: {
-                id: true,
-                views: true
-            },
-            where: { id }
-        })
-        if (!entity) {
+        const isEntityExist = await this.postRep.existsBy({ id })
+        if (!isEntityExist) {
             throw ApiError.NotFound("Such post doesn't exist")
         }
 
-        await this.postRep.update(id, { views: ++entity.views })
+        await this.postRep.increment({ id }, 'views', 1)
     }
     async checkIfExistsByTitle(title: string): Promise<boolean> {
-        const entity = await this.postRep.findOne({
-            where: { postTitle: ILike(title) },
-            select: { id: true }
+        const isExistByTitle = await this.postRep.existsBy({
+            postTitle: ILike(title)
         })
 
-        return !!entity
+        return isExistByTitle
     }
 }
 

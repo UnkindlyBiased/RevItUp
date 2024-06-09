@@ -14,7 +14,7 @@ import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
-    const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
+    const { mutateAsync: createPost, isPending: isAdding } = useCreatePost(watch())
 
     const debouncedTitle = useDebounce(watch().postTitle, 500)
     const { data: isTitleNotUnique, isLoading: weAreChecking } = useCheckByTitle(debouncedTitle)
@@ -49,7 +49,7 @@ function AddNewPost(): React.ReactElement {
                         onValueChange={(value) => setValue('categoryId', value)} />
                 </div>
                 <DialogFooter className="flex items-center">
-                    { isMutating && <span className="opacity-50">Adding</span> }
+                    { isAdding && <span className="opacity-50">Adding</span> }
                     <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId) || isTitleNotUnique || weAreChecking}>
                         Add post
                     </button>

@@ -10,9 +10,9 @@ function PaginationRow() {
             <PaginationContent>
                 { context.page > 1 && <>
                     <PaginationItem onClick={() => context.setSearchParams([
-                            context.query && ['query', context.query] || ['', ''],
                             ['page', (context.page - 1).toString()],
-                            ['take', context.take.toString()]
+                            ['take', context.take.toString()],
+                            context.query && ['query', context.query] || ['', '']
                         ])} >
                         <PaginationPrevious />
                     </PaginationItem>
@@ -28,9 +28,9 @@ function PaginationRow() {
                         <PaginationLink children={context.page + 1} / >
                     </PaginationItem>
                     <PaginationItem onClick={() => context.setSearchParams([
-                            context.query && ['query', context.query] || ['', ''],
                             ['page', (context.page + 1).toString()],
                             ['take', context.take.toString()],
+                            context.query && ['query', context.query] || ['', '']
                         ])} >
                         <PaginationNext />
                     </PaginationItem>
