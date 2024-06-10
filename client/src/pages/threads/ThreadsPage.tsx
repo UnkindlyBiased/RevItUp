@@ -1,6 +1,6 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
 import { useEffect } from "react"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
 import Loading from "@/components/generic/misc/Loading"
 import TwoLine from "@/components/generic/misc/TwoLine"
@@ -14,11 +14,14 @@ import PaginationContextProps from "@/types/page/PaginationProps"
 import { PaginationProvider } from "@/providers/PaginationProvider"
 import PaginationRow from "@/components/generic/misc/pagination/PaginationRow"
 import { AddThread } from "@/components/pages/threads/authored/ThreadDefaultActions"
+import useUserStore from "@/store/UserStore"
+import AppRoutes from "@/utils/enums/AppRoutes"
 
 
 function ThreadsPage(): React.ReactElement {
     useDocumentTitle('REVITUP: Threads')
 
+    const isAuth = useUserStore(state => state.isAuth)
     const [searchParams, setSearchParams] = useSearchParams({
         page: '1', take: '5'
     })
@@ -51,7 +54,7 @@ function ThreadsPage(): React.ReactElement {
         <div className="flex flex-col h-full space-y-5">
             <div className="flex justify-between items-center">
                 <TwoLine title="Threads" description="Where you can talk on anything (after reading rules)" />
-                <AddThread />
+                { isAuth ? <AddThread /> : <Link to={AppRoutes.LOGIN} className="font-medium hover:underline" children='Log in to add thread' />}
             </div>
             <div className="flex flex-col space-y-7">
                 <span className="text-center text-7xl font-bold">Choose a category below...</span>

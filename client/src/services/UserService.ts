@@ -1,3 +1,4 @@
+import UserChangePfp from "@/types/data/users/UserChangePfp"
 import { api } from "../api"
 import UserCreate from "../types/data/users/UserCreate"
 import UserDetailed from "../types/data/users/UserDetailed"
@@ -16,10 +17,8 @@ class UserService {
         const users = (await api.get<UserShort[]>(this.ROUTE_PREFIX)).data
         return users
     }
-    async getUserByUsername(username: string): Promise<UserDetailed> {
-        const userPath = `${this.ROUTE_PREFIX}/${username}`
-        const user = (await api.get<UserDetailed>(userPath)).data
-        return user
+    async getUserByLink(link: string): Promise<UserDetailed> {
+        return (await api.get<UserDetailed>(`${this.ROUTE_PREFIX}/${link}`)).data
     }
     async getUserById(id: number) {
         return (await api.get<UserDetailed>(this.ROUTE_PREFIX + `/by-id/${id}`)).data
@@ -32,6 +31,14 @@ class UserService {
             id,
             ...userData
         })
+    }
+    async changeProfilePicture(input: UserChangePfp): Promise<void> {
+        const data = new FormData()
+
+        data.append('id', input.id.toString())
+        data.append('pfp', input.image[0])
+
+        await api.patch(this.ROUTE_PREFIX + '/pfp', data)
     }
     async delete(id: number): Promise<void> {
         await api.delete(this.ROUTE_PREFIX, {

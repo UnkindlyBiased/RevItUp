@@ -17,6 +17,9 @@ export default class UserEntity {
     @Column()
     password: string
 
+    @Column({ unique: true })
+    userLink: string
+
     @Column({ nullable: true })
     biography: string
 
@@ -24,13 +27,16 @@ export default class UserEntity {
     emailAddress: string
 
     @Column({ default: false })
-    isActivated: boolean
+    isVerified: boolean
 
     @Column({ type: 'varchar', nullable: true })
     activationLink: string | null
 
     @CreateDateColumn()
     registrationDate: Date
+
+    @Column({ nullable: true })
+    pfpLink: string
 
     @Column({ type: 'enum', enum: UserRoles, default: UserRoles.DEFAULT })
     role: UserRoles

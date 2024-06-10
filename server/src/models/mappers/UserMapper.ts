@@ -19,6 +19,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         return {
             id: model.id,
             username: model.username,
+            userLink: model.userLink,
             country: CountryMapper.toDto(model.country)
         }
     }
@@ -26,6 +27,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         return {
             username: model.username,
             password: model.password,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
             activationLink: model.activationLink,
             countryId: model.country.id
@@ -37,7 +39,7 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
             password: model.password,
             biography: model.biography,
             emailAddress: model.emailAddress,
-            isActivated: model.isActivated,
+            isVerified: model.isVerified,
             activationLink: model.activationLink
         }
     }
@@ -45,10 +47,13 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         return {
             id: model.id,
             username: model.username,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
             biography: model.biography,
             registrationDate: model.registrationDate,
-            isActivated: model.isActivated,
+            role: model.role,
+            pfpLink: model.pfpLink,
+            isVerified: model.isVerified,
             country: model.country
         }
     }
@@ -56,8 +61,9 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         return {
             id: model.id,
             username: model.username,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
-            isActivated: model.isActivated,
+            isVerified: model.isVerified,
             role: model.role
         }
     }

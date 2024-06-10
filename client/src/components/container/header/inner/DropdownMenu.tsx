@@ -29,7 +29,7 @@ function UserDropdown(): React.ReactElement {
                     </DropdownMenuItem>
                 </> }
                 { user && <>
-                    <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_PROFILE)}>
+                    <DropdownMenuItem onClick={() => navigate(AppRoutes.USER_PAGE.replace(':link', user.userLink))}>
                         Your profile
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_SAVED_POSTS)}>

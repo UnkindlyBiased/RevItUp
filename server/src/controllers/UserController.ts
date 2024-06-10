@@ -7,6 +7,7 @@ import PgUserRepository from "../repositories/implemented/postgre/PgUserReposito
 import { RequestWithBody, RequestWithParams } from "../../utils/types/DifferentiatedRequests"
 import UserCreateDto from "../models/dto/users/UserCreateDto"
 import UserEditDto from "../models/dto/users/UserEditDto"
+import { ApiError } from "../../utils/errors/ApiError"
 
 class UserController {
     private readonly service: UserService
@@ -23,9 +24,9 @@ class UserController {
             next(e)
         }
     }
-    getUserByName = async (req: RequestWithParams<{ username: string }>, res: Response, next: NextFunction) => {
+    getUserByLink = async (req: RequestWithParams<{ link: string }>, res: Response, next: NextFunction) => {
         try {
-            const user = await this.service.getUserByName(req.body.username)
+            const user = await this.service.getUserByLink(req.params.link)
 
             return res.send(user)
         } catch (e) {
@@ -55,6 +56,26 @@ class UserController {
         try {
             const updatedUser = await this.service.update(req.body.id, req.body)
             res.status(HttpStatusCodes.UPLOADED).send(updatedUser)
+        } catch(e) {
+            next(e)
+        }
+    }
+    changePfp = async (req: RequestWithBody<{ id: number, pfp: Express.Multer.File }>, res: Response, next: NextFunction) => {
+        try {
+            if (req.user.id !== Number(req.body.id)) {
+                throw ApiError.Forbidden("You're trying to change other account")
+            }
+            const image = req.file
+            if (!image) {
+                throw ApiError.NotFound('Profile picture was not given')
+            }
+
+            await this.service.changeProfilePicture({
+                id: req.body.id,
+                image,
+                imageName: req.user.username
+            })
+            return res.send({ message: 'Image was uploaded successfully' })
         } catch(e) {
             next(e)
         }

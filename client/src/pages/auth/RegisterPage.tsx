@@ -7,7 +7,6 @@ import UserCreate from "@/types/data/users/UserCreate"
 import CountrySelect from "@/components/generic/misc/input/CountrySelect"
 import { useCreateUser } from "@/hooks/useGetUsers"
 
-// TODO: make beautiful register page
 function RegisterPage(): React.ReactElement {
     useDocumentTitle('REVITUP: Registration')
 

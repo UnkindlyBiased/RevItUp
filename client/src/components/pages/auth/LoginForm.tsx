@@ -11,7 +11,6 @@ function LoginForm(): React.ReactElement {
     const login = useUserStore(state => state.login)
     const navigate = useNavigate()
     
-    // TODO: redo this crap (login)
     const onSubmit: SubmitHandler<UserLogin> = (data) => {
         try {
             login(data.username, data.password)

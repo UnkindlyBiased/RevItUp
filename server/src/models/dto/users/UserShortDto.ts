@@ -1,7 +1,8 @@
+import UserModel from "../../domain/User";
 import CountryDto from "../country/CountryDto";
 
-export default interface UserShortDto {
-    id: number
-    username: string,
+type UserShort = Pick<UserModel, 'id' | 'username' | 'userLink'> & {
     country: CountryDto
 }
+
+export default UserShort

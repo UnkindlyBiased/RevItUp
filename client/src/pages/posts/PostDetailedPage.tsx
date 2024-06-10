@@ -15,6 +15,7 @@ import CategoryWithLink from "@/components/generic/category/CategoryLink"
 import { RemoveSavedButton, SaveButton } from "@/components/pages/posts/saved/SaveButtons"
 import SuspendedImage from "@/components/generic/misc/SuspendedImage"
 import ReadableStats from "@/components/generic/misc/ReadableStats"
+import Error from "@/components/generic/boundaries/Error"
 
 function PostDetailedPage(): React.ReactNode {
     const { postLink } = useParams()
@@ -35,7 +36,7 @@ function PostDetailedPage(): React.ReactNode {
 
     if (isLoading) return <Loading />
 
-    if (error || !post) return <p>Error</p>
+    if (error || !post) return <Error />
 
     return (
         <div className="flex justify-between">

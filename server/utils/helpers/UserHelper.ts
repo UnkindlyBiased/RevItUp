@@ -9,6 +9,14 @@ class UserHelper {
             model.biography = model.biography.trim()
         }
     }
+    static createLink(username: string) {
+        const symbols = "!:,\"\\/'".split("")
+        symbols.forEach(sym => {
+            username = username.replace(sym, '')
+        })
+
+        return username.toLowerCase()
+    }
 }
 
 export default UserHelper

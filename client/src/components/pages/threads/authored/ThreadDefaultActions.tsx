@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useForm } from "react-hook-form"
 
-import AdditionButton from "@/components/generic/misc/input/AdditionButton"
+import ActionButton from "@/components/generic/misc/input/ActionButton"
 import { useCreateThread } from "@/hooks/useThreads"
 import ThreadInput from "@/types/data/threads/ThreadInput"
 import ThreadCategoriesSelect from "./ThreadCategoriesSelect"
@@ -16,7 +16,7 @@ function AddThread(): React.ReactElement {
     return (
         <Dialog onOpenChange={() => reset()}>
             <DialogTrigger>
-                <AdditionButton icon={<MdAddCircle size={20} />} text="Add thread" />
+                <ActionButton icon={<MdAddCircle size={20} />} text="Add thread" />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader className="text-xl font-medium">

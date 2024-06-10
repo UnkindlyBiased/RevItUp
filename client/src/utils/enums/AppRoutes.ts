@@ -19,6 +19,8 @@ enum AppRoutes {
     YOUR_SAVED_POSTS = '/me/saved-posts',
     YOUR_WRITTEN_POSTS = '/me/written-posts',
 
+    USER_PAGE = '/users/:link',
+
     ADMIN = '/admin'
 }
 

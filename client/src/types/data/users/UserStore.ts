@@ -1,9 +1,12 @@
+import UserRoles from "./UserRoles"
+
 type UserStore = {
     id: number
     username: string
-    emailAddress: string,
-    isActivated: boolean,
-    role: "banned" | "default" | "writer" | "admin"
+    userLink: string
+    emailAddress: string
+    isActivated: boolean
+    role: UserRoles
 }
 
 export default UserStore

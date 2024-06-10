@@ -14,7 +14,6 @@ type CommentFieldProps = {
     onClick?: () => void
 }
 
-// TODO: make it more flexible and accessable from threads (in the future)
 function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
     const [commentText, setCommentText] = useState<string>('')
     const user = useUserStore(state => state.user)
@@ -22,7 +21,6 @@ function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
 
     const inputData: CommentInput = {
         text: commentText,
-        repliedTo: null,
         userId: user ? user.id : 0,
         postId: readableId
     }

@@ -37,7 +37,10 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(entity)
     }
     async savePost(postId: string, userId: number): Promise<SavedPostsModel> {
-        const userPosts = await this.savedRep.findOneByOrFail({ user: { id: userId } })
+        const userPosts = await this.savedRep.findOneOrFail({
+            where: { user: { id: userId } },
+            relations: ['user']
+        })
 
         userPosts.posts.push(postId)
         this.savedRep.update(userPosts.id, userPosts)
@@ -45,7 +48,10 @@ class PgSavedPostsRepository implements ISavedPostsRepository {
         return SavedPostsMapper.toDataModel(userPosts)
     }
     async removePost(postId: string, userId: number): Promise<SavedPostsModel> {
-        const userPosts = await this.savedRep.findOneByOrFail({ user: { id: userId } })
+        const userPosts = await this.savedRep.findOneOrFail({
+            where: { user: { id: userId } },
+            relations: ['user']
+        })
 
         userPosts.posts = userPosts.posts.filter(id => id !== postId)
         this.savedRep.update(userPosts.id, userPosts)

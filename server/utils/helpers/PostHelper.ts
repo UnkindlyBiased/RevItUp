@@ -7,7 +7,7 @@ class PostHelper {
         postInput.previewText = postInput.previewText.trim()
     }
     static putDashes(title: string) {
-        const symbols = "!:,\"\\/".split("")
+        const symbols = "!:,\"\\/'".split("")
         for (const symbol of symbols) {
             title = title.replace(symbol, "")
         }

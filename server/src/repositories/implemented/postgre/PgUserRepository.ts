@@ -33,9 +33,9 @@ class PgUserRepository implements IUserRepository {
 
         return UserMapper.toDataModel(user)
     }
-    async getUserByName(username: string): Promise<UserModel> {
+    async getUserByLink(link: string): Promise<UserModel> {
         const user = await this.userRep.findOne({
-            where: { username },
+            where: { userLink: link },
             relations: ['country']
         } )
         if (!user) {
@@ -84,6 +84,14 @@ class PgUserRepository implements IUserRepository {
         
         await this.userRep.update(updatedUser.id, updatedUser)
         return UserMapper.toDataModel(updatedUser)
+    }
+    async changeProfilePicture(id: number, pfpLink: string): Promise<void> {
+        const isEntityExist = await this.userRep.existsBy({ id })
+        if (!isEntityExist) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        await this.userRep.update(id, { pfpLink })
     }
     async delete(id: number): Promise<void> {
         const user = await this.userRep.findOne({
