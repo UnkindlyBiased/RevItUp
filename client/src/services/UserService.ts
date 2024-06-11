@@ -4,6 +4,7 @@ import UserCreate from "../types/data/users/UserCreate"
 import UserDetailed from "../types/data/users/UserDetailed"
 import UserEdit from "../types/data/users/UserEdit"
 import UserShort from "../types/data/users/UserShort"
+import UserUpdateLight from "@/types/data/users/UserUpdateLight"
 
 type UserUpdateRequest = {
     id: number,
@@ -31,6 +32,9 @@ class UserService {
             id,
             ...userData
         })
+    }
+    async updateLight(id: number, input: UserUpdateLight): Promise<void> {
+        await api.put(this.ROUTE_PREFIX + '/light', { id, ...input })
     }
     async changeProfilePicture(input: UserChangePfp): Promise<void> {
         const data = new FormData()

@@ -11,6 +11,7 @@ UserRouter.get('/', UserController.getUsers)
 UserRouter.get("/by-id/:id", UserController.getUserById)
 UserRouter.get('/:link', UserController.getUserByLink)
 UserRouter.put('/', authMiddleware, UserController.update)
+UserRouter.put('/light', authMiddleware, UserController.updateLight)
 UserRouter.patch('/pfp', authMiddleware, imageUploadMiddleware.single('pfp'), UserController.changePfp)
 UserRouter.delete('/', authMiddleware, UserController.delete)
 

@@ -21,6 +21,7 @@ import TokenModel from "../models/domain/Token"
 import FirebaseService from "./FirebaseService"
 import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints"
 import UserPictureUploadDto from "../models/dto/users/UserPictureUploadDto"
+import UserUpdateLightDto from "../models/dto/users/UserUpdateLightDto"
 
 class UserService {
     private readonly mailService: MailService
@@ -90,6 +91,10 @@ class UserService {
         const updatedUser = await this.repository.update(id, updateData)
         return UserMapper.toUserDetailedDto(updatedUser)
     }
+    async updateLight(id: number, input: UserUpdateLightDto): Promise<UserDetailedDto> {
+        const user = await this.repository.updateLight(id, input)
+        return UserMapper.toUserDetailedDto(user)
+    }
     changeProfilePicture = async (pictureData: UserPictureUploadDto): Promise<void> => {
         const imageRef = await this.firebaseService.uploadImage({
             image: pictureData.image,
@@ -113,7 +118,7 @@ class UserService {
 
     // * Auth logic
     async login(username: string, password: string): Promise<UserCreateOutputDto> {
-        const user = await this.repository.getUserByLink(username)
+        const user = await this.repository.getUserByName(username)
         
         const isPasswordEqual = await bcrypt.compare(password, user.password)
         if (!isPasswordEqual) {

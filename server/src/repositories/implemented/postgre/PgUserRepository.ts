@@ -7,6 +7,7 @@ import IUserRepository from "../../IUserRepository"
 import UserEditDto from "../../../models/dto/users/UserEditDto"
 import UserMapper from "../../../models/mappers/UserMapper"
 import UserModel from "../../../models/domain/User"
+import UserUpdateLightDto from "../../../models/dto/users/UserUpdateLightDto"
 
 class PgUserRepository implements IUserRepository {
     private readonly userRep: Repository<UserEntity>
@@ -42,6 +43,14 @@ class PgUserRepository implements IUserRepository {
             throw ApiError.NotFound("User with this name doesn't exist")
         }
         
+        return UserMapper.toDataModel(user)
+    }
+    async getUserByName(username: string): Promise<UserModel> {
+        const user = await this.userRep.findOneOrFail({
+            where: { username },
+            relations: ['country']
+        })
+
         return UserMapper.toDataModel(user)
     }
     async getUserByActivationLink(activationLink: string): Promise<UserModel> {
@@ -84,6 +93,27 @@ class PgUserRepository implements IUserRepository {
         
         await this.userRep.update(updatedUser.id, updatedUser)
         return UserMapper.toDataModel(updatedUser)
+    }
+    async updateLight(id: number, input: UserUpdateLightDto): Promise<UserModel> {
+        const isEntityExist = await this.userRep.existsBy({ id })
+        if (!isEntityExist) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        await this.userRep.update(id, {
+            username: input.username,
+            biography: input.biography,
+            country: {
+                id: input.countryId,
+            }
+        })
+
+        const entity = await this.userRep.preload({ id })
+        if (!entity) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        return UserMapper.toDataModel(entity)
     }
     async changeProfilePicture(id: number, pfpLink: string): Promise<void> {
         const isEntityExist = await this.userRep.existsBy({ id })

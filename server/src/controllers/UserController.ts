@@ -8,6 +8,7 @@ import { RequestWithBody, RequestWithParams } from "../../utils/types/Differenti
 import UserCreateDto from "../models/dto/users/UserCreateDto"
 import UserEditDto from "../models/dto/users/UserEditDto"
 import { ApiError } from "../../utils/errors/ApiError"
+import UserUpdateLightDto from "../models/dto/users/UserUpdateLightDto"
 
 class UserController {
     private readonly service: UserService
@@ -57,6 +58,18 @@ class UserController {
             const updatedUser = await this.service.update(req.body.id, req.body)
             res.status(HttpStatusCodes.UPLOADED).send(updatedUser)
         } catch(e) {
+            next(e)
+        }
+    }
+    updateLight = async (req: RequestWithBody<UserUpdateLightDto & { id: number }>, res: Response, next: NextFunction) => {
+        try {
+            if (Number(req.body.id) !== req.user.id) {
+                throw ApiError.Forbidden("This account doesn't belong to you")
+            }
+
+            const user = await this.service.updateLight(req.body.id, req.body)
+            return res.status(HttpStatusCodes.UPLOADED).send(user)
+        } catch (e) {
             next(e)
         }
     }

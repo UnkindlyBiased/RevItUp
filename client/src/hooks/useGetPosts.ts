@@ -105,20 +105,9 @@ const useSavePost = (postId: string) => {
     return useMutation({
         mutationKey: ['save-post', postId],
         mutationFn: () => PostSerivce.savePost(postId),
-        onMutate: async () => {
-            await queryClient.cancelQueries({ queryKey: ['saved-check', postId] })
-            const previousIsSaved = queryClient.getQueryData(['saved-check', postId])
-            queryClient.setQueryData(['saved-check', postId], true)
-            return { previousIsSaved }
-        },
-        onError: (_, __, context) => {
-            if (context?.previousIsSaved !== undefined) {
-                queryClient.setQueryData(['saved-check', postId], context.previousIsSaved)
-            }
-        },
-        onSettled: () => {
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['saved-posts'] })
-            queryClient.invalidateQueries({ queryKey: ['saved-check', postId] })
+            queryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
         }
     })
 }
@@ -129,20 +118,9 @@ const useRemoveSavedPost = (postId: string) => {
     return useMutation({
         mutationKey: ['remove-saved-post', postId],
         mutationFn: () => PostSerivce.removeSavedPost(postId),
-        onMutate: async () => {
-            await queryClient.cancelQueries({ queryKey: ['saved-check', postId] })
-            const previousIsSaved = queryClient.getQueryData(['saved-check', postId])
-            queryClient.setQueryData(['saved-check', postId], false)
-            return { previousIsSaved }
-        },
-        onError: (_, __, context) => {
-            if (context?.previousIsSaved !== undefined) {
-                queryClient.setQueryData(['saved-check', postId], context.previousIsSaved)
-            }
-        },
-        onSettled: () => {
+        onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['saved-posts'] })
-            queryClient.invalidateQueries({ queryKey: ['saved-check', postId] })
+            queryClient.invalidateQueries({ queryKey: ['saved-check', postId]})
         }
     })
 }

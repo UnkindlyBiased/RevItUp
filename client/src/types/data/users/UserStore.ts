@@ -5,7 +5,7 @@ type UserStore = {
     username: string
     userLink: string
     emailAddress: string
-    isActivated: boolean
+    isVerified: boolean
     role: UserRoles
 }
 

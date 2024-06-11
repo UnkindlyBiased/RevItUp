@@ -34,12 +34,13 @@ function CommentUpload({ readableId }: CommentFieldProps): React.ReactNode {
         }
     }
 
-
     if (!user) return (
         <span className="text-xl">
             Please <Link className="hover:underline font-bold" to={'/login'}>login</Link> or <Link className="hover:underline font-bold" to={'/register'}>register</Link> if you want to write a comment
         </span>
     )
+    if (!user.isVerified) return <span className="text-xl" children='Please verify your account (check your email inbox)' />
+    if (user.role === 'banned') return <span className="text-xl" children="You're banned from writing comments" />
 
     return (
         <div className="flex flex-col space-y-3">

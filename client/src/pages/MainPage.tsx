@@ -30,7 +30,9 @@ function MainPage(): React.ReactElement {
             <div className='flex justify-center'>
                 <MoreButton />
             </div>
-            {memoizedRandomPost}
+            <div className='flex justify-center'>
+                {memoizedRandomPost}
+            </div>
         </div>
     )
 }

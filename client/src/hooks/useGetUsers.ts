@@ -5,6 +5,7 @@ import UserService from "@/services/UserService"
 import UserCreate from "@/types/data/users/UserCreate"
 import useUserStore from "@/store/UserStore"
 import UserChangePfp from "@/types/data/users/UserChangePfp"
+import UserUpdateLight from "@/types/data/users/UserUpdateLight"
 
 const useGetUsers = () => useQuery({
     queryKey: ['users'],
@@ -29,6 +30,18 @@ const useCreateUser = (input: UserCreate) => useMutation({
     }
 })
 
+const useUpdateUser = (input: UserUpdateLight) => {
+    const queryClient = useQueryClient()
+    const user = useUserStore(state => state.user)
+
+    return useMutation({
+        mutationFn: () => UserService.updateLight(user?.id || 0, input),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['user-link', user?.userLink] })
+        }
+    })
+}
+
 const useChangePfp = (input: UserChangePfp) => {
     const queryClient = useQueryClient()
     const user = useUserStore(state => state.user)
@@ -50,5 +63,6 @@ export {
     useGetUserById,
     useGetUserByLink,
     useChangePfp,
+    useUpdateUser,
     useCreateUser
 }
