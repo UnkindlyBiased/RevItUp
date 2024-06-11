@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { FaUser } from 'react-icons/fa6'
 
 import useUserStore from '@/store/UserStore'
+import AppRoutes from '@/utils/enums/AppRoutes'
 
 /**
  * Dropdown menu for the header
@@ -20,24 +21,24 @@ function UserDropdown(): React.ReactElement {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-8">
                 { !user && <>
-                    <DropdownMenuItem className='cursor-pointer'>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate(AppRoutes.REGISTER)}>
                         Register
                     </DropdownMenuItem>
-                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate('/login')}>
+                    <DropdownMenuItem className='cursor-pointer' onClick={() => navigate(AppRoutes.LOGIN)}>
                         Login
                     </DropdownMenuItem>
                 </> }
                 { user && <>
-                    <DropdownMenuItem onClick={() => navigate('/me')}>
+                    <DropdownMenuItem onClick={() => navigate(AppRoutes.USER_PAGE.replace(':link', user.userLink))}>
                         Your profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/me/saved-posts')}>
+                    <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_SAVED_POSTS)}>
                         Saved posts
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     { user.role === "writer" || user.role === "admin" && (
                         <>
-                            <DropdownMenuItem onClick={() => navigate('/me/written-articles')}>
+                            <DropdownMenuItem onClick={() => navigate(AppRoutes.YOUR_WRITTEN_POSTS)}>
                                 Your articles
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />

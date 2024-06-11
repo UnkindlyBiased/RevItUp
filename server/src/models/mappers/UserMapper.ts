@@ -1,4 +1,4 @@
-import { UserEntity } from "../entity/postgre/UserEntity";
+import UserEntity from "../entity/postgre/UserEntity";
 import UserCreateDto from "../dto/users/UserCreateDto";
 import UserDetailedDto from "../dto/users/UserDetailedDto";
 import UserEditDto from "../dto/users/UserEditDto";
@@ -15,49 +15,55 @@ class UserMapper implements IDataMapper<UserModel, UserEntity> {
         }
     }
 
-    mapUserModelToUserShortDto(model: UserModel): UserShortDto {
+    toUserShortDto(model: UserModel): UserShortDto {
         return {
             id: model.id,
             username: model.username,
-            country: CountryMapper.mapCountryToDto(model.country)
+            userLink: model.userLink,
+            country: CountryMapper.toDto(model.country)
         }
     }
-    mapUserModelToUserCreateDto(model: UserModel): UserCreateDto {
+    toUserCreateDto(model: UserModel): UserCreateDto {
         return {
             username: model.username,
             password: model.password,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
             activationLink: model.activationLink,
             countryId: model.country.id
         }
     }
-    mapUserModelToUserEditDto(model: UserModel): UserEditDto {
+    toUserEditDto(model: UserModel): UserEditDto {
         return {
             username: model.username,
             password: model.password,
             biography: model.biography,
             emailAddress: model.emailAddress,
-            isActivated: model.isActivated,
+            isVerified: model.isVerified,
             activationLink: model.activationLink
         }
     }
-    mapUserModelToUserDetailedDto(model: UserModel): UserDetailedDto {
+    toUserDetailedDto(model: UserModel): UserDetailedDto {
         return {
             id: model.id,
             username: model.username,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
             biography: model.biography,
             registrationDate: model.registrationDate,
-            isActivated: model.isActivated,
+            role: model.role,
+            pfpLink: model.pfpLink,
+            isVerified: model.isVerified,
             country: model.country
         }
     }
-    mapUserModelToUserTokenDto(model: UserModel): UserTokenDto {
+    toUserTokenDto(model: UserModel): UserTokenDto {
         return {
             id: model.id,
             username: model.username,
+            userLink: model.userLink,
             emailAddress: model.emailAddress,
-            isActivated: model.isActivated,
+            isVerified: model.isVerified,
             role: model.role
         }
     }

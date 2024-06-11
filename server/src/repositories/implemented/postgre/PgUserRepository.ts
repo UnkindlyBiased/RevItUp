@@ -1,5 +1,5 @@
 import { Repository } from "typeorm"
-import { UserEntity } from "../../../models/entity/postgre/UserEntity"
+import UserEntity from "../../../models/entity/postgre/UserEntity"
 import { PgDataSource } from "../../../../utils/data/AppDataSource"
 import UserCreateDto from "../../../models/dto/users/UserCreateDto"
 import { ApiError } from "../../../../utils/errors/ApiError"
@@ -7,6 +7,7 @@ import IUserRepository from "../../IUserRepository"
 import UserEditDto from "../../../models/dto/users/UserEditDto"
 import UserMapper from "../../../models/mappers/UserMapper"
 import UserModel from "../../../models/domain/User"
+import UserUpdateLightDto from "../../../models/dto/users/UserUpdateLightDto"
 
 class PgUserRepository implements IUserRepository {
     private readonly userRep: Repository<UserEntity>
@@ -33,15 +34,23 @@ class PgUserRepository implements IUserRepository {
 
         return UserMapper.toDataModel(user)
     }
-    async getUserByName(username: string): Promise<UserModel> {
+    async getUserByLink(link: string): Promise<UserModel> {
         const user = await this.userRep.findOne({
-            where: { username },
+            where: { userLink: link },
             relations: ['country']
         } )
         if (!user) {
             throw ApiError.NotFound("User with this name doesn't exist")
         }
         
+        return UserMapper.toDataModel(user)
+    }
+    async getUserByName(username: string): Promise<UserModel> {
+        const user = await this.userRep.findOneOrFail({
+            where: { username },
+            relations: ['country']
+        })
+
         return UserMapper.toDataModel(user)
     }
     async getUserByActivationLink(activationLink: string): Promise<UserModel> {
@@ -85,15 +94,46 @@ class PgUserRepository implements IUserRepository {
         await this.userRep.update(updatedUser.id, updatedUser)
         return UserMapper.toDataModel(updatedUser)
     }
-    async delete(id: number): Promise<UserModel> {
-        const user = await this.userRep.findOneBy({ id })
+    async updateLight(id: number, input: UserUpdateLightDto): Promise<UserModel> {
+        const isEntityExist = await this.userRep.existsBy({ id })
+        if (!isEntityExist) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        await this.userRep.update(id, {
+            username: input.username,
+            biography: input.biography,
+            country: {
+                id: input.countryId,
+            }
+        })
+
+        const entity = await this.userRep.preload({ id })
+        if (!entity) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        return UserMapper.toDataModel(entity)
+    }
+    async changeProfilePicture(id: number, pfpLink: string): Promise<void> {
+        const isEntityExist = await this.userRep.existsBy({ id })
+        if (!isEntityExist) {
+            throw ApiError.NotFound("Such user doesn't exist")
+        }
+
+        await this.userRep.update(id, { pfpLink })
+    }
+    async delete(id: number): Promise<void> {
+        const user = await this.userRep.findOne({
+            where: { id },
+            select: { id: true }
+        })
         if (!user) {
             throw ApiError.NotFound("User with such ID was not found")
         }
         
         await this.userRep.remove(user)
-        return UserMapper.toDataModel(user)
     }
 }
 
-export default new PgUserRepository()
+export default PgUserRepository

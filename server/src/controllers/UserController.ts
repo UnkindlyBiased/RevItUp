@@ -1,55 +1,51 @@
 import { Request, Response, NextFunction } from "express"
+
 import UserService from "../services/UserService"
 import { HttpStatusCodes } from "../../utils/enums/HttpStatusCodes"
 import TokenHelper from "../../utils/helpers/TokenHelper"
-import { validationResult } from "express-validator"
+import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
+import { RequestWithBody, RequestWithParams } from "../../utils/types/DifferentiatedRequests"
+import UserCreateDto from "../models/dto/users/UserCreateDto"
+import UserEditDto from "../models/dto/users/UserEditDto"
+import { ApiError } from "../../utils/errors/ApiError"
+import UserUpdateLightDto from "../models/dto/users/UserUpdateLightDto"
 
 class UserController {
-    async getUsers(_req: Request, res: Response, next: NextFunction) {
+    private readonly service: UserService
+
+    constructor() {
+        this.service = new UserService(new PgUserRepository())
+    }
+
+    getUsers = async (_req: Request, res: Response, next: NextFunction) => {
         try {
-            const users = await UserService.getUsers()
+            const users = await this.service.getUsers()
             return res.send(users)
         } catch(e) {
             next(e)
         }
     }
-    async getUserByName(req: Request, res: Response, next: NextFunction) {
+    getUserByLink = async (req: RequestWithParams<{ link: string }>, res: Response, next: NextFunction) => {
         try {
-            const { username } = req.params
-            const user = await UserService.getUserByName(username)
+            const user = await this.service.getUserByLink(req.params.link)
 
             return res.send(user)
         } catch (e) {
             next(e)
         }
     }
-    async getUserById(req: Request, res: Response, next: NextFunction) {
+    getUserById = async (req: RequestWithParams<{ id: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.params
-            const user = await UserService.getUserById(Number(id))
+            const user = await this.service.getUserById(req.params.id)
 
             return res.send(user)
         } catch(e) {
             next(e)
         }
     }
-    async create(req: Request, res: Response, next: NextFunction) {
+    create = async (req: RequestWithBody<UserCreateDto>, res: Response, next: NextFunction) => {
         try {
-            const result = validationResult(req)
-            if (!result.isEmpty()) {
-                return res.status(HttpStatusCodes.BAD_REQUEST).send({
-                    message: "Validation of body has failed",
-                    errorStack: result
-                })
-            }
-
-            const { username, password, emailAddress, countryId } = req.body
-            const user = await UserService.create({
-                username,
-                password,
-                emailAddress,
-                countryId: Number(countryId)
-            })
+            const user = await this.service.create(req.body)
 
             TokenHelper.putCookie(user.tokens.refreshToken, res)
             res.status(HttpStatusCodes.UPLOADED).send(user)
@@ -57,34 +53,58 @@ class UserController {
             next(e)
         }
     }
-    async update(req: Request, res: Response, next: NextFunction) {
+    update = async (req: RequestWithBody<UserEditDto & { id: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id, username, password, biography, emailAddress } = req.body
-            const updatedUser = await UserService.update(Number(id), {
-                username,
-                password,
-                biography,
-                emailAddress
-            })
+            const updatedUser = await this.service.update(req.body.id, req.body)
             res.status(HttpStatusCodes.UPLOADED).send(updatedUser)
         } catch(e) {
             next(e)
         }
     }
-    async delete(req: Request, res: Response, next: NextFunction) {
+    updateLight = async (req: RequestWithBody<UserUpdateLightDto & { id: number }>, res: Response, next: NextFunction) => {
         try {
-            const { id, password } = req.body
-            const userToRemove = await UserService.delete(Number(id), password)
+            if (Number(req.body.id) !== req.user.id) {
+                throw ApiError.Forbidden("This account doesn't belong to you")
+            }
 
-            res.send(userToRemove)
+            const user = await this.service.updateLight(req.body.id, req.body)
+            return res.status(HttpStatusCodes.UPLOADED).send(user)
         } catch (e) {
             next(e)
         }
     }
-    async login(req: Request, res: Response, next: NextFunction) {
+    changePfp = async (req: RequestWithBody<{ id: number, pfp: Express.Multer.File }>, res: Response, next: NextFunction) => {
         try {
-            const { username, password } = req.body
-            const userData = await UserService.login(username, password)
+            if (req.user.id !== Number(req.body.id)) {
+                throw ApiError.Forbidden("You're trying to change other account")
+            }
+            const image = req.file
+            if (!image) {
+                throw ApiError.NotFound('Profile picture was not given')
+            }
+
+            await this.service.changeProfilePicture({
+                id: req.body.id,
+                image,
+                imageName: req.user.username
+            })
+            return res.send({ message: 'Image was uploaded successfully' })
+        } catch(e) {
+            next(e)
+        }
+    }
+    delete = async (req: RequestWithBody<{ id: number, password: string }>, res: Response, next: NextFunction) => {
+        try {
+            await this.service.delete(req.body.id, req.body.password)
+
+            res.status(HttpStatusCodes.DELETED).send()
+        } catch (e) {
+            next(e)
+        }
+    }
+    login = async (req: RequestWithBody<{ username: string, password: string }>, res: Response, next: NextFunction) => {
+        try {
+            const userData = await this.service.login(req.body.username, req.body.password)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)
@@ -92,10 +112,10 @@ class UserController {
             next(e)
         }
     }
-    async logout(req: Request, res: Response, next: NextFunction) {
+    logout = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.body
-            await UserService.logout(refreshToken)
+            await this.service.logout(refreshToken)
 
             res.clearCookie('refreshToken')
             res.json({
@@ -106,20 +126,19 @@ class UserController {
             next(e)
         }
     }
-    async activate(req: Request, res: Response, next: NextFunction) {
+    activate = async (req: RequestWithParams<{ link: string }>, res: Response, next: NextFunction) => {
         try {
-            const { link } = req.params
-            await UserService.activate(link)
+            await this.service.activate(req.params.link)
 
             return res.redirect(process.env.CLIENT_URL as string)
         } catch(e) {
             next(e)
         }
     }
-    async refresh(req: Request, res: Response, next: NextFunction) {
+    refresh = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.cookies
-            const userData = await UserService.refresh(refreshToken)
+            const userData = await this.service.refresh(refreshToken)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)
             res.send(userData)

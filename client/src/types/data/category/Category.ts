@@ -2,10 +2,10 @@ type Category = {
     id: number
     categoryName: string
     categoryColor: string
-    categoryLogo: string
+    logo: string
     categoryCode: string
     biography: string | null
-    categoryCreationDate: number
+    сreationDate: number
 }
 
 export default Category

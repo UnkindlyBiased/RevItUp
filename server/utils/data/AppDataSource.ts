@@ -13,14 +13,4 @@ const PgDataSource = new DataSource({
     logging: false
 })
 
-const MongoDataSource = new DataSource({
-    type: "mongodb",
-    host: 'localhost',
-    port: env.MONGO_PORT || 27017,
-    database: 'RevItUpDB',
-    entities: [__dirname + '/../../src/models/entity/mongo/*Entity.ts'],
-    synchronize: true,
-    logging: false
-})
-
-export { PgDataSource, MongoDataSource }
+export { PgDataSource }

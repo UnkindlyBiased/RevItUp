@@ -5,10 +5,12 @@ export default interface UserModel {
     id: number,
     username: string,
     password: string,
+    userLink: string,
     biography: string,
     emailAddress: string,
     registrationDate: Date,
-    isActivated: boolean,
+    pfpLink?: string | null
+    isVerified: boolean,
     activationLink?: string | null,
     role: UserRoles,
     country: CountryModel

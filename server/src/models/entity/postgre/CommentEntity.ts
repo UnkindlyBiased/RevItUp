@@ -1,11 +1,18 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./UserEntity";
-import PostEntity from "./PostEntity";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent } from "typeorm";
 
-@Entity({ name: "Comments" })
+import UserEntity from "./UserEntity";
+import PostEntity from "./PostEntity";
+import ThreadEntity from "./ThreadEntity";
+@Entity({ 
+    name: "Comments",
+    orderBy: {
+        'creationDate': 'ASC'
+    }
+})
+@Tree('nested-set')
 export default class CommentEntity {
-    @PrimaryGeneratedColumn()
-    id: number
+    @PrimaryGeneratedColumn('uuid')
+    id: string
 
     @Column()
     text: string
@@ -14,25 +21,32 @@ export default class CommentEntity {
     creationDate: Date
 
     @ManyToOne(() => UserEntity, user => user.comments, {
-        eager: true,
         cascade: true,
         onDelete: 'CASCADE'
     })
     user: UserEntity
 
-    @ManyToOne(() => CommentEntity, comment => comment.replies, { 
-        nullable: true,
-        cascade: true,
+    @TreeParent({
         onDelete: 'CASCADE'
     })
-    repliedTo: CommentEntity;
+    parent: CommentEntity;
 
-    @OneToMany(() => CommentEntity, comment => comment.repliedTo)
-    replies: CommentEntity[];
+    @TreeChildren({
+        cascade: true
+    })
+    children: CommentEntity[];
 
     @ManyToOne(() => PostEntity, {
         cascade: true,
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
+        nullable: true
     })
     post: PostEntity
+
+    @ManyToOne(() => ThreadEntity, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        nullable: true
+    })
+    thread: ThreadEntity
 }

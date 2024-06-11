@@ -18,8 +18,8 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             postLink: entity.postLink,
             creationDate: entity.creationDate,
             views: entity.views,
-            author: UserMapper.mapUserModelToUserShortDto(entity.author),
-            category: CategoryMapper.mapModelToCategoryShortDto(entity.category)
+            author: UserMapper.toUserShortDto(entity.author),
+            category: CategoryMapper.toCategoryShortDto(entity.category)
         }
     }
     toLightDataModel(entity: PostEntity): PostLightModel {
@@ -31,11 +31,11 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             imageLink: entity.imageLink,
             postLink: entity.postLink,
             views: entity.views,
-            category: entity.category
+            category: CategoryMapper.toCategoryShortDto(entity.category)
         }
     }
 
-    mapPostToPostPreviewDto(model: PostModel | PostLightModel): PostPreviewDto {
+    toPostPreviewDto(model: PostModel | PostLightModel): PostPreviewDto {
         return {
             id: model.id,
             postTitle: model.postTitle,
@@ -46,7 +46,7 @@ class PostMapper implements IDataMapper<PostModel, PostEntity> {
             category: model.category
         }
     }
-    mapPostToPostShortDto(model: PostModel | PostLightModel): PostShortDto {
+    toPostShortDto(model: PostModel | PostLightModel): PostShortDto {
         return {
             postTitle: model.postTitle,
             postLink: model.postLink

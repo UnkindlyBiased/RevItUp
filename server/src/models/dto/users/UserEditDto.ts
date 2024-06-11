@@ -3,6 +3,6 @@ export default interface UserEditDto {
     password: string,
     biography: string,
     emailAddress: string,
-    isActivated?: boolean, 
+    isVerified?: boolean, 
     activationLink?: string | null
 }

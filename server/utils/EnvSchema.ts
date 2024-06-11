@@ -10,8 +10,6 @@ const envSchema = z.object({
     PG_PASSWORD: z.string(),
     PG_PORT: z.number().positive(),
 
-    MONGO_PORT: z.number().positive(),
-
     REDIS_PW: z.string(),
     REDIS_SOCKET_HOST: z.string(),
     REDIS_SOCKET_PORT: z.number().positive(),

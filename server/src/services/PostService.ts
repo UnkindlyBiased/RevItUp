@@ -1,6 +1,6 @@
 import { cacheClient } from "../../utils/data/RedisCacheClient";
 import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints";
-import PostHelper from "../../utils/helpers/PostHelper";
+import PostThreadHelper from "../../utils/helpers/PostHelper";
 import DataFindOptions from "../../utils/types/DataFindOptions";
 import PostModel from "../models/domain/Post";
 import { PostInputWithImageDto }  from "../models/dto/posts/PostInputDto";
@@ -9,16 +9,19 @@ import PostPreviewDto from "../models/dto/posts/PostPreviewDto";
 import PostShortDto from "../models/dto/posts/PostShortDto";
 import PostUpdateDto from "../models/dto/posts/PostUpdateDto";
 import PostMapper from "../models/mappers/PostMapper";
-import PgPostRepository from "../repositories/implemented/postgre/PgPostRepository";
 import IPostRepository from "../repositories/IPostRepository";
 import FirebaseService from "./FirebaseService";
 
 class PostService {
-    constructor(private repository: IPostRepository) {}
+    private readonly firebaseService: FirebaseService
+    
+    constructor(private repository: IPostRepository) {
+        this.firebaseService = new FirebaseService()
+    }
 
     async getPosts(options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPosts(options)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
     async getPostById(id: string): Promise<PostLightModel> {
         return this.repository.getPostById(id)
@@ -36,49 +39,49 @@ class PostService {
     }
     async getRandomPost(): Promise<PostShortDto> {
         const randomPost = await this.repository.getRandomPost()
-        return PostMapper.mapPostToPostShortDto(randomPost)
+        return PostMapper.toPostShortDto(randomPost)
     }
     async getPostsByCategoryCode(code: string, options: DataFindOptions): Promise<PostPreviewDto[]> {
         const posts = await this.repository.getPostsByCategoryCode(code, options)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
-    async getPostsByAuthorship(authorId: number, options: DataFindOptions): Promise<PostPreviewDto[]> {
-        const posts = await this.repository.getPostsByAuthorship(authorId, options)
+    async getPostsByAuthorship(authorId: number): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.getPostsByAuthorship(authorId)
 
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
-    async getPagesAmount(take: number) {
-        return this.repository.getPagesAmount(take)
+    async getPagesAmount(take: number, condition?: Record<string, any>) {
+        return this.repository.getPagesAmount(take, condition)
     }
-    async search(inputStr: string): Promise<PostPreviewDto[]> {
-        const posts = await this.repository.search(inputStr)
-        return posts.map(post => PostMapper.mapPostToPostPreviewDto(post))
+    async search(inputStr: string, options: DataFindOptions): Promise<PostPreviewDto[]> {
+        const posts = await this.repository.search(inputStr, options)
+        return posts.map(post => PostMapper.toPostPreviewDto(post))
     }
-    async create(candidate: PostInputWithImageDto): Promise<PostLightModel> {
-        candidate.postLink = PostHelper.putDashes(candidate.postTitle)
+    create = async (candidate: PostInputWithImageDto): Promise<PostLightModel> => {
+        candidate.postLink = PostThreadHelper.putDashes(candidate.postTitle)
 
-        const imageRef = await FirebaseService.uploadImage({
+        const imageRef = await this.firebaseService.uploadImage({
             image: candidate.image,
             imageName: candidate.postLink + '-' + Math.floor(Math.random() * 100000000),
             endpoint: FirebaseRefEndponts.POSTS
         })
-        const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+        const imageLink = await this.firebaseService.getDownloadUrl(imageRef)
 
         return this.repository.create({ ...candidate, imageLink })
     }
-    async update(postId: string, input: PostUpdateDto): Promise<PostLightModel> {
-        input.postLink = PostHelper.putDashes(input.postTitle)
+    update = async (postId: string, input: PostUpdateDto): Promise<PostLightModel> => {
+        input.postLink = PostThreadHelper.putDashes(input.postTitle)
         if (input.image) {
-            const imageRef = await FirebaseService.uploadImage({
+            const imageRef = await this.firebaseService.uploadImage({
                 image: input.image,
                 imageName: input.postLink + '-' + Math.floor(Math.random() * 100000000),
                 endpoint: FirebaseRefEndponts.POSTS
             })
-            const imageLink = await FirebaseService.getDownloadUrl(imageRef)
+            const imageLink = await this.firebaseService.getDownloadUrl(imageRef)
             input.imageLink = imageLink
         }
 
-        PostHelper.trimPostData(input)
+        PostThreadHelper.trimPostData(input)
 
         await cacheClient.del(`post-${input.postLink}`)
 
@@ -95,4 +98,4 @@ class PostService {
     }
 }
 
-export default new PostService(PgPostRepository)
+export default PostService

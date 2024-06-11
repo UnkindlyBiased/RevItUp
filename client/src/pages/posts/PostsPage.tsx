@@ -1,16 +1,17 @@
 import { useDocumentTitle } from "@uidotdev/usehooks"
 import { useSearchParams } from "react-router-dom"
-import { useState } from "react"
+import { useEffect } from "react"
 
 import PostPreviewComp from "@/components/pages/posts/preview/PostPreview"
 import { useGetPosts } from "@/hooks/useGetPosts"
 import TopCategories from "@/components/pages/posts/TopCategories"
 import PostSearch from "@/components/pages/posts/PostSearch"
 import splitRequests from "@/utils/HelperFuncs"
-import PaginationRow from "@/components/generic/misc/PaginationRow"
+import PaginationRow from "@/components/generic/misc/pagination/PaginationRow"
 import Loading from "@/components/generic/misc/Loading"
 import { PaginationProvider } from "@/providers/PaginationProvider"
 import PaginationContextProps from "@/types/page/PaginationProps"
+import TakeButtons from "@/components/generic/misc/pagination/TakeButtons"
 
 /** 
  * Page for showing top-5 posts ordered by creation date (decreasing), 
@@ -19,21 +20,31 @@ import PaginationContextProps from "@/types/page/PaginationProps"
 function PostsPage(): React.ReactNode {
     useDocumentTitle("REVITUP: Posts")
     
-    const [take] = useState('5')
     const [searchParams, setSearchParams] = useSearchParams({
-        page: '1',
-        take: '5'
+        page: '1', take: '5'
     })
+
     const { data: pagedData } = useGetPosts(splitRequests([
-        { key: 'page', value: searchParams.get('page') },
-        { key: 'take', value: searchParams.get("take") }
+        { key: 'page', value: searchParams.get('page') || '1' },
+        { key: 'take', value: searchParams.get('take') || '5' }
     ], '&'))
+
+    useEffect(() => {
+        const currentPage = searchParams.get('page')
+
+        if (pagedData && (Number(currentPage) > pagedData.maxPage) || !currentPage) {
+            setSearchParams({ 
+                page: '1',
+                take: searchParams.get('take') || '5'
+            })
+        }
+    }, [searchParams, setSearchParams, pagedData])
 
     const providerValue: PaginationContextProps = {
         page: pagedData?.page || 1,
-        take: Number(take),
+        take: searchParams.get('take') || '5',
         maxPage: pagedData?.maxPage || 1,
-        setSearchParams,
+        setSearchParams
     }
 
     return (
@@ -41,7 +52,11 @@ function PostsPage(): React.ReactNode {
             <div className="flex flex-col space-y-4">
                 <div className="flex justify-between mb-3">
                     <TopCategories />
-                    <PostSearch />
+                    <div className="flex flex-col space-y-4">
+                        <PostSearch />
+                        <TakeButtons searchParams={searchParams} 
+                            setSearchParams={setSearchParams} />
+                    </div>
                 </div>
                 { pagedData ? (
                     <div className="space-y-2">

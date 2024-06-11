@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./UserEntity";
+import UserEntity from "./UserEntity";
 import CategoryEntity from "./CategoryEntity";
 
 @Entity({ name: "Posts" })

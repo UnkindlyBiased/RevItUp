@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import CountryModel from "../../../models/domain/Country";
 import ICountryRepository from "../../ICountryRepository";
-import { CountryEntity } from "../../../models/entity/postgre/CountryEntity";
+import CountryEntity from "../../../models/entity/postgre/CountryEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import CountryMapper from "../../../models/mappers/CountryMapper";
 import { ApiError } from "../../../../utils/errors/ApiError";
@@ -39,4 +39,4 @@ class PgCountryRepository implements ICountryRepository {
     }
 }
 
-export default new PgCountryRepository()
+export default PgCountryRepository

@@ -27,15 +27,15 @@ class PostService {
     async getPostsByAuthorship(authorId: number, options: string) {
         return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/by-auth/${authorId}${options}`)).data
     }
-    async search(query: string) {
-        return (await api.get<PostPreview[]>(this.ROUTE_PREFIX + `/search?inputStr=${query}`)).data
+    async search(findOptions: string = "") {
+        return (await api.get<PaginatedResponse & { posts: PostPreview[] }>(this.ROUTE_PREFIX + `/search?${findOptions}`)).data
     }
     async create(inputData: PostInput): Promise<void> {
         const data = new FormData()
 
         Object.keys(inputData).forEach(key => {
             if (key === 'postImage' && inputData.postImage) {
-                data.append(key, inputData[key]![0])
+                data.append(key, inputData.postImage[0])
                 return
             }
             data.append(key, inputData[key as keyof Omit<PostInput, 'postImage'>])
@@ -51,17 +51,13 @@ class PostService {
 
         Object.keys(inputData).forEach(key => {
             if (key === 'postImage' && inputData.postImage) {
-                data.append(key, inputData[key]![0])
+                data.append(key, inputData.postImage[0])
                 return
             }
             data.append(key, inputData[key as keyof Omit<PostInput, 'postImage'>])
         })
 
-        await api.put(this.ROUTE_PREFIX, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
+        await api.put(this.ROUTE_PREFIX, data)
     }
     async delete(postId: string): Promise<void> {
         await api.delete(this.ROUTE_PREFIX, { data: { postId } })

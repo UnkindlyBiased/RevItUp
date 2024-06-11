@@ -1,8 +1,8 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { UserEntity } from "./UserEntity";
+import UserEntity from "./UserEntity";
 
 @Entity({ name: 'Tokens' })
-export class TokenEntity {
+export default class TokenEntity {
     @PrimaryGeneratedColumn()
     id: number
 

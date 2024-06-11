@@ -1,4 +1,5 @@
 import { Repository } from "typeorm";
+
 import CategoryEntity from "../../../models/entity/postgre/CategoryEntity";
 import { PgDataSource } from "../../../../utils/data/AppDataSource";
 import CategoryMapper from "../../../models/mappers/CategoryMapper";
@@ -33,19 +34,20 @@ class PgCategoryRepository implements ICategoryRepository {
     async getCategoriesByPostsLengthSorted(): Promise<CategoryModel[]> {
         const entities = await this.categoryRep.find({
             relations: ['posts'],
-            take: 3
-        }).then(categories => categories.sort((a, b) => a.posts.length < b.posts.length ? 1 : -1) )
+        }).then(categories => categories.sort((a, b) => a.posts.length < b.posts.length ? 1 : -1) ).then(
+            (sorted) => sorted.slice(0, 3)
+        )
 
         return entities.map(category => CategoryMapper.toDataModel(category))
     }
     async create(input: CategoryCreateDto): Promise<CategoryModel> {
-        const candidate = await this.categoryRep.findOne({
+        const isCandidateExist = await this.categoryRep.exists({
             where: [
                 { categoryName: input.categoryName },
                 { categoryCode: input.categoryCode }
             ]
         })
-        if (candidate) {
+        if (isCandidateExist) {
             throw ApiError.Conflict("Category with this data already exists")
         }
 

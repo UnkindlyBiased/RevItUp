@@ -5,7 +5,6 @@ import UserEditDto from "../models/dto/users/UserEditDto"
 import UserShortDto from "../models/dto/users/UserShortDto"
 import UserMapper from "../models/mappers/UserMapper"
 import IUserRepository from "../repositories/IUserRepository"
-import PgUserRepository from "../repositories/implemented/postgre/PgUserRepository"
 import bcrypt from 'bcrypt'
 import UserModel from "../models/domain/User"
 import UserHelper from "../../utils/helpers/UserHelper"
@@ -16,9 +15,26 @@ import TokenHelper from "../../utils/helpers/TokenHelper"
 import TokenService from "./TokenService"
 import UserCreateOutputDto from "../models/dto/users/UserCreateOutputDto"
 import SaverService from "./SaverService"
+import PgSavedPostsRepository from "../repositories/implemented/postgre/PgSavedPostsRepository"
+import PgTokenRepository from "../repositories/implemented/postgre/PgTokenRepository"
+import TokenModel from "../models/domain/Token"
+import FirebaseService from "./FirebaseService"
+import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints"
+import UserPictureUploadDto from "../models/dto/users/UserPictureUploadDto"
+import UserUpdateLightDto from "../models/dto/users/UserUpdateLightDto"
 
 class UserService {
-    constructor(private readonly repository: IUserRepository) {}
+    private readonly mailService: MailService
+    private readonly saverService: SaverService
+    private readonly tokenService: TokenService
+    private readonly firebaseService: FirebaseService
+
+    constructor(private readonly repository: IUserRepository) {
+        this.mailService = new MailService()
+        this.saverService = new SaverService(new PgSavedPostsRepository())
+        this.tokenService = new TokenService(new PgTokenRepository())
+        this.firebaseService = new FirebaseService()
+    }
 
     // * CRUD logic
     async getUsers(): Promise<UserShortDto[]> {
@@ -28,32 +44,34 @@ class UserService {
         }
 
         return users.map(user => {
-            return UserMapper.mapUserModelToUserShortDto(user)
+            return UserMapper.toUserShortDto(user)
         })
     }
-    async getUserByName(username: string): Promise<UserDetailedDto> {
-        const user = await this.repository.getUserByName(username)
-        return UserMapper.mapUserModelToUserDetailedDto(user)
+    async getUserByLink(link: string): Promise<UserDetailedDto> {
+        const user = await this.repository.getUserByLink(link)
+        return UserMapper.toUserDetailedDto(user)
     }
     async getUserById(id: number): Promise<UserDetailedDto> {
-        return UserMapper.mapUserModelToUserDetailedDto(
+        return UserMapper.toUserDetailedDto(
             await this.repository.getUserById(id)
         )
     }
-    async create(candidate: UserCreateDto): Promise<UserCreateOutputDto> {
+    create = async (candidate: UserCreateDto): Promise<UserCreateOutputDto> => {
         UserHelper.trimUserData(candidate)
 
         const hashPassword = bcrypt.hashSync(candidate.password, 3)
         const activationLink = v4()
+
+        candidate.userLink = UserHelper.createLink(candidate.username)
 
         const user = await this.repository.create({
             ...candidate,
             password: hashPassword,
             activationLink,
         })
-        await MailService.sendActivationMail(candidate.emailAddress, 
+        await this.mailService.sendActivationMail(candidate.emailAddress, 
             `http://localhost:${process.env.APP_PORT}/auth/activate/${activationLink}`)
-        await SaverService.create(user.id)
+        await this.saverService.create(user.id)
 
         return this.generateDtoWithTokens(user)
     }
@@ -71,9 +89,23 @@ class UserService {
         }
 
         const updatedUser = await this.repository.update(id, updateData)
-        return UserMapper.mapUserModelToUserDetailedDto(updatedUser)
+        return UserMapper.toUserDetailedDto(updatedUser)
     }
-    async delete(id: number, password: string): Promise<UserModel> {
+    async updateLight(id: number, input: UserUpdateLightDto): Promise<UserDetailedDto> {
+        const user = await this.repository.updateLight(id, input)
+        return UserMapper.toUserDetailedDto(user)
+    }
+    changeProfilePicture = async (pictureData: UserPictureUploadDto): Promise<void> => {
+        const imageRef = await this.firebaseService.uploadImage({
+            image: pictureData.image,
+            imageName: pictureData.imageName + '-' + Math.floor(Math.random() * 100000000),
+            endpoint: FirebaseRefEndponts.USERS
+        })
+        const imageUrl = await this.firebaseService.getDownloadUrl(imageRef)
+
+        await this.repository.changeProfilePicture(pictureData.id, imageUrl)
+    }
+    async delete(id: number, password: string): Promise<void> {
         const userToRemove = await this.repository.getUserById(id)
         
         const arePasswordsEqual = await bcrypt.compare(password, userToRemove.password)
@@ -82,7 +114,6 @@ class UserService {
         }
 
         await this.repository.delete(id)
-        return userToRemove
     }
 
     // * Auth logic
@@ -96,17 +127,16 @@ class UserService {
 
         return this.generateDtoWithTokens(user)
     }
-    async logout(refreshToken: string) {
-        const token = TokenService.removeToken(refreshToken)
-        return token
+    logout = async (refreshToken: string): Promise<TokenModel> => {
+        return this.tokenService.removeToken(refreshToken)
     }
     async activate(activationLink: string): Promise<UserEditDto> {
         const user = await this.repository.getUserByActivationLink(activationLink)
 
-        const dto: UserEditDto = UserMapper.mapUserModelToUserEditDto(user)
+        const dto: UserEditDto = UserMapper.toUserEditDto(user)
 
         if (dto.activationLink) {
-            dto.isActivated = true
+            dto.isVerified = true
             dto.activationLink = null
         }
 
@@ -114,14 +144,14 @@ class UserService {
 
         return dto
     }
-    async refresh(refreshToken: string) {
+    refresh = async (refreshToken: string): Promise<UserCreateOutputDto> => {
         if (!refreshToken) {
             throw ApiError.Unauthorized('Refresh token is not valid')
         }
 
         const userData = TokenHelper.validateRefreshToken(refreshToken)
 
-        const tokenEntity = await TokenService.getByRefreshToken(refreshToken)
+        const tokenEntity = await this.tokenService.getByRefreshToken(refreshToken)
 
         if (!userData || !tokenEntity) {
             throw ApiError.Unauthorized('User is unauthorized')
@@ -135,11 +165,11 @@ class UserService {
         return await this.generateDtoWithTokens(user)
     }
 
-    private async generateDtoWithTokens(user: UserModel): Promise<UserCreateOutputDto> {
-        const dto: UserTokenDto = UserMapper.mapUserModelToUserTokenDto(user)
+    private generateDtoWithTokens = async (user: UserModel): Promise<UserCreateOutputDto> => {
+        const dto: UserTokenDto = UserMapper.toUserTokenDto(user)
 
         const tokens = TokenHelper.createTokenPair(dto)
-        await TokenService.saveToken(dto.id, tokens.refreshToken)
+        await this.tokenService.saveToken(dto.id, tokens.refreshToken)
 
         return {
             user: dto,
@@ -148,4 +178,4 @@ class UserService {
     }
 }
 
-export default new UserService(PgUserRepository)
+export default UserService

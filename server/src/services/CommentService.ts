@@ -3,7 +3,6 @@ import CommentModel from "../models/domain/Comment";
 import CommentInputDto from "../models/dto/comments/CommentInputDto";
 import CommentShortDto from "../models/dto/comments/CommentShortDto";
 import ICommentRepository from "../repositories/ICommentRepository";
-import PgCommentRepository from "../repositories/implemented/postgre/PgCommentRepository";
 
 class CommentService {
     constructor(private repository: ICommentRepository) {}
@@ -12,13 +11,24 @@ class CommentService {
         return this.repository.getComments();
     }
     async getCommentsForPost(postId: string): Promise<CommentModel[]> {
-        const cahcedComments = await cacheClient.get(`post-comments-${postId}`)
-        if (cahcedComments) {
-            return JSON.parse(cahcedComments) as CommentModel[]
+        const cachedComments = await cacheClient.get(`post-comments-${postId}`)
+        if (cachedComments) {
+            return JSON.parse(cachedComments) as CommentModel[]
         }
 
-        const comments = await this.repository.getCommentsForPost(postId)
-        await cacheClient.set(`post-comments-${postId}`, JSON.stringify(comments), { EX: 300 })
+        const comments = await this.repository.getCommentsByCondition({ post: postId })
+        await cacheClient.set(`post-comments-${postId}`, JSON.stringify(comments), { EX: 30 })
+
+        return comments
+    }
+    async getCommentsForThread(threadId: string): Promise<CommentModel[]> {
+        const cachedComments = await cacheClient.get(`thread-comments-${threadId}`)
+        if (cachedComments) {
+            return JSON.parse(cachedComments) as CommentModel[]
+        }
+
+        const comments = await this.repository.getCommentsByCondition({ thread : threadId })
+        await cacheClient.set(`thread-comments-${threadId}`, JSON.stringify(comments), { EX: 30 })
 
         return comments
     }
@@ -26,6 +36,13 @@ class CommentService {
         await cacheClient.del(`post-comments-${data.postId}`)
         return this.repository.createPostComment(data)
     }
+    async createThreadComment(data: CommentInputDto): Promise<CommentShortDto> {
+        await cacheClient.del(`thread-comments-${data.threadId}`)
+        return this.repository.createThreadComment(data)
+    }
+    async delete(id: string): Promise<void> {
+        this.repository.delete(id)
+    }
 }
 
-export default new CommentService(PgCommentRepository)
+export default CommentService

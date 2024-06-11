@@ -1,25 +1,28 @@
-import { Request, Response, NextFunction } from 'express' 
+import { Request, Response, NextFunction } from 'express'
+
 import CountryService from '../services/CountryService'
-import { ApiError } from '../../utils/errors/ApiError'
+import PgCountryRepository from '../repositories/implemented/postgre/PgCountryRepository'
+import { RequestWithParams } from '../../utils/types/DifferentiatedRequests'
 
 class CountryController {
-    async getCountries(_req: Request, res: Response, next: NextFunction) {
+    private readonly service: CountryService
+
+    constructor() {
+        this.service = new CountryService(new PgCountryRepository())
+    }
+
+    getCountries = async (_req: Request, res: Response, next: NextFunction) => {
         try {
-            const countries = await CountryService.getCountries()
-            res.send(countries)
+            const countries = await this.service.getCountries()
+            return res.send(countries)
         } catch(e) {
             next(e)
         }
     }
-    async getCountryByCode(req: Request, res: Response, next: NextFunction) {
+    getCountryByCode = async (req: RequestWithParams<{ code: string }>, res: Response, next: NextFunction) => {
         try {
-            const { code } = req.params
-            if (!code) {
-                throw ApiError.MissingParameters("Country code was not given")
-            }
-
-            const country = await CountryService.getCountryByCode(code)
-            res.send(country)
+            const country = await this.service.getCountryByCode(req.params.code)
+            return res.send(country)
         } catch(e) {
             next(e)
         }

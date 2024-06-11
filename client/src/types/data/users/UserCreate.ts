@@ -2,7 +2,7 @@ type UserCreate = {
     username: string
     password: string
     emailAddress: string
-    countryId: number
+    countryId: string
 }
 
 export default UserCreate

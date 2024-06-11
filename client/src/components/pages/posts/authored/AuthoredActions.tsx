@@ -1,6 +1,5 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTrigger } from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
 import { MdAddCircle, MdDelete, MdEdit, } from "react-icons/md"
 import { Controller, useForm } from "react-hook-form"
 import { Textarea } from "@/components/ui/textarea"
@@ -9,14 +8,13 @@ import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useDebounce } from "@uidotdev/usehooks"
 
-import { useGetSchema } from "@/hooks/useColorMode"
 import { useCheckByTitle, useCreatePost, useDeletePost, useEditPost, useGetPostById } from "@/hooks/useGetPosts"
 import PostInput from "@/types/data/posts/PostInput"
 import CategorySelect from "@/components/generic/category/CategorySelect"
 
 function AddNewPost(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<PostInput>()
-    const { mutateAsync: createPost, isPending: isMutating } = useCreatePost(watch())
+    const { mutateAsync: createPost, isPending: isAdding } = useCreatePost(watch())
 
     const debouncedTitle = useDebounce(watch().postTitle, 500)
     const { data: isTitleNotUnique, isLoading: weAreChecking } = useCheckByTitle(debouncedTitle)
@@ -51,7 +49,7 @@ function AddNewPost(): React.ReactElement {
                         onValueChange={(value) => setValue('categoryId', value)} />
                 </div>
                 <DialogFooter className="flex items-center">
-                    { isMutating && <span className="opacity-50">Adding</span> }
+                    { isAdding && <span className="opacity-50">Adding</span> }
                     <button className="px-4 py-2 rounded-md disabled:opacity-50 transition-all" onClick={() => createPost()} disabled={!(isValid && watch().categoryId) || isTitleNotUnique || weAreChecking}>
                         Add post
                     </button>
@@ -120,7 +118,6 @@ function EditAuthoredPost({ postId }: { postId: string }): React.ReactElement {
 }
 
 function DeleteAuthoredPost({ postId }: { postId: string }): React.ReactElement {
-    const schema = useGetSchema()
     const { mutateAsync: deletePost } = useDeletePost(postId)
 
     return (
@@ -128,7 +125,7 @@ function DeleteAuthoredPost({ postId }: { postId: string }): React.ReactElement 
             <AlertDialogTrigger>
                 <MdDelete size={24} />
             </AlertDialogTrigger>
-            <AlertDialogContent className={cn(schema.secondaryBgColor, schema.border, schema.defaultFontColor)}>
+            <AlertDialogContent>
                 <AlertDialogHeader className="text-xl font-medium">
                     Before deleting this post
                 </AlertDialogHeader>
@@ -136,10 +133,10 @@ function DeleteAuthoredPost({ postId }: { postId: string }): React.ReactElement 
                     This action can't be undone. Think twice before doing that. All comments referenced to this post will be deleted
                 </AlertDialogDescription>
                 <AlertDialogFooter>
-                    <AlertDialogCancel className={cn(schema.secondaryBgColor)}>
+                    <AlertDialogCancel>
                         Cancel
                     </AlertDialogCancel>
-                    <AlertDialogAction className={cn(schema.primaryBgColor, "text-white py-2 px-4 rounded-md")} onClick={() => deletePost()}>
+                    <AlertDialogAction onClick={() => deletePost()}>
                         Delete post
                     </AlertDialogAction>
                 </AlertDialogFooter>

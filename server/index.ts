@@ -1,18 +1,14 @@
 import express from 'express'
 import 'reflect-metadata'
 import { config } from 'dotenv'
-import { MongoDataSource, PgDataSource } from './utils/data/AppDataSource'
-import UserRouter from './src/routers/UserRouter'
+import { PgDataSource } from './utils/data/AppDataSource'
 import cors from 'cors'
-import CountryRouter from './src/routers/CountryRouter'
-import errorMiddleware from './utils/middlewares/misc/ErrorMiddleware'
 import cookieParser from 'cookie-parser'
-import AuthRouter from './src/routers/AuthRouter'
-import CommentRouter from './src/routers/CommentRouter'
+
+import errorMiddleware from './utils/middlewares/misc/ErrorMiddleware'
 import { connectToCacheClient } from './utils/data/RedisCacheClient'
-import PostRouter from './src/routers/PostRouter'
-import CategoryRouter from './src/routers/CategoryRouter'
 import env from './utils/EnvSchema'
+import AppRouter from './src/routers/Routes'
 
 config()
 
@@ -28,12 +24,7 @@ app.use(cors({
 }))
 
 // * Routers
-app.use('/users', UserRouter)
-app.use('/auth', AuthRouter)
-app.use('/countries', CountryRouter)
-app.use('/posts', PostRouter)
-app.use('/comments', CommentRouter)
-app.use('/categories', CategoryRouter)
+app.use(AppRouter)
 
 // * Error middleware (should be last)
 app.use(errorMiddleware)
@@ -46,9 +37,6 @@ async function startApp() {
         await PgDataSource.synchronize()
 
         await connectToCacheClient()
-
-        await MongoDataSource.initialize()
-        await MongoDataSource.synchronize()
         
         app.listen(PORT, () => {
             console.log(`App is started on port ${PORT}`)

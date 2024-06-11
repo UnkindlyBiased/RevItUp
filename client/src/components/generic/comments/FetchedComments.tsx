@@ -19,7 +19,7 @@ function FetchedComments({ readableId, readableType, className }: FetchedComment
     const { data: comments } = useGetCommentsForPost(readableId, readableType, isInView)
     
     return (
-        <div className={cn("flex flex-col space-y-4", className)} ref={ref}>
+        <div className={cn("flex flex-col space-y-2", className)} ref={ref}>
             {comments && (
                 <>
                     <div className="flex items-center space-x-2 font-bold text-4xl">

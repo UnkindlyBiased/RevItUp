@@ -4,8 +4,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import PostPreview from "@/types/data/posts/PostPreview"
 import MainTitle from "../MainTitle"
 import CategoryWithLink from "@/components/generic/category/CategoryLink"
-import PostStatistics from "../PostStatistics"
+import ReadableStats from "../../../generic/misc/ReadableStats"
 import SuspendedImage from "@/components/generic/misc/SuspendedImage"
+import AppRoutes from "@/utils/enums/AppRoutes"
 
 function PostPreviewComp({ post }: { post: PostPreview }): React.ReactElement {
     return (
@@ -16,9 +17,9 @@ function PostPreviewComp({ post }: { post: PostPreview }): React.ReactElement {
             <div className="flex flex-col space-y-2">
                 <div className="flex items-center space-x-4 size-fit">
                     <CategoryWithLink category={post.category} isLinkable />
-                    <PostStatistics views={post.views} />
+                    <ReadableStats views={post.views} />
                 </div>
-                <Link to={`/news/${post.postLink}`}>
+                <Link to={AppRoutes.OPENED_POST.replace(':postLink', post.postLink)}>
                     <MainTitle className="text-4xl" children={post.postTitle} />
                 </Link>
                 <span children={post.previewText} />

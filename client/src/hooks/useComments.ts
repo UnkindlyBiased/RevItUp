@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/components/ui/use-toast";
 
 import CommentService from "@/services/CommentService";
 import CommentBeloning from "@/types/data/comment/CommentBelonging";
 import CommentInput from "@/types/data/comment/CommentInput";
-import useThemedToast from "./useThemedToast";
 
 const useGetComments = (readableId: string, commentFetchType: CommentBeloning, isInView?: boolean) => useQuery({
     queryKey: [commentFetchType, readableId],
@@ -11,15 +11,35 @@ const useGetComments = (readableId: string, commentFetchType: CommentBeloning, i
     enabled: !!readableId && isInView
 })
 
+const useGetCommentsForThread = (threadId: string, isInView?: boolean) => useQuery({
+    queryKey: ['thread-comments', threadId],
+    queryFn: () => CommentService.getCommentsForThread(threadId),
+    enabled: !!isInView
+})
+
 const useCreateComment = (input: CommentInput, commentFetchType: CommentBeloning) => {
     const queryClient = useQueryClient()
-    const { toast } = useThemedToast()
 
     return useMutation({
-        mutationFn: () => CommentService.createComment(input),
+        mutationFn: () => CommentService.createPostComment(input),
         onSettled: () => queryClient.invalidateQueries({ queryKey: [commentFetchType, input.postId] }),
-        onSuccess: () => toast('Keep the conversation!', 'You have successfully added the comment')
+        onSuccess: () => toast({ title: 'Keep the conversation!', description: 'You have successfully added the comment' })
     })
 }
 
-export { useCreateComment, useGetComments as useGetCommentsForPost }
+const useCreateThreadComment = (input: CommentInput) => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: () => CommentService.createThreadComment(input),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ['thread-comments', input.threadId] }),
+        onSuccess: () => toast({ title: 'Keep the conversation!', description: 'You have successfully added the comment' })
+    })
+}
+
+export {
+    useGetCommentsForThread,
+    useCreateComment, 
+    useGetComments as useGetCommentsForPost,
+    useCreateThreadComment
+}

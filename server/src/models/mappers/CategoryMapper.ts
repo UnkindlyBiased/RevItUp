@@ -9,20 +9,20 @@ class CategoryMapper implements IDataMapper<CategoryModel, CategoryEntity> {
             id: entity.id,
             categoryName: entity.categoryName,
             categoryCode: entity.categoryCode,
-            categoryLogo: entity.categoryLogo,
+            logo: entity.logo,
             categoryColor: entity.categoryColor,
             biography: entity.biography,
-            categoryCreationDate: entity.categoryCreationDate,
+            сreationDate: entity.creationDate,
         }
     }
 
-    mapModelToCategoryShortDto(model: CategoryModel): CategoryShortDto {
+    toCategoryShortDto(model: CategoryModel | CategoryEntity): CategoryShortDto {
         return {
             id: model.id,
             categoryName: model.categoryName,
             categoryColor: model.categoryColor,
-            categoryLogo: model.categoryLogo,
-            categoryCode: model.categoryCode
+            logo: model.logo,
+            categoryCode: model.categoryCode,
         }
     }
 }
