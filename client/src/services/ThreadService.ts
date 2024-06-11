@@ -15,6 +15,9 @@ class ThreadService {
     async getThreadByLink(link: string): Promise<Thread> {
         return (await api.get<Thread>(this.ROUTE_PREFIX + `/${link}`)).data
     }
+    async getRecentThreads() {
+        return (await api.get<PaginatedResponse & { threads: ThreadShort[] }>(this.ROUTE_PREFIX + '?page=1&take=10')).data
+    }
     async create(input: ThreadInput): Promise<void> {
         await api.post(this.ROUTE_PREFIX, input)
     }

@@ -16,6 +16,7 @@ import { RemoveSavedButton, SaveButton } from "@/components/pages/posts/saved/Sa
 import SuspendedImage from "@/components/generic/misc/SuspendedImage"
 import ReadableStats from "@/components/generic/misc/ReadableStats"
 import Error from "@/components/generic/boundaries/Error"
+import RecentThreads from "@/components/generic/threads/RecentThreads"
 
 function PostDetailedPage(): React.ReactNode {
     const { postLink } = useParams()
@@ -55,9 +56,12 @@ function PostDetailedPage(): React.ReactNode {
                 <FetchedComments className="mb-5" readableId={post.id} readableType="post-comments" />
                 {memoizedCommentUpload}
             </div>
-            <div className="flex size-fit items-center space-x-3 mt-10">
-                { !isSaved ? <SaveButton postId={post.id} /> : <RemoveSavedButton postId={post.id} /> }
-                <AuthorBox author={post.author} />
+            <div className="flex flex-col space-y-4 h-fit">
+                <div className="flex size-fit items-center space-x-3 mt-10">
+                    { !isSaved ? <SaveButton postId={post.id} /> : <RemoveSavedButton postId={post.id} /> }
+                    <AuthorBox author={post.author} />
+                </div>
+                <RecentThreads />
             </div>
         </div>
     )

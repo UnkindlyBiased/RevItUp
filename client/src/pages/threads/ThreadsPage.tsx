@@ -7,8 +7,6 @@ import TwoLine from "@/components/generic/misc/TwoLine"
 import ThreadComp from "@/components/pages/threads/ThreadComp"
 import { useGetThreads } from "@/hooks/useThreads"
 import OrFiller from "@/components/pages/threads/OrFiller"
-import { useGetThreadCategories } from "@/hooks/useThreadCategories"
-import ThreadCategoryLink from "@/components/pages/threads/categories/ThreadCategoryLink"
 import splitRequests from "@/utils/HelperFuncs"
 import PaginationContextProps from "@/types/page/PaginationProps"
 import { PaginationProvider } from "@/providers/PaginationProvider"
@@ -23,14 +21,13 @@ function ThreadsPage(): React.ReactElement {
 
     const isAuth = useUserStore(state => state.isAuth)
     const [searchParams, setSearchParams] = useSearchParams({
-        page: '1', take: '5'
+        page: '1', take: '10'
     })
 
     const { data: pagedData } = useGetThreads(splitRequests([
         { key: 'page', value: searchParams.get('page') || '1' },
-        { key: 'take', value: searchParams.get('take') || '5' }
+        { key: 'take', value: searchParams.get('take') || '10' }
     ], '&'))
-    const { data: threadCategories } = useGetThreadCategories()
 
     useEffect(() => {
         const currentPage = searchParams.get('page')
@@ -38,14 +35,14 @@ function ThreadsPage(): React.ReactElement {
         if (pagedData && Number(currentPage) > pagedData.maxPage) {
             setSearchParams({ 
                 page: '1', 
-                take: searchParams.get('take') || '5'
+                take: searchParams.get('take') || '10'
             })
         }
     }, [searchParams, setSearchParams, pagedData])
 
     const providerValue: PaginationContextProps = {
         page: pagedData?.page || 1,
-        take: searchParams.get('take') || '5',
+        take: searchParams.get('take') || '10',
         maxPage: pagedData?.maxPage || 1,
         setSearchParams
     }
@@ -56,17 +53,7 @@ function ThreadsPage(): React.ReactElement {
                 <TwoLine title="Threads" description="Where you can talk on anything (after reading rules)" />
                 { isAuth ? <AddThread /> : <Link to={AppRoutes.LOGIN} className="font-medium hover:underline" children='Log in to add thread' />}
             </div>
-            <div className="flex flex-col space-y-7">
-                <span className="text-center text-7xl font-bold">Choose a category below...</span>
-                { threadCategories ? <div className="grid grid-cols-3 gap-3">
-                    {threadCategories.map((cat, i) => (
-                        <ThreadCategoryLink key={i} category={cat} />
-                    ))}
-                </div> : <Loading /> }
-            </div>
-            <div>
-                <OrFiller />
-            </div>
+            <OrFiller />
             <PaginationProvider value={providerValue}>
                 <div className="flex flex-col space-y-4 items-center">
                     <div className="flex flex-col space-y-2 w-full">

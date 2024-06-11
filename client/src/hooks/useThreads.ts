@@ -1,7 +1,8 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import ThreadService from "@/services/ThreadService";
 import useUserStore from "@/store/UserStore";
 import ThreadInput from "@/types/data/threads/ThreadInput";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const useGetThreads = (options?: string) => useQuery({
     queryKey: ['threads', options],
@@ -11,6 +12,11 @@ const useGetThreads = (options?: string) => useQuery({
 const useGetThreadByLink = (link: string) => useQuery({
     queryKey: ['thread-detailed', link],
     queryFn: () => ThreadService.getThreadByLink(link)
+})
+
+const useGetRecentThreads = () => useQuery({
+    queryKey: ['recent-threads'],
+    queryFn: () => ThreadService.getRecentThreads()
 })
 
 const useCreateThread = (input: ThreadInput) => {
@@ -24,6 +30,7 @@ const useCreateThread = (input: ThreadInput) => {
         onSettled: () => {},
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['threads'] })
+            queryClient.invalidateQueries({ queryKey: ['recent-threads']})
         }
     })
 }
@@ -35,6 +42,7 @@ const useRegisterView = (id: string) => useMutation({
 export {
     useGetThreads,
     useGetThreadByLink,
+    useGetRecentThreads,
     useCreateThread,
     useRegisterView
 }

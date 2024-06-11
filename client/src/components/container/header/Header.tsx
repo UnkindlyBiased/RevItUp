@@ -16,9 +16,7 @@ function Header(): React.ReactElement {
                 <Logo className="w-48 md:w-52 md:hover:w-56 transition-all" />
                 <div className="hidden lg:flex lg:items-center lg:space-x-7">
                     <HeaderNavLink link={AppRoutes.POSTS}>News</HeaderNavLink>
-                    <HeaderNavLink link='/sdfsdf'>Events</HeaderNavLink>
                     <HeaderNavLink link={AppRoutes.THREADS}>Threads</HeaderNavLink>
-                    <HeaderNavLink link='/sdasd'>Drivers</HeaderNavLink>
                     <HeaderNavLink link={AppRoutes.CATEGORIES}>Categories</HeaderNavLink>
                 </div>
             </div>

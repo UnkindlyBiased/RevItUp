@@ -17,7 +17,7 @@ function ThreadComp({ thread }: { thread: ThreadShort }): React.ReactElement {
                     <ReadableStats views={thread.views} />
                 </div>
             </div>
-            <Link to={AppRoutes.THREAD_CATEGORY.replace(':code', thread.threadCategory.threadCategoryCode)} className="font-medium hover:font-bold" children={thread.threadCategory.threadCategoryName} />
+            <span className="font-medium hover:font-bold" children={thread.threadCategory.threadCategoryName} />
             <div className="flex h-fit space-x-1 w-96 justify-end">
                 <span children='Author' />
                 <span children='->' />

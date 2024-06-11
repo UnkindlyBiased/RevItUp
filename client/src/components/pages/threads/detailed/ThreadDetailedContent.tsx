@@ -6,7 +6,7 @@ type ThreadDetailedContentProps = {
 
 function ThreadDetailedContent({ content }: ThreadDetailedContentProps): React.ReactElement {
     return (
-        <div className="border-2 px-3 py-2 rounded-md">
+        <div className="border-2 px-3 py-2 rounded-md w-[750px]">
             <SpanSplitter text={content} />
         </div>
     )

@@ -8,10 +8,15 @@ import ActionButton from "@/components/generic/misc/input/ActionButton"
 import { useCreateThread } from "@/hooks/useThreads"
 import ThreadInput from "@/types/data/threads/ThreadInput"
 import ThreadCategoriesSelect from "./ThreadCategoriesSelect"
+import useUserStore from "@/store/UserStore"
 
 function AddThread(): React.ReactElement {
     const { register, setValue, watch, reset, formState: { isValid } } = useForm<ThreadInput>()
     const { mutateAsync: addThread, isPending: isAdding } = useCreateThread(watch())
+    const user = useUserStore(state => state.user)
+
+    if (!user?.isVerified) return <span className="text-lg" children='Please verify your account (check your email inbox)' />
+    if (user?.role === 'banned') return <span className="text-lg" children="You're banned from creating threads" />
 
     return (
         <Dialog onOpenChange={() => reset()}>
