@@ -43,7 +43,7 @@ const useUserStore = create<UserState>((set) => ({
     registrate: async (data) => {
         try {
             const response = await AuthService.registrate(data)
-            localStorage.setItem("token", response.tokens.accessToken)
+            localStorage.setItem("accessToken", response.tokens.accessToken)
         } catch (e) {
             console.log(e)
         }
@@ -52,7 +52,7 @@ const useUserStore = create<UserState>((set) => ({
         try {
             const response = await AuthService.login(username, password)
 
-            localStorage.setItem("token", response.tokens.accessToken)
+            localStorage.setItem("accessToken", response.tokens.accessToken)
             set({ user: response.user, isAuth: true })
         } catch(e) {
             console.log(e)
@@ -62,7 +62,7 @@ const useUserStore = create<UserState>((set) => ({
     },
     logout: async () => {
         await AuthService.logout()
-        localStorage.removeItem('token')
+        localStorage.removeItem('accessToken')
 
         set({ user: null, isAuth: false })
     },
@@ -70,7 +70,7 @@ const useUserStore = create<UserState>((set) => ({
         try {
             const response = await AuthService.refresh()
 
-            localStorage.setItem('token', response.tokens.accessToken)
+            localStorage.setItem('accessToken', response.tokens.accessToken)
             set({ user: response.user, isAuth: true })
         } catch(e) {
             console.log(e)
