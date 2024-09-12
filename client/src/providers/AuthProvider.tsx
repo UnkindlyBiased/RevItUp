@@ -9,7 +9,7 @@ function AuthProvider({ children }: { children: React.ReactNode }): React.ReactN
     const checkAuth = useUserStore(state => state.checkAuth)
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (localStorage.getItem('accessToken')) {
             checkAuth()
         }
     }, [checkAuth])

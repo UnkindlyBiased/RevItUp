@@ -16,10 +16,6 @@ function RequireAuth({ children }: ChildProp): React.ReactNode {
         }
     }, [isLoading, isAuth, navigate])
 
-    if (!isAuth) {
-        return null // Alternatively, you can keep showing the loading indicator here as well
-    }
-
     return children
 }
 

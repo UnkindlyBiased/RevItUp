@@ -36,7 +36,7 @@ async function startApp() {
         await PgDataSource.initialize()
         await PgDataSource.synchronize()
 
-        await connectToCacheClient()
+        // await connectToCacheClient()
         
         app.listen(PORT, () => {
             console.log(`App is started on port ${PORT}`)

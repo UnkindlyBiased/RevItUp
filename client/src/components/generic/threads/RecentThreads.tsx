@@ -12,8 +12,8 @@ function RecentThreads(): React.ReactNode {
             </div>
             <div className="flex flex-col space-y-1">
                 { data?.threads.length ? <>
-                    { data.threads.map(thread => (
-                        <Link to={AppRoutes.OPENED_THREAD.replace(':link', thread.threadLink)} className="flex space-x-2 justify-end">
+                    { data.threads.map((thread, i) => (
+                        <Link key={i} to={AppRoutes.OPENED_THREAD.replace(':link', thread.threadLink)} className="flex space-x-2 justify-end">
                             <span children={thread.threadTitle} />
                             <div className="w-[1px] h-6" style={{ backgroundColor: thread.threadCategory.threadCategoryColor }} />
                         </Link>
