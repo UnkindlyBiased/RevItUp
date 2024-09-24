@@ -36,7 +36,7 @@ function App(): React.ReactElement {
         defaultOptions: {
             queries: {
                 retry: false,
-                refetchOnWindowFocus: false
+                refetchOnWindowFocus: false,
             },
             mutations: {
                 onError: () => toast(
@@ -115,11 +115,11 @@ function App(): React.ReactElement {
 
     return (
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-            <AuthProvider>
-                <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
                     <RouterProvider router={browserRouter} />
-                </QueryClientProvider>
-            </AuthProvider>
+                </AuthProvider>
+            </QueryClientProvider>
         </ThemeProvider>
     )
 }

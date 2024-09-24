@@ -47,7 +47,6 @@ class UserController {
         try {
             const user = await this.service.create(req.body)
 
-            TokenHelper.putCookie(user.tokens.refreshToken, res)
             res.status(HttpStatusCodes.UPLOADED).send(user)
         } catch (e) {
             next(e)
@@ -138,6 +137,10 @@ class UserController {
     refresh = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { refreshToken } = req.cookies
+            if (!refreshToken) {
+                throw ApiError.Unauthorized('Refresh token is not valid')
+            }
+            
             const userData = await this.service.refresh(refreshToken)
 
             TokenHelper.putCookie(userData.tokens.refreshToken, res)

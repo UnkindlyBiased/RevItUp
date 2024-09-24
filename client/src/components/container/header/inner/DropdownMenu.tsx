@@ -4,13 +4,14 @@ import { FaUser } from 'react-icons/fa6'
 
 import useUserStore from '@/store/UserStore'
 import AppRoutes from '@/utils/enums/AppRoutes'
+import { useLogout } from '../../../../hooks/auth/useLogout'
 
 /**
  * Dropdown menu for the header
  */
 function UserDropdown(): React.ReactElement {
     const user = useUserStore(state => state.user)
-    const logout = useUserStore(state => state.logout)
+    const { mutateAsync: logout } = useLogout()
 
     const navigate = useNavigate()
     
@@ -44,7 +45,7 @@ function UserDropdown(): React.ReactElement {
                             <DropdownMenuSeparator />
                         </>
                     )}
-                    <DropdownMenuItem onClick={logout}>
+                    <DropdownMenuItem onClick={async () => await logout()}>
                         Logout
                     </DropdownMenuItem>
                 </> }

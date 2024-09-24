@@ -11,7 +11,7 @@ export class ApiError extends Error {
     }
     
     // * 4XX - Client error responses
-    static BadRequest(message: string, errors: string[] = []) {
+    static BadRequest(message: string, errors: string[] = []): ApiError {
         return new ApiError(HttpStatusCodes.BAD_REQUEST, message, errors)
     }
     static Unauthorized(message: string, errors: string[] = []): ApiError {

@@ -1,13 +1,12 @@
 import { Router } from 'express'
 import PostController from '../controllers/PostController'
-import { cacheMiddleware } from '../../utils/middlewares/cache/CacheMiddleware'
 import authMiddleware from '../../utils/middlewares/misc/AuthMiddleware'
 import writerMiddleware from '../../utils/middlewares/misc/WriterMiddleware'
 import imageUploadMiddleware from '../../utils/middlewares/misc/ImageUploadMiddleware'
 
 const PostRouter = Router()
 
-PostRouter.get('/', cacheMiddleware('posts-all'), PostController.getPosts)
+PostRouter.get('/', PostController.getPosts)
 PostRouter.get("/random", PostController.getRandomPost)
 PostRouter.get("/search", PostController.search)
 PostRouter.get('/saved', authMiddleware, PostController.getSavedPosts)
