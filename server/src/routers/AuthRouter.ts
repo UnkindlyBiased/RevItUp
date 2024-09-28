@@ -10,6 +10,6 @@ AuthRouter.post('/register', userValidation, validationResultMiddleware, UserCon
 AuthRouter.post('/login', UserController.login)
 AuthRouter.post('/logout', UserController.logout)
 AuthRouter.get('/activate/:link', UserController.activate)
-AuthRouter.get('/refresh', UserController.refresh)
+AuthRouter.post('/refresh', UserController.refresh)
 
 export default AuthRouter

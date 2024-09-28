@@ -1,4 +1,3 @@
-import { cacheClient } from "../../utils/data/RedisCacheClient";
 import ThreadModel from "../models/domain/Thread";
 import ThreadInputDto from "../models/dto/threads/ThreadInputDto";
 import IThreadRepository from "../repositories/IThreadRepository";
@@ -17,13 +16,7 @@ class ThreadService {
         return threads.map(thread => ThreadMapper.toThreadShortDto(thread));
     }
     async getThreadByLink(link: string): Promise<ThreadModel> {
-        const cachedThread = await cacheClient.get(`thread-${link}`)
-        if (cachedThread) {
-            return JSON.parse(cachedThread) as ThreadModel
-        }
-
         const thread = await this.repository.getThreadByLink(link)
-        await cacheClient.set(`thread-${link}`, JSON.stringify(thread), { EX: 30 })
         
         return thread
     }

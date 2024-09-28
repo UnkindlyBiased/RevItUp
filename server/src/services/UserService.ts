@@ -145,10 +145,6 @@ class UserService {
         return dto
     }
     refresh = async (refreshToken: string): Promise<UserCreateOutputDto> => {
-        if (!refreshToken) {
-            throw ApiError.Unauthorized('Refresh token is not valid')
-        }
-
         const userData = TokenHelper.validateRefreshToken(refreshToken)
 
         const tokenEntity = await this.tokenService.getByRefreshToken(refreshToken)

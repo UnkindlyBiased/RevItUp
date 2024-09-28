@@ -1,4 +1,3 @@
-import { cacheClient } from "../../utils/data/RedisCacheClient";
 import FirebaseRefEndponts from "../../utils/enums/FirebaseRefEndpoints";
 import PostThreadHelper from "../../utils/helpers/PostHelper";
 import DataFindOptions from "../../utils/types/DataFindOptions";
@@ -27,13 +26,7 @@ class PostService {
         return this.repository.getPostById(id)
     }
     async getPostByLink(link: string): Promise<PostModel> {
-        const cachedPostString = await cacheClient.get(`post-${link}`)
-        if (cachedPostString) {
-            return JSON.parse(cachedPostString) as PostModel
-        }
-
         const post = await this.repository.getPostByLink(link)
-        await cacheClient.set(`post-${link}`, JSON.stringify(post), { EX: 30 })
 
         return post
     }
@@ -82,8 +75,6 @@ class PostService {
         }
 
         PostThreadHelper.trimPostData(input)
-
-        await cacheClient.del(`post-${input.postLink}`)
 
         return this.repository.update(postId, input)
     }

@@ -1,18 +1,21 @@
 import { useEffect } from "react"
 
-import useUserStore from "@/store/UserStore"
+import { useRefresh } from "../hooks/auth/useRefresh"
 
 /**
  * Checks if the user is authorized
  */
 function AuthProvider({ children }: { children: React.ReactNode }): React.ReactNode {
-    const checkAuth = useUserStore(state => state.checkAuth)
-
+    const { mutateAsync } = useRefresh()
     useEffect(() => {
-        if (localStorage.getItem('accessToken')) {
-            checkAuth()
+        const checkAuth = async () => {
+            if (localStorage.getItem('refreshTokenValid')) {
+                await mutateAsync()
+            }
         }
-    }, [checkAuth])
+
+        checkAuth()
+    }, [mutateAsync])
 
     return children
 }

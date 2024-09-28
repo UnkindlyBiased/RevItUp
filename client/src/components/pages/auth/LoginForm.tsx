@@ -2,21 +2,21 @@ import { SubmitHandler, useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 
-import useUserStore from "@/store/UserStore";
 import UserLogin from "@/types/data/users/UserLogin";
 import GenericButton from "@/components/generic/misc/input/GenericButton";
+import { useLogin } from "../../../hooks/auth/useLogin";
 
 function LoginForm(): React.ReactElement {
     const { register, handleSubmit, formState: { isValid } } = useForm<UserLogin>()
-    const login = useUserStore(state => state.login)
+    const { mutateAsync: login } = useLogin()
     const navigate = useNavigate()
     
-    const onSubmit: SubmitHandler<UserLogin> = (data) => {
+    const onSubmit: SubmitHandler<UserLogin> = async (data) => {
         try {
-            login(data.username, data.password)
+            await login(data)
             navigate('/')
         } catch(e) {
-            console.log(e)
+            console.error(e)
         }
     }
 

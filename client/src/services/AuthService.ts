@@ -1,26 +1,22 @@
 import { api } from "../api"
 import AuthResponse from "../types/data/auth/AuthResponse"
 import UserCreate from "../types/data/users/UserCreate"
+import UserLogin from "../types/data/users/UserLogin"
 
 class AuthService {
     private ROUTE_PREFIX = '/auth'
 
-    async registrate(user: UserCreate) {
-        const response = await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/register`, { 
-            ...user
-        })
-        return response.data
+    registrate = async (user: UserCreate) => {
+        await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/register`, user)
     }
-    async login(username: string, password: string) {
-        const response = await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/login`, { username, password })
-        return response.data
+    login = async (data: UserLogin) => {
+        return (await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/login`, data)).data
     }
-    async logout() {
+    logout = async () => {
         await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/logout`)
     }
-    async refresh() {
-        const response = await api.get<AuthResponse>(`${this.ROUTE_PREFIX}/refresh`)
-        return response.data
+    refresh = async () => {
+        return (await api.post<AuthResponse>(`${this.ROUTE_PREFIX}/refresh`)).data
     }
 }
 

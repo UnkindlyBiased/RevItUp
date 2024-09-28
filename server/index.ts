@@ -6,7 +6,6 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
 import errorMiddleware from './utils/middlewares/misc/ErrorMiddleware'
-import { connectToCacheClient } from './utils/data/RedisCacheClient'
 import env from './utils/EnvSchema'
 import AppRouter from './src/routers/Routes'
 

@@ -9,10 +9,13 @@ import AuthService from "../services/AuthService";
  */
 type UserState = {
     user: UserStore | null
+    accessToken: string | null
+
     isAuth: boolean
     isLoading: boolean
 
-    setUser: (user: UserStore) => void
+    setUser: (user: UserStore | null) => void
+    setAccessToken: (token: string | null) => void
     setIsAuth: (value: boolean) => void
 
     registrate: (data: UserCreate) => void
@@ -27,12 +30,18 @@ type UserState = {
  */
 const useUserStore = create<UserState>((set) => ({
     user: null,
+    accessToken: null,
+
     isAuth: false,
     isLoading: true,
 
     setUser: (user) => {
         set({ user })
     },
+    setAccessToken: (token) => {
+        set({ accessToken: token })
+    },
+    
     setIsAuth: (value) => {
         set({ isAuth: value })
     },
@@ -43,14 +52,15 @@ const useUserStore = create<UserState>((set) => ({
     registrate: async (data) => {
         try {
             const response = await AuthService.registrate(data)
-            localStorage.setItem("accessToken", response.tokens.accessToken)
+            
+            
         } catch (e) {
             console.log(e)
         }
     },
     login: async (username, password) => {
         try {
-            const response = await AuthService.login(username, password)
+            const response = await AuthService.login({ username, password })
 
             localStorage.setItem("accessToken", response.tokens.accessToken)
             set({ user: response.user, isAuth: true })
